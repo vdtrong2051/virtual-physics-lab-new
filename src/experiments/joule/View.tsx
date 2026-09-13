@@ -216,6 +216,12 @@ export default function JouleView() {
               controller
                 .resetRuntime
             }
+            workspaceExpanded={
+              workspaceExpanded
+            }
+            onToggleWorkspaceExpanded={
+              handleToggleWorkspaceExpanded
+            }
           />
         );
 
@@ -325,23 +331,6 @@ export default function JouleView() {
           </div>
 
           <div className="joule-view__utility-actions">
-            {isPractice && (
-              <Button
-                type="button"
-                className="experiment-template__button joule-view__expand"
-                onClick={
-                  handleToggleWorkspaceExpanded
-                }
-                aria-pressed={
-                  workspaceExpanded
-                }
-              >
-                {workspaceExpanded
-                  ? "Thu gọn workspace"
-                  : "Mở rộng workspace"}
-              </Button>
-            )}
-
             <Button
               type="button"
               className="experiment-template__reset joule-view__reset"

@@ -1,9 +1,14 @@
+export type ExperimentStatus =
+  | "ready"
+  | "planned";
+
 export type ExperimentItem = {
   slug: string;
   title: string;
   grade: 10 | 11 | 12;
   topic: string;
   isFree: boolean;
+  status: ExperimentStatus;
   description?: string;
 };
 
@@ -14,7 +19,9 @@ export const experiments: ExperimentItem[] = [
     grade: 12,
     topic: "Chất khí",
     isFree: true,
-    description: "Khảo sát mối quan hệ giữa áp suất và thể tích.",
+    status: "ready",
+    description:
+      "Khảo sát mối quan hệ giữa áp suất và thể tích.",
   },
   {
     slug: "joule",
@@ -22,7 +29,9 @@ export const experiments: ExperimentItem[] = [
     grade: 12,
     topic: "Nhiệt học",
     isFree: false,
-    description: "Khảo sát sự chuyển hóa cơ năng thành nhiệt năng.",
+    status: "ready",
+    description:
+      "Khảo sát sự chuyển hóa cơ năng thành nhiệt năng.",
   },
   {
     slug: "brownian",
@@ -30,6 +39,7 @@ export const experiments: ExperimentItem[] = [
     grade: 12,
     topic: "Cấu tạo chất",
     isFree: true,
+    status: "planned",
   },
 ];
 

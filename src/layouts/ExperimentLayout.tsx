@@ -1,21 +1,33 @@
-import { Link, Outlet, useParams } from "react-router";
+import {
+  Link,
+  Outlet,
+  useParams,
+} from "react-router";
 
 import Card from "../components/ui/Card";
 
-import { getExperimentBySlug } from "../experiments/registry";
+import {
+  getExperimentBySlug,
+} from "../experiments/registry";
 
 import "../styles/experiment.css";
 
-function getTopicAccentClass(topic: string) {
+function getTopicAccentClass(
+  topic: string,
+) {
   const normalizedTopic = topic
     .trim()
     .toLowerCase();
 
-  if (normalizedTopic.includes("nhiệt")) {
+  if (
+    normalizedTopic.includes("nhiệt")
+  ) {
     return "experiment-page--thermal";
   }
 
-  if (normalizedTopic.includes("khí")) {
+  if (
+    normalizedTopic.includes("khí")
+  ) {
     return "experiment-page--gas";
   }
 
@@ -51,11 +63,45 @@ export default function ExperimentLayout() {
             404
           </span>
 
-          <h1>Không tìm thấy thí nghiệm</h1>
+          <h1>
+            Không tìm thấy thí nghiệm
+          </h1>
 
           <p>
-            Bài thí nghiệm bạn đang truy cập không tồn tại
-            trong danh mục hiện tại.
+            Bài thí nghiệm bạn đang truy cập
+            không tồn tại trong danh mục hiện tại.
+          </p>
+
+          <Link
+            to="/app/experiments"
+            className="experiment-not-found__back"
+          >
+            ← Quay lại danh sách thí nghiệm
+          </Link>
+        </Card>
+      </div>
+    );
+  }
+
+  if (
+    experiment.status === "planned"
+  ) {
+    return (
+      <div className="experiment-page experiment-page--not-found">
+        <Card className="experiment-not-found">
+          <span className="experiment-not-found__code">
+            Soon
+          </span>
+
+          <h1>
+            Thí nghiệm đang được phát triển
+          </h1>
+
+          <p>
+            {experiment.title} hiện chưa sẵn
+            sàng để thực hành. Bài thí nghiệm
+            sẽ được mở khi quá trình xây dựng
+            và kiểm thử hoàn tất.
           </p>
 
           <Link
@@ -70,7 +116,9 @@ export default function ExperimentLayout() {
   }
 
   const topicAccentClass =
-    getTopicAccentClass(experiment.topic);
+    getTopicAccentClass(
+      experiment.topic,
+    );
 
   return (
     <div
@@ -81,15 +129,21 @@ export default function ExperimentLayout() {
           to="/app/experiments"
           className="experiment-header__back"
         >
-          <span aria-hidden="true">←</span>
+          <span aria-hidden="true">
+            ←
+          </span>
 
-          <span>Quay lại</span>
+          <span>
+            Quay lại
+          </span>
         </Link>
 
         <div className="experiment-header__identity">
           <div className="experiment-header__meta">
             <span className="experiment-header__subject">
-              Vật lý {experiment.grade} · {experiment.topic}
+              Vật lý {experiment.grade}
+              {" · "}
+              {experiment.topic}
             </span>
 
             <span
@@ -108,15 +162,21 @@ export default function ExperimentLayout() {
                   : "experiment-header__access--full"
               }`}
             >
-              {experiment.isFree ? "FREE" : "FULL"}
+              {experiment.isFree
+                ? "FREE"
+                : "FULL"}
             </span>
           </div>
 
-          <h1>{experiment.title}</h1>
+          <h1>
+            {experiment.title}
+          </h1>
 
           {experiment.description && (
             <p className="experiment-header__description">
-              {experiment.description}
+              {
+                experiment.description
+              }
             </p>
           )}
         </div>

@@ -180,13 +180,24 @@ export default function ExperimentCatalog() {
                     </p>
                   </div>
 
-                  <Link
-                    to={`/app/experiments/${experiment.slug}`}
-                    className="catalog-card__action"
-                  >
-                    Mở thí nghiệm
-                    <span aria-hidden="true">→</span>
-                  </Link>
+                  {experiment.status === "ready" ? (
+                    <Link
+                      to={`/app/experiments/${experiment.slug}`}
+                      className="catalog-card__action"
+                    >
+                      Mở thí nghiệm
+                      <span aria-hidden="true">
+                        →
+                      </span>
+                    </Link>
+                  ) : (
+                    <div
+                      className="catalog-card__action catalog-card__action--planned"
+                      aria-disabled="true"
+                    >
+                      Sắp ra mắt
+                    </div>
+                  )}
                 </Card>
               )
             )}
