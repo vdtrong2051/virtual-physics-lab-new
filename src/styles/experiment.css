@@ -1,0 +1,10708 @@
+/* =========================================================
+   EXPERIMENT.CSS — LAB UI ARCHITECTURE
+
+   1. Shared lab shell
+      - Experiment page / header / workspace
+      - Phase navigation
+      - Structural experiment template
+
+   2. Boyle
+      - Content phases
+      - Simulation + practice workspace
+      - Measurement / analysis
+      - Conclusion / quiz / report
+      - Composed view + expanded workspace
+
+   3. Joule
+      - Content phases
+      - Preparation 3D assembly
+      - Simulation + practice workspace
+      - Measurement / graph / result
+      - Conclusion / quiz / report
+      - Composed view + expanded workspace
+
+   Quy ước:
+   - Shared chỉ chứa cấu trúc UI chung.
+   - Physics và interaction riêng nằm trong namespace từng experiment.
+   - Comment mô tả vai trò hiện tại, không ghi lịch sử migration.
+   ========================================================= */
+
+/* =========================================================
+   EXPERIMENT LAYOUT
+   LAB MODE
+
+   Visual reference:
+   - full screen
+   - dark navy
+   - compact centered header
+   - teal / cyan accent
+   - workspace chiếm toàn bộ phần còn lại
+
+   Không áp Portal glass vào Lab.
+   ========================================================= */
+
+.experiment-page {
+  --lab-topic-accent: var(--lab-primary);
+
+  --lab-topic-accent-soft:
+    color-mix(
+      in srgb,
+      var(--lab-topic-accent) 14%,
+      transparent
+    );
+
+  --lab-topic-accent-border:
+    color-mix(
+      in srgb,
+      var(--lab-topic-accent) 28%,
+      transparent
+    );
+
+  --lab-topic-accent-glow:
+    color-mix(
+      in srgb,
+      var(--lab-topic-accent) 38%,
+      transparent
+    );
+
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  color: var(--lab-text);
+
+  background:
+    radial-gradient(
+      circle at 50% -20%,
+      rgba(34, 211, 238, 0.07),
+      transparent 36%
+    ),
+    var(--lab-bg);
+}
+
+/* =========================================================
+   TOPIC ACCENT
+
+   Chỉ đổi màu nhấn.
+   Không đổi layout / surface / typography của Lab.
+   ========================================================= */
+
+.experiment-page--default {
+  --lab-topic-accent: var(--lab-primary);
+}
+
+.experiment-page--thermal {
+  --lab-topic-accent: var(--topic-thermal-accent);
+}
+
+.experiment-page--gas {
+  --lab-topic-accent: var(--topic-gas-accent);
+}
+
+.experiment-page--magnetic {
+  --lab-topic-accent: var(--topic-magnetic-accent);
+}
+
+.experiment-page--nuclear {
+  --lab-topic-accent: var(--topic-nuclear-accent);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.experiment-header {
+  position: relative;
+  z-index: 20;
+
+  flex-shrink: 0;
+
+  padding:
+    var(--space-4)
+    calc(var(--page-padding) + 120px)
+    var(--space-3);
+
+  display: flex;
+  justify-content: center;
+
+  background: rgba(5, 11, 20, 0.94);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+
+/* =========================================================
+   BACK
+   ========================================================= */
+
+.experiment-header__back {
+  position: absolute;
+
+  top: var(--space-4);
+  left: var(--page-padding);
+
+  min-height: 40px;
+
+  padding:
+    var(--space-2)
+    var(--space-4);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-2);
+
+  color: var(--lab-text-muted);
+
+  background: rgba(255, 255, 255, 0.05);
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+
+  text-decoration: none;
+
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.experiment-header__back:hover {
+  color: var(--lab-text);
+
+  background: rgba(255, 255, 255, 0.09);
+
+  border-color: var(--lab-border-strong);
+
+  transform: translateX(-2px);
+}
+
+.experiment-header__back:focus-visible {
+  outline: 2px solid var(--lab-primary);
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   EXPERIMENT IDENTITY
+   ========================================================= */
+
+.experiment-header__identity {
+  min-width: 0;
+  max-width: 900px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+.experiment-header__meta {
+  min-height: 32px;
+
+  padding:
+    var(--space-1)
+    var(--space-3);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-wrap: wrap;
+
+  gap: var(--space-2);
+
+  color: var(--lab-text-soft);
+
+  background: var(--lab-topic-accent-soft);
+
+  border: 1px solid var(--lab-topic-accent-border);
+  border-radius: var(--radius-round);
+
+  box-shadow:
+    0 0 18px var(--lab-topic-accent-glow);
+}
+
+.experiment-header__subject,
+.experiment-header__lab-label,
+.experiment-header__access {
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+.experiment-header__subject {
+  color: var(--lab-text-soft);
+}
+
+.experiment-header__indicator {
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  background: var(--lab-topic-accent);
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 10px var(--lab-topic-accent-glow);
+}
+
+.experiment-header__lab-label {
+  color: var(--lab-topic-accent);
+}
+
+
+/* =========================================================
+   ACCESS
+   ========================================================= */
+
+.experiment-header__access {
+  padding:
+    3px
+    var(--space-2);
+
+  border-radius: var(--radius-round);
+}
+
+.experiment-header__access--free {
+  color: var(--lab-access-free);
+  background: var(--lab-access-free-soft);
+}
+
+.experiment-header__access--full {
+  color: var(--lab-access-full);
+  background: var(--lab-access-full-soft);
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.experiment-header__identity h1 {
+  max-width: 900px;
+
+  margin:
+    var(--space-3)
+    0
+    0;
+
+  color: var(--lab-text);
+
+  font-size: clamp(
+    var(--text-2xl),
+    3vw,
+    40px
+  );
+
+  font-weight: var(--font-bold);
+
+  line-height: 1.08;
+  letter-spacing: 0.035em;
+
+  text-transform: uppercase;
+
+  text-shadow:
+    0 0 18px rgba(255, 255, 255, 0.08);
+}
+
+.experiment-header__description {
+  max-width: 720px;
+
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   MAIN
+
+   Không áp grid generic ở đây.
+   Từng experiment tự sở hữu workspace bên trong.
+   ========================================================= */
+
+.experiment-main {
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1;
+
+  display: flex;
+
+  overflow: hidden;
+}
+
+.experiment-workspace {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1;
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   NOT FOUND
+   ========================================================= */
+
+.experiment-page--not-found {
+  align-items: center;
+  justify-content: center;
+
+  padding: var(--space-5);
+}
+
+.experiment-not-found.ui-card {
+  width: 100%;
+  max-width: 520px;
+
+  padding: var(--space-8);
+
+  color: var(--lab-text);
+
+  background:
+    rgba(15, 23, 42, 0.9);
+
+  border: 1px solid var(--lab-border-strong);
+  border-radius: var(--radius-xl);
+
+  box-shadow: var(--shadow-lab);
+
+  text-align: center;
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.experiment-not-found__code {
+  display: block;
+
+  color: var(--lab-primary);
+
+  font-size: 64px;
+  font-weight: var(--font-bold);
+
+  line-height: 1;
+
+  text-shadow:
+    0 0 24px rgba(20, 184, 166, 0.24);
+}
+
+.experiment-not-found h1 {
+  margin:
+    var(--space-5)
+    0
+    0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-2xl);
+}
+
+.experiment-not-found p {
+  margin:
+    var(--space-3)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+.experiment-not-found__back {
+  margin-top: var(--space-6);
+
+  min-height: 42px;
+
+  padding:
+    var(--space-2)
+    var(--space-4);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--lab-primary);
+
+  background: var(--lab-primary-soft);
+
+  border: 1px solid rgba(20, 184, 166, 0.22);
+  border-radius: var(--radius-md);
+
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+
+  text-decoration: none;
+
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.experiment-not-found__back:hover {
+  color: var(--lab-text);
+
+  background: rgba(20, 184, 166, 0.22);
+
+  border-color: var(--lab-primary);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+  .experiment-header {
+    padding:
+      var(--space-4)
+      140px
+      var(--space-3);
+  }
+
+  .experiment-header__back {
+    left: var(--space-4);
+  }
+
+  .experiment-header__description {
+    max-width: 600px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .experiment-page {
+    min-height: 100dvh;
+    height: 100dvh;
+  }
+
+  .experiment-header {
+    padding:
+      var(--space-3)
+      var(--space-4);
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: var(--space-3);
+  }
+
+  .experiment-header__back {
+    position: static;
+
+    width: fit-content;
+
+    min-height: 36px;
+
+    padding:
+      var(--space-2)
+      var(--space-3);
+  }
+
+  .experiment-header__identity {
+    width: 100%;
+
+    align-items: flex-start;
+
+    text-align: left;
+  }
+
+  .experiment-header__meta {
+    justify-content: flex-start;
+
+    padding:
+      var(--space-1)
+      var(--space-2);
+  }
+
+  .experiment-header__identity h1 {
+    margin-top: var(--space-2);
+
+    font-size: clamp(
+      24px,
+      7vw,
+      32px
+    );
+
+    letter-spacing: 0.015em;
+  }
+
+  .experiment-header__description {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .experiment-header__subject {
+    display: none;
+  }
+
+  .experiment-header__identity h1 {
+    font-size: 23px;
+  }
+
+  .experiment-header__meta {
+    gap: var(--space-1);
+  }
+
+  .experiment-not-found.ui-card {
+    padding:
+      var(--space-6)
+      var(--space-4);
+  }
+}
+
+/* =========================================================
+   SHORT VIEWPORT
+
+   Giữ Lab dùng được ở mobile landscape / browser zoom cao.
+   ========================================================= */
+
+@media (max-height: 520px) {
+
+  .experiment-header {
+    padding:
+      var(--space-3)
+      140px
+      var(--space-2);
+  }
+
+  .experiment-header__back {
+    top: var(--space-3);
+  }
+
+  .experiment-header__identity h1 {
+    margin-top: var(--space-2);
+
+    font-size: clamp(
+      22px,
+      2.6vw,
+      30px
+    );
+  }
+
+  .experiment-header__description {
+    display: none;
+  }
+}
+
+/* =========================================================
+   PHASE NAVIGATION
+
+   Shared Lab navigation.
+   Phase state vẫn thuộc từng experiment.
+   ========================================================= */
+
+.experiment-phase-nav {
+  position: relative;
+  z-index: 15;
+
+  width: 100%;
+
+  flex-shrink: 0;
+
+  padding:
+    var(--space-2)
+    var(--space-4);
+
+  background:
+    rgba(5, 11, 20, 0.96);
+
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.05);
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scrollbar-width: none;
+
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.experiment-phase-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.experiment-phase-nav__track {
+  width: max-content;
+  min-width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-2);
+
+  padding:
+    var(--space-1)
+    0;
+}
+
+
+/* =========================================================
+   PHASE ITEM
+   ========================================================= */
+
+.experiment-phase-nav__item {
+  min-height: 36px;
+
+  flex-shrink: 0;
+
+  padding:
+    var(--space-2)
+    var(--space-4);
+
+  color: var(--lab-text-muted);
+
+  background:
+    rgba(255, 255, 255, 0.06);
+
+  border:
+    1px solid rgba(255, 255, 255, 0.12);
+
+  border-radius: var(--radius-round);
+
+  font-family: var(--font-main);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.experiment-phase-nav__item:hover:not(:disabled) {
+  color: var(--lab-text);
+
+  background:
+    rgba(255, 255, 255, 0.1);
+
+  border-color: var(--lab-border-strong);
+}
+
+.experiment-phase-nav__item:focus-visible {
+  outline:
+    2px solid var(--lab-topic-accent);
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   ACTIVE PHASE
+   ========================================================= */
+
+.experiment-phase-nav__item--active {
+  color: var(--lab-bg);
+
+  background: var(--lab-topic-accent);
+
+  border-color: var(--lab-topic-accent);
+
+  box-shadow:
+    0 0 18px var(--lab-topic-accent-glow);
+
+  transform: translateY(-1px);
+}
+
+.experiment-phase-nav__item--active:hover:not(:disabled) {
+  color: var(--lab-bg);
+
+  background: var(--lab-topic-accent);
+
+  border-color: var(--lab-topic-accent);
+}
+
+
+/* =========================================================
+   DISABLED
+   ========================================================= */
+
+.experiment-phase-nav__item:disabled {
+  color: var(--lab-text-muted);
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  border-color:
+    rgba(255, 255, 255, 0.05);
+
+  cursor: not-allowed;
+
+  opacity: 0.38;
+
+  box-shadow: none;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .experiment-phase-nav {
+    padding:
+      var(--space-2)
+      var(--space-3);
+  }
+
+  .experiment-phase-nav__item {
+    min-height: 36px;
+
+    padding:
+      var(--space-2)
+      var(--space-3);
+
+    font-size: var(--text-xs);
+  }
+}
+
+/* =========================================================
+   EXPERIMENT TEMPLATE
+
+   Chỉ là structural reference.
+   Không định nghĩa layout vật lý của từng experiment.
+   ========================================================= */
+
+.experiment-template {
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  color: var(--lab-text);
+
+  background: var(--lab-bg);
+}
+
+.experiment-template__content {
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1;
+
+  padding: var(--space-4);
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.experiment-template__phase {
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1;
+
+  padding: var(--space-5);
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--lab-surface);
+
+  border: 1px solid var(--lab-border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-lab);
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   PHASE HEADER
+   ========================================================= */
+
+.experiment-template__phase-header {
+  flex-shrink: 0;
+
+  padding-bottom: var(--space-4);
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: var(--space-5);
+
+  border-bottom:
+    1px solid var(--lab-border);
+}
+
+.experiment-template__step {
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.07em;
+
+  text-transform: uppercase;
+}
+
+.experiment-template__phase-header h2 {
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-2xl);
+}
+
+.experiment-template__phase-header p {
+  max-width: 760px;
+
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+.experiment-template__phase-id {
+  padding:
+    var(--space-1)
+    var(--space-3);
+
+  flex-shrink: 0;
+
+  color: var(--lab-text-muted);
+
+  background: var(--lab-surface-soft);
+
+  border: 1px solid var(--lab-border);
+  border-radius: var(--radius-round);
+
+  font-family: monospace;
+  font-size: var(--text-xs);
+}
+
+
+/* =========================================================
+   STAGE
+   ========================================================= */
+
+.experiment-template__stage {
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1;
+
+  margin-top: var(--space-4);
+
+  display: flex;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.experiment-template__placeholder {
+  width: 100%;
+  min-height: 220px;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-3);
+
+  padding: var(--space-6);
+
+  color: var(--lab-text-muted);
+
+  background:
+    var(--lab-surface-soft);
+
+  border:
+    1px dashed var(--lab-border-strong);
+
+  border-radius: var(--radius-lg);
+
+  text-align: center;
+}
+
+.experiment-template__placeholder span {
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+.experiment-template__placeholder p {
+  max-width: 560px;
+
+  margin: 0;
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   RUNTIME
+   ========================================================= */
+
+.experiment-template__runtime {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-4);
+}
+
+.experiment-template__runtime-status {
+  flex-shrink: 0;
+
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+
+  background: var(--lab-surface-soft);
+
+  border: 1px solid var(--lab-border);
+  border-radius: var(--radius-md);
+}
+
+.experiment-template__runtime-status span {
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+}
+
+.experiment-template__runtime-value {
+  color: var(--lab-text-soft);
+
+  font-size: var(--text-sm);
+}
+
+.experiment-template__runtime-value--running {
+  color: var(--lab-topic-accent);
+}
+
+.experiment-template__runtime-actions {
+  flex-shrink: 0;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: var(--space-2);
+}
+
+
+/* =========================================================
+   LAB BUTTON
+   Không dùng .ui-button Portal.
+   ========================================================= */
+
+.experiment-template__button,
+.experiment-template__reset {
+  min-height: 40px;
+
+  padding:
+    var(--space-2)
+    var(--space-4);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--lab-text-soft);
+
+  background:
+    rgba(255, 255, 255, 0.06);
+
+  border:
+    1px solid var(--lab-border-strong);
+
+  border-radius: var(--radius-md);
+
+  font-family: var(--font-main);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+
+  cursor: pointer;
+
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.experiment-template__button:hover:not(:disabled),
+.experiment-template__reset:hover:not(:disabled) {
+  color: var(--lab-text);
+
+  background:
+    rgba(255, 255, 255, 0.1);
+
+  border-color: var(--lab-primary);
+}
+
+.experiment-template__button--primary {
+  color: var(--lab-bg);
+
+  background: var(--lab-primary);
+
+  border-color: var(--lab-primary);
+}
+
+.experiment-template__button--primary:hover:not(:disabled) {
+  color: var(--lab-bg);
+
+  background: var(--lab-cyan);
+
+  border-color: var(--lab-cyan);
+}
+
+.experiment-template__button:disabled {
+  opacity: 0.32;
+
+  cursor: not-allowed;
+}
+
+.experiment-template__reset {
+  color: var(--lab-text-muted);
+
+  background: transparent;
+
+  border-color: transparent;
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+   ========================================================= */
+
+.experiment-template__navigation {
+  flex-shrink: 0;
+
+  padding-top: var(--space-4);
+
+  display: grid;
+  grid-template-columns:
+    1fr
+    auto
+    1fr;
+
+  align-items: center;
+
+  gap: var(--space-3);
+}
+
+.experiment-template__navigation
+  .experiment-template__button:first-child {
+  justify-self: start;
+}
+
+.experiment-template__navigation
+  .experiment-template__button:last-child {
+  justify-self: end;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .experiment-template__content {
+    padding: var(--space-3);
+  }
+
+  .experiment-template__phase {
+    padding: var(--space-4);
+  }
+
+  .experiment-template__phase-header {
+    flex-direction: column;
+
+    gap: var(--space-3);
+  }
+
+  .experiment-template__phase-id {
+    display: none;
+  }
+
+  .experiment-template__stage {
+    overflow-y: auto;
+  }
+
+  .experiment-template__runtime-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .experiment-template__runtime-actions
+    .experiment-template__button:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .experiment-template__navigation {
+    grid-template-columns:
+      1fr
+      1fr;
+  }
+
+  .experiment-template__reset {
+    display: none;
+  }
+
+  .experiment-template__navigation
+    .experiment-template__button {
+    width: 100%;
+
+    justify-self: stretch;
+  }
+}
+
+@media (max-height: 520px) {
+
+  .experiment-phase-nav {
+    padding:
+      var(--space-1)
+      var(--space-3);
+  }
+
+  .experiment-phase-nav__track {
+    padding: 0;
+  }
+
+  .experiment-phase-nav__item {
+    min-height: 32px;
+
+    padding:
+      6px
+      var(--space-3);
+
+    font-size: var(--text-xs);
+  }
+
+  .experiment-template__content {
+    padding: var(--space-2);
+
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .experiment-template__phase {
+    flex: 0 0 auto;
+
+    padding: var(--space-3);
+
+    overflow: visible;
+  }
+
+  .experiment-template__phase-header {
+    padding-bottom: var(--space-3);
+  }
+
+  .experiment-template__phase-header h2 {
+    margin-top: var(--space-1);
+
+    font-size: var(--text-lg);
+  }
+
+  .experiment-template__phase-header p {
+    margin-top: var(--space-1);
+
+    font-size: var(--text-xs);
+
+    line-height: 1.35;
+  }
+
+  .experiment-template__stage {
+    min-height: 88px;
+
+    margin-top: var(--space-3);
+  }
+
+  .experiment-template__placeholder {
+    min-height: 88px;
+
+    padding: var(--space-3);
+  }
+
+  .experiment-template__navigation {
+    padding-top: var(--space-2);
+  }
+
+  .experiment-template__button,
+  .experiment-template__reset {
+    min-height: 36px;
+
+    padding:
+      var(--space-1)
+      var(--space-3);
+  }
+}
+
+/* =========================================================
+   BOYLE — CONTENT PHASES
+
+   Intro + Preparation.
+   Giữ nguyên Lab visual system.
+   ========================================================= */
+
+.boyle-content-phase {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  color: var(--lab-text);
+}
+
+.boyle-content-phase__inner {
+  width: min(100%, 980px);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+}
+
+.boyle-content-phase__badge {
+  width: fit-content;
+
+  align-self: center;
+
+  padding:
+    var(--space-1)
+    var(--space-3);
+
+  color: var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+
+  border-radius: var(--radius-round);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.07em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   BOYLE INTRO
+   ========================================================= */
+
+.boyle-intro__grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: var(--space-4);
+}
+
+.boyle-info-card {
+  min-width: 0;
+
+  padding: var(--space-5);
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: var(--space-4);
+
+  background:
+    var(--lab-surface-soft);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-lg);
+}
+
+.boyle-info-card__icon {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+
+  border-radius: var(--radius-md);
+
+  font-size: 22px;
+}
+
+.boyle-info-card h3 {
+  margin: 0;
+
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-lg);
+}
+
+.boyle-info-card p {
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   BOYLE FORMULA
+   ========================================================= */
+
+.boyle-formula-card {
+  padding:
+    var(--space-6)
+    var(--space-5);
+
+  text-align: center;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-lg);
+}
+
+.boyle-formula-card__label {
+  display: block;
+
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.07em;
+
+  text-transform: uppercase;
+}
+
+.boyle-formula {
+  margin:
+    var(--space-5)
+    0
+    var(--space-4);
+
+  color: var(--lab-text);
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(34px, 5vw, 52px);
+
+  line-height: 1;
+
+  letter-spacing: 0.04em;
+
+  text-shadow:
+    0 0 22px
+    var(--lab-topic-accent-glow);
+}
+
+.boyle-formula-card p {
+  margin: 0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+.boyle-formula-card strong {
+  color: var(--lab-text-soft);
+
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+
+/* =========================================================
+   BOYLE PREPARATION
+   ========================================================= */
+
+.boyle-preparation__heading {
+  text-align: center;
+}
+
+.boyle-preparation__heading h3 {
+  margin: 0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-xl);
+}
+
+.boyle-preparation__heading p {
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+.boyle-preparation__feedback {
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  color: #fda4af;
+
+  background:
+    rgba(159, 18, 57, 0.18);
+
+  border:
+    1px solid
+    rgba(244, 63, 94, 0.38);
+
+  border-radius: var(--radius-md);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.5;
+}
+
+.boyle-tool-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: var(--space-3);
+}
+
+.boyle-tool-card.ui-button {
+  width: 100%;
+  min-width: 0;
+  min-height: 76px;
+
+  padding: var(--space-4);
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: var(--space-3);
+
+  color: var(--lab-text-soft);
+
+  background:
+    var(--lab-surface-soft);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: none;
+
+  text-align: left;
+}
+
+.boyle-tool-card.ui-button:hover {
+  color: var(--lab-text);
+
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  border-color:
+    var(--lab-border-strong);
+
+  transform: none;
+}
+
+.boyle-tool-card--selected.ui-button {
+  color: var(--lab-text);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border-color:
+    var(--lab-topic-accent);
+
+  box-shadow:
+    0 0 16px
+    var(--lab-topic-accent-glow);
+}
+
+.boyle-tool-card__icon {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-md);
+
+  font-size: 22px;
+}
+
+.boyle-tool-card__name {
+  min-width: 0;
+
+  flex: 1;
+
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+
+  line-height: 1.4;
+}
+
+.boyle-tool-card__check {
+  width: 22px;
+  height: 22px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: transparent;
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: 50%;
+
+  font-size: 12px;
+  font-weight: var(--font-bold);
+}
+
+.boyle-tool-card--selected
+  .boyle-tool-card__check {
+  color: var(--lab-bg);
+
+  background:
+    var(--lab-topic-accent);
+
+  border-color:
+    var(--lab-topic-accent);
+}
+
+
+/* =========================================================
+   BOYLE PHASE ACTIONS
+   ========================================================= */
+
+.boyle-phase-actions {
+  margin-top: auto;
+
+  padding-top: var(--space-4);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+
+  border-top:
+    1px solid
+    var(--lab-border);
+}
+
+.boyle-phase-actions--end {
+  justify-content: flex-end;
+}
+
+
+/* =========================================================
+   BOYLE RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .boyle-content-phase__inner {
+    gap: var(--space-4);
+  }
+
+  .boyle-content-phase__badge {
+    align-self: flex-start;
+  }
+
+  .boyle-intro__grid,
+  .boyle-tool-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .boyle-info-card {
+    padding: var(--space-4);
+  }
+
+  .boyle-formula-card {
+    padding:
+      var(--space-5)
+      var(--space-4);
+  }
+
+  .boyle-phase-actions {
+    display: grid;
+
+    grid-template-columns:
+      1fr
+      1fr;
+  }
+
+  .boyle-phase-actions--end {
+    grid-template-columns: 1fr;
+  }
+
+  .boyle-phase-actions
+    .experiment-template__button {
+    width: 100%;
+  }
+}
+
+
+@media (max-height: 520px) {
+
+  .boyle-content-phase__inner {
+    gap: var(--space-3);
+  }
+
+  .boyle-info-card {
+    padding: var(--space-3);
+  }
+
+  .boyle-formula-card {
+    padding: var(--space-4);
+  }
+
+  .boyle-formula {
+    margin:
+      var(--space-3)
+      0;
+
+    font-size: 32px;
+  }
+
+  .boyle-tool-card.ui-button {
+    min-height: 60px;
+
+    padding: var(--space-3);
+  }
+
+  .boyle-phase-actions {
+    padding-top: var(--space-3);
+  }
+}
+
+/* =========================================================
+   BOYLE — SIMULATION ENGINE
+   ========================================================= */
+
+.boyle-simulation {
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: var(--lab-bg);
+}
+
+.boyle-simulation canvas {
+  width: 100% !important;
+  height: 100% !important;
+
+  display: block;
+
+  touch-action: none;
+}
+
+/* =========================================================
+   BOYLE — PRACTICE WORKSPACE
+   ========================================================= */
+
+.boyle-practice {
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  position: relative;
+
+  overflow: hidden;
+
+  color: var(--lab-text);
+  background: var(--lab-bg);
+}
+
+.boyle-practice__simulation {
+  position: absolute;
+  inset: 0;
+
+  z-index: 1;
+}
+
+
+/* =========================================================
+   FLOATING PANELS
+   ========================================================= */
+
+.boyle-practice-panel {
+  position: absolute;
+
+  z-index: 20;
+
+  padding: var(--space-4);
+
+  color: var(--lab-text);
+
+  background:
+    rgba(7, 15, 28, 0.88);
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-lab);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.boyle-practice-panel--instructions {
+  top: var(--space-4);
+  left: var(--space-4);
+
+  width: min(320px, 30vw);
+}
+
+
+.boyle-practice-panel__eyebrow {
+  display: block;
+
+  margin-bottom: var(--space-2);
+
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.07em;
+
+  text-transform: uppercase;
+}
+
+.boyle-practice-panel h3 {
+  margin:
+    0
+    0
+    var(--space-3);
+
+  color: var(--lab-text);
+
+  font-size: var(--text-lg);
+}
+
+
+/* =========================================================
+   INSTRUCTIONS
+   ========================================================= */
+
+.boyle-practice__instructions {
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-2);
+
+  list-style: none;
+}
+
+.boyle-practice__instructions li {
+  display: grid;
+
+  grid-template-columns:
+    auto
+    1fr;
+
+  gap: var(--space-2);
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.5;
+}
+
+.boyle-practice__instructions strong {
+  color: var(--lab-topic-accent);
+}
+
+
+/* =========================================================
+   LIVE STATE
+   ========================================================= */
+
+.boyle-live-data {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-2);
+}
+
+.boyle-live-data__item {
+  padding:
+    var(--space-2)
+    0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+
+  border-bottom:
+    1px solid
+    var(--lab-border);
+}
+
+.boyle-live-data__item:last-child {
+  border-bottom: 0;
+}
+
+.boyle-live-data__item > span {
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+}
+
+.boyle-live-data__item > strong {
+  color: var(--lab-text);
+
+  font-size: var(--text-sm);
+
+  text-align: right;
+}
+
+.boyle-live-data__state--stable {
+  color:
+    var(--lab-topic-accent)
+    !important;
+}
+
+.boyle-live-data__state--transient {
+  color: #fbbf24 !important;
+}
+
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.boyle-practice-toolbar {
+  position: absolute;
+
+  z-index: 30;
+
+  left: 50%;
+  bottom: var(--space-4);
+
+  max-width:
+    calc(100% - 32px);
+
+  transform:
+    translateX(-50%);
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--space-2);
+
+  padding: var(--space-2);
+
+  background:
+    rgba(7, 15, 28, 0.9);
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-lab);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.boyle-practice-tool.ui-button {
+  min-height: 40px;
+
+  padding:
+    var(--space-2)
+    var(--space-3);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-2);
+
+  flex-shrink: 0;
+
+  color: var(--lab-text-soft);
+
+  background:
+    rgba(255, 255, 255, 0.06);
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-md);
+
+  box-shadow: none;
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  white-space: nowrap;
+}
+
+.boyle-practice-tool.ui-button:hover {
+  color: var(--lab-text);
+
+  background:
+    rgba(255, 255, 255, 0.1);
+
+  border-color:
+    var(--lab-topic-accent);
+
+  transform: none;
+}
+
+.boyle-practice-tool--active.ui-button {
+  color: var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border-color:
+    var(--lab-topic-accent);
+}
+
+.boyle-practice-tool--locked.ui-button {
+  color: #fda4af;
+
+  background:
+    rgba(159, 18, 57, 0.18);
+
+  border-color:
+    rgba(244, 63, 94, 0.42);
+}
+
+.boyle-practice-tool--danger.ui-button {
+  color: #fda4af;
+
+  background:
+    rgba(159, 18, 57, 0.2);
+
+  border-color:
+    rgba(244, 63, 94, 0.45);
+}
+
+.boyle-practice-tool--danger.ui-button:hover {
+  color: #fff;
+
+  background:
+    rgba(225, 29, 72, 0.72);
+
+  border-color: #fb7185;
+}
+
+
+/* =========================================================
+   TEMPERATURE CHIP
+   ========================================================= */
+
+.boyle-practice-temperature {
+  min-height: 40px;
+
+  padding:
+    var(--space-1)
+    var(--space-3);
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--space-2);
+
+  flex-shrink: 0;
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-md);
+}
+
+.boyle-practice-temperature > span {
+  font-size: 18px;
+}
+
+.boyle-practice-temperature div {
+  display: flex;
+  flex-direction: column;
+}
+
+.boyle-practice-temperature div span {
+  color: var(--lab-text-muted);
+
+  font-size: 9px;
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+.boyle-practice-temperature strong {
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.15;
+}
+
+
+/* =========================================================
+   FEEDBACK
+   ========================================================= */
+
+.boyle-practice__feedback {
+  position: absolute;
+
+  z-index: 50;
+
+  top: var(--space-4);
+  left: 50%;
+
+  width:
+    min(
+      calc(100% - 32px),
+      520px
+    );
+
+  transform:
+    translateX(-50%);
+
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  color: #fff;
+
+  background:
+    rgba(136, 19, 55, 0.94);
+
+  border:
+    1px solid
+    rgba(251, 113, 133, 0.55);
+
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-lab);
+
+  font-size: var(--text-sm);
+
+  text-align: center;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+
+/* =========================================================
+   FIRE PISTON MODAL
+   ========================================================= */
+
+.boyle-fire-modal {
+  position: absolute;
+
+  z-index: 60;
+
+  top: 50%;
+  left: 50%;
+
+  width:
+    min(
+      calc(100% - 32px),
+      460px
+    );
+
+  transform:
+    translate(-50%, -50%);
+
+  padding: var(--space-6);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  color: var(--lab-text);
+
+  background:
+    rgba(7, 15, 28, 0.97);
+
+  border:
+    1px solid
+    rgba(244, 63, 94, 0.55);
+
+  border-radius: var(--radius-xl);
+
+  box-shadow:
+    0 0 50px
+    rgba(244, 63, 94, 0.22);
+
+  text-align: center;
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.boyle-fire-modal__icon {
+  font-size: 48px;
+}
+
+.boyle-fire-modal__eyebrow {
+  margin-top: var(--space-2);
+
+  color: #fda4af;
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+.boyle-fire-modal h3 {
+  margin:
+    var(--space-2)
+    0
+    var(--space-4);
+
+  color: #fb7185;
+
+  font-size: var(--text-2xl);
+
+  text-transform: uppercase;
+}
+
+.boyle-fire-modal p {
+  margin:
+    0
+    0
+    var(--space-3);
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+
+  text-align: left;
+}
+
+.boyle-fire-modal
+  .experiment-template__button {
+  margin-top: var(--space-2);
+}
+
+.boyle-fire-modal__timer {
+  width: 100%;
+  height: 4px;
+
+  margin-top: var(--space-4);
+
+  overflow: hidden;
+
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  border-radius: var(--radius-round);
+}
+
+.boyle-fire-modal__timer span {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  background: #f43f5e;
+
+  transform-origin: left;
+
+  animation:
+    boyle-fire-timer
+    8s
+    linear
+    forwards;
+}
+
+@keyframes boyle-fire-timer {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
+
+/* =========================================================
+   PRACTICE RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .boyle-practice-panel {
+    padding: var(--space-3);
+  }
+
+  .boyle-practice-panel--instructions {
+    top: var(--space-3);
+    left: var(--space-3);
+
+    width:
+      min(
+        56vw,
+        260px
+      );
+  }
+
+
+  .boyle-practice__instructions li:nth-child(n + 3) {
+    display: none;
+  }
+
+  .boyle-live-data__item {
+    display: block;
+  }
+
+  .boyle-live-data__item > strong {
+    display: block;
+
+    margin-top: 2px;
+
+    text-align: left;
+  }
+
+  .boyle-practice-toolbar {
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: var(--space-3);
+
+    max-width: none;
+
+    transform: none;
+
+    overflow-x: auto;
+
+    justify-content: flex-start;
+
+    scrollbar-width: none;
+  }
+
+  .boyle-practice-toolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .boyle-practice-temperature {
+    display: none;
+  }
+
+  .boyle-fire-modal {
+    padding: var(--space-5);
+  }
+}
+
+
+@media (max-height: 520px) {
+
+  .boyle-practice-panel--instructions {
+    width: 270px;
+  }
+
+  .boyle-practice__instructions li:nth-child(n + 3) {
+    display: none;
+  }
+
+  .boyle-practice-toolbar {
+    bottom: var(--space-2);
+  }
+
+  .boyle-practice-tool.ui-button {
+    min-height: 34px;
+
+    padding:
+      var(--space-1)
+      var(--space-3);
+  }
+
+  .boyle-practice-temperature {
+    min-height: 34px;
+  }
+}
+
+/* =========================================================
+   BOYLE — MEASUREMENT
+   ========================================================= */
+
+.boyle-practice-panel--measurement {
+  top: var(--space-4);
+  right: var(--space-4);
+
+  width: min(390px, 34vw);
+
+  max-height:
+    calc(
+      100% -
+      96px
+    );
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.boyle-measurement__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+}
+
+.boyle-measurement__header h3 {
+  margin-bottom: 0;
+}
+
+.boyle-measurement__count {
+  min-width: 54px;
+
+  padding:
+    var(--space-1)
+    var(--space-2);
+
+  color: var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+
+  border-radius: var(--radius-round);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  text-align: center;
+}
+
+.boyle-measurement__progress {
+  width: 100%;
+  height: 4px;
+
+  margin:
+    var(--space-3)
+    0;
+
+  overflow: hidden;
+
+  background:
+    rgba(255, 255, 255, 0.07);
+
+  border-radius:
+    var(--radius-round);
+}
+
+.boyle-measurement__progress span {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  background:
+    var(--lab-topic-accent);
+
+  transform-origin: left;
+
+  transition:
+    transform
+    var(--transition-fast);
+}
+
+.boyle-measurement__actions {
+  margin-top: var(--space-3);
+
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1fr;
+
+  gap: var(--space-2);
+}
+
+.boyle-measurement__actions
+  .experiment-template__button {
+  width: 100%;
+}
+
+
+/* =========================================================
+   MEASUREMENT TABLE
+   ========================================================= */
+
+.boyle-measurement__table-wrap {
+  min-height: 0;
+
+  margin-top: var(--space-3);
+
+  overflow-x: auto;
+  overflow-y: auto;
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-md);
+}
+
+.boyle-measurement-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-variant-numeric:
+    tabular-nums;
+}
+
+.boyle-measurement-table th,
+.boyle-measurement-table td {
+  padding:
+    var(--space-2)
+    var(--space-2);
+
+  border-bottom:
+    1px solid
+    var(--lab-border);
+
+  color: var(--lab-text-soft);
+
+  font-size: var(--text-xs);
+
+  text-align: right;
+
+  white-space: nowrap;
+}
+
+.boyle-measurement-table thead th {
+  position: sticky;
+  top: 0;
+
+  z-index: 1;
+
+  color: var(--lab-text-muted);
+
+  background:
+    rgba(7, 15, 28, 0.98);
+
+  font-weight: var(--font-bold);
+}
+
+.boyle-measurement-table th:first-child,
+.boyle-measurement-table td:first-child {
+  text-align: center;
+}
+
+.boyle-measurement-table tbody th {
+  color: var(--lab-topic-accent);
+
+  font-weight: var(--font-bold);
+}
+
+.boyle-measurement-table tbody tr:last-child th,
+.boyle-measurement-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.boyle-measurement__units {
+  margin-top: var(--space-2);
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap:
+    var(--space-1)
+    var(--space-3);
+
+  color: var(--lab-text-muted);
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   SUCCESS FEEDBACK
+   ========================================================= */
+
+.boyle-practice__feedback--success {
+  color: var(--lab-text);
+
+  background:
+    rgba(6, 95, 70, 0.94);
+
+  border-color:
+    rgba(45, 212, 191, 0.55);
+}
+
+
+/* =========================================================
+   MEASUREMENT RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .boyle-practice-panel--measurement {
+    top: var(--space-3);
+    right: var(--space-3);
+
+    width:
+      min(
+        48vw,
+        290px
+      );
+
+    max-height:
+      calc(
+        100% -
+        86px
+      );
+  }
+
+  .boyle-measurement__actions {
+    grid-template-columns: 1fr;
+  }
+
+  .boyle-measurement-table th,
+  .boyle-measurement-table td {
+    padding:
+      6px
+      var(--space-1);
+
+    font-size: 10px;
+  }
+
+  .boyle-measurement__units {
+    display: none;
+  }
+}
+
+
+@media (max-width: 480px) {
+
+  .boyle-practice-panel--instructions {
+    display: none;
+  }
+
+  .boyle-practice-panel--measurement {
+    width:
+      calc(
+        100% -
+        24px
+      );
+
+    max-height: 46%;
+
+    left: var(--space-3);
+    right: var(--space-3);
+  }
+}
+
+
+@media (max-height: 520px) {
+
+  .boyle-practice-panel--measurement {
+    width: 340px;
+
+    max-height:
+      calc(
+        100% -
+        60px
+      );
+  }
+
+  .boyle-measurement__progress {
+    margin:
+      var(--space-2)
+      0;
+  }
+
+  .boyle-measurement__actions {
+    margin-top: var(--space-2);
+  }
+
+  .boyle-measurement__table-wrap {
+    margin-top: var(--space-2);
+  }
+}
+
+/* =========================================================
+   BOYLE — GRAPH + RESULT
+   ========================================================= */
+
+.boyle-graph {
+  margin-top: var(--space-4);
+
+  padding-top: var(--space-4);
+
+  border-top:
+    1px solid
+    var(--lab-border);
+}
+
+.boyle-graph__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+}
+
+.boyle-graph__header h3 {
+  margin: 0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-base);
+}
+
+.boyle-graph__count {
+  flex-shrink: 0;
+
+  padding:
+    var(--space-1)
+    var(--space-2);
+
+  color: var(--lab-text-muted);
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius:
+    var(--radius-round);
+
+  font-size: 10px;
+}
+
+.boyle-graph__chart {
+  width: 100%;
+
+  margin-top: var(--space-3);
+
+  padding:
+    var(--space-2);
+
+  background:
+    rgba(2, 6, 23, 0.5);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius:
+    var(--radius-md);
+
+  overflow: hidden;
+}
+
+.boyle-graph__chart svg {
+  width: 100%;
+  height: auto;
+
+  display: block;
+}
+
+.boyle-graph__axis {
+  stroke: #64748b;
+
+  stroke-width: 1.5;
+}
+
+.boyle-graph__grid {
+  stroke:
+    rgba(148, 163, 184, 0.16);
+
+  stroke-width: 1;
+
+  stroke-dasharray: 4 4;
+}
+
+.boyle-graph__label,
+.boyle-graph__axis-title {
+  fill: var(--lab-text-muted);
+
+  font-family: var(--font-main);
+
+  font-size: 10px;
+}
+
+.boyle-graph__axis-title {
+  font-weight: var(--font-semibold);
+}
+
+.boyle-graph__ideal {
+  stroke:
+    rgba(148, 163, 184, 0.48);
+
+  stroke-width: 1.5;
+
+  stroke-dasharray: 5 5;
+}
+
+.boyle-graph__line {
+  fill: none;
+
+  stroke:
+    var(--lab-topic-accent);
+
+  stroke-width: 2.5;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.boyle-graph__point {
+  fill:
+    var(--lab-topic-accent);
+
+  stroke:
+    var(--lab-bg);
+
+  stroke-width: 2;
+}
+
+.boyle-graph__empty {
+  margin-top: var(--space-3);
+
+  padding: var(--space-4);
+
+  color: var(--lab-text-muted);
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  border:
+    1px dashed
+    var(--lab-border-strong);
+
+  border-radius:
+    var(--radius-md);
+
+  font-size: var(--text-xs);
+
+  text-align: center;
+}
+
+
+/* RESULT */
+
+.boyle-result {
+  margin-top: var(--space-3);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-1);
+}
+
+.boyle-result__item {
+  padding:
+    var(--space-2)
+    0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+
+  border-bottom:
+    1px solid
+    var(--lab-border);
+}
+
+.boyle-result__item:last-child {
+  border-bottom: 0;
+}
+
+.boyle-result__item span {
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+}
+
+.boyle-result__item strong {
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-xs);
+
+  text-align: right;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 767px) {
+
+  .boyle-graph__chart {
+    padding: var(--space-1);
+  }
+
+  .boyle-result__item {
+    display: block;
+  }
+
+  .boyle-result__item strong {
+    display: block;
+
+    margin-top: 2px;
+
+    text-align: left;
+  }
+}
+
+/* =========================================================
+   BOYLE — CONCLUSION
+   ========================================================= */
+
+.boyle-conclusion {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+
+  color: var(--lab-text);
+}
+
+.boyle-conclusion__inner {
+  width: min(100%, 980px);
+
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+}
+
+
+/* SECTION */
+
+.boyle-conclusion__section {
+  padding: var(--space-5);
+
+  background:
+    var(--lab-surface-soft);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius:
+    var(--radius-lg);
+}
+
+.boyle-conclusion__section-heading {
+  margin-bottom: var(--space-4);
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: var(--space-3);
+}
+
+.boyle-conclusion__section-heading
+  > span {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color:
+    var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+
+  border-radius: 50%;
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+}
+
+.boyle-conclusion__section-heading h3 {
+  margin: 0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-lg);
+}
+
+.boyle-conclusion__section-heading p {
+  margin:
+    var(--space-1)
+    0
+    0;
+
+  color:
+    var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.5;
+}
+
+
+/* EVIDENCE */
+
+.boyle-conclusion__evidence {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: var(--space-3);
+}
+
+.boyle-conclusion__metric {
+  padding: var(--space-3);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-1);
+
+  background:
+    rgba(255, 255, 255, 0.035);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius:
+    var(--radius-md);
+}
+
+.boyle-conclusion__metric span {
+  color:
+    var(--lab-text-muted);
+
+  font-size:
+    var(--text-xs);
+}
+
+.boyle-conclusion__metric strong {
+  color:
+    var(--lab-topic-accent);
+
+  font-size:
+    var(--text-sm);
+}
+
+.boyle-conclusion__no-data {
+  padding: var(--space-4);
+
+  color: #fbbf24;
+
+  background:
+    rgba(120, 53, 15, 0.18);
+
+  border:
+    1px solid
+    rgba(251, 191, 36, 0.3);
+
+  border-radius:
+    var(--radius-md);
+
+  font-size:
+    var(--text-sm);
+
+  line-height: 1.6;
+}
+
+
+/* OBSERVATIONS */
+
+.boyle-observation-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-4);
+}
+
+.boyle-observation {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-2);
+}
+
+.boyle-observation__number {
+  width: fit-content;
+
+  color:
+    var(--lab-topic-accent);
+
+  font-size:
+    var(--text-xs);
+
+  font-weight:
+    var(--font-bold);
+
+  text-transform: uppercase;
+}
+
+.boyle-observation > strong {
+  color:
+    var(--lab-text-soft);
+
+  font-size:
+    var(--text-sm);
+
+  line-height: 1.5;
+}
+
+.boyle-observation textarea {
+  width: 100%;
+
+  min-height: 100px;
+
+  resize: vertical;
+
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  color: var(--lab-text);
+
+  background:
+    rgba(2, 6, 23, 0.55);
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius:
+    var(--radius-md);
+
+  font-family:
+    var(--font-main);
+
+  font-size:
+    var(--text-sm);
+
+  line-height: 1.55;
+}
+
+.boyle-observation textarea::placeholder {
+  color:
+    var(--lab-text-muted);
+}
+
+.boyle-observation textarea:focus {
+  outline: none;
+
+  border-color:
+    var(--lab-topic-accent);
+
+  box-shadow:
+    0 0 0 2px
+    var(--lab-topic-accent-soft);
+}
+
+
+/* REVEAL */
+
+.boyle-conclusion__reveal {
+  min-height: 100px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-2);
+
+  padding: var(--space-4);
+
+  border:
+    1px dashed
+    var(--lab-border-strong);
+
+  border-radius:
+    var(--radius-md);
+}
+
+.boyle-conclusion__reveal span {
+  color:
+    var(--lab-text-muted);
+
+  font-size:
+    var(--text-xs);
+}
+
+
+/* THEORY RESULT */
+
+.boyle-theory-result {
+  padding: var(--space-5);
+
+  background:
+    rgba(2, 6, 23, 0.5);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+
+  border-radius:
+    var(--radius-lg);
+}
+
+.boyle-theory-result__label {
+  display: block;
+
+  color:
+    var(--lab-topic-accent);
+
+  font-size:
+    var(--text-xs);
+
+  font-weight:
+    var(--font-bold);
+
+  letter-spacing: 0.07em;
+
+  text-transform: uppercase;
+}
+
+.boyle-theory-result p {
+  margin:
+    var(--space-3)
+    0
+    0;
+
+  color:
+    var(--lab-text-soft);
+
+  font-size:
+    var(--text-sm);
+
+  line-height: 1.65;
+}
+
+.boyle-theory-result__formula {
+  margin:
+    var(--space-5)
+    0;
+
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+
+  gap: var(--space-4);
+
+  color:
+    var(--lab-text);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(
+      28px,
+      5vw,
+      42px
+    );
+
+  letter-spacing: 0.05em;
+}
+
+.boyle-theory-result__formula sub {
+  font-size: 0.55em;
+}
+
+.boyle-theory-result
+  .boyle-theory-result__note {
+  color:
+    var(--lab-text-muted);
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 767px) {
+
+  .boyle-conclusion__section {
+    padding:
+      var(--space-4);
+  }
+
+  .boyle-conclusion__evidence {
+    grid-template-columns: 1fr;
+  }
+
+  .boyle-theory-result {
+    padding:
+      var(--space-4);
+  }
+}
+
+
+@media (max-height: 520px) {
+
+  .boyle-conclusion__inner {
+    gap:
+      var(--space-3);
+  }
+
+  .boyle-conclusion__section {
+    padding:
+      var(--space-3);
+  }
+
+  .boyle-observation textarea {
+    min-height: 72px;
+  }
+}
+
+/* =========================================================
+   BOYLE — QUIZ
+   ========================================================= */
+
+.boyle-quiz {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+
+  color: var(--lab-text);
+}
+
+.boyle-quiz__inner {
+  width: min(100%, 980px);
+
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+}
+
+.boyle-quiz__heading {
+  text-align: center;
+}
+
+.boyle-quiz__heading h3 {
+  margin: 0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-xl);
+}
+
+.boyle-quiz__heading p {
+  max-width: 620px;
+
+  margin:
+    var(--space-2)
+    auto
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+
+/* QUESTIONS */
+
+.boyle-quiz__questions {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-4);
+}
+
+.boyle-quiz-card {
+  padding: var(--space-5);
+
+  background:
+    var(--lab-surface-soft);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius:
+    var(--radius-lg);
+}
+
+.boyle-quiz-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+}
+
+.boyle-quiz-card__header > span {
+  color:
+    var(--lab-topic-accent);
+
+  font-size:
+    var(--text-xs);
+
+  font-weight:
+    var(--font-bold);
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+.boyle-quiz-card h4 {
+  margin:
+    var(--space-3)
+    0
+    var(--space-4);
+
+  color:
+    var(--lab-text);
+
+  font-size:
+    var(--text-base);
+
+  line-height: 1.55;
+}
+
+
+/* RESULT LABEL */
+
+.boyle-quiz-card__result {
+  padding:
+    var(--space-1)
+    var(--space-2);
+
+  border-radius:
+    var(--radius-round);
+
+  font-size:
+    var(--text-xs);
+
+  font-weight:
+    var(--font-bold);
+}
+
+.boyle-quiz-card__result--correct {
+  color: #5eead4;
+
+  background:
+    rgba(13, 148, 136, 0.14);
+
+  border:
+    1px solid
+    rgba(45, 212, 191, 0.3);
+}
+
+.boyle-quiz-card__result--wrong {
+  color: #fda4af;
+
+  background:
+    rgba(159, 18, 57, 0.18);
+
+  border:
+    1px solid
+    rgba(244, 63, 94, 0.32);
+}
+
+
+/* OPTIONS */
+
+.boyle-quiz-options {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: var(--space-3);
+}
+
+.boyle-quiz-option.ui-button {
+  width: 100%;
+  min-width: 0;
+  min-height: 58px;
+
+  padding: var(--space-3);
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: var(--space-3);
+
+  color:
+    var(--lab-text-soft);
+
+  background:
+    rgba(255, 255, 255, 0.035);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius:
+    var(--radius-md);
+
+  box-shadow: none;
+
+  text-align: left;
+}
+
+.boyle-quiz-option.ui-button:hover:not(:disabled) {
+  color:
+    var(--lab-text);
+
+  background:
+    rgba(255, 255, 255, 0.07);
+
+  border-color:
+    var(--lab-border-strong);
+
+  transform: none;
+}
+
+.boyle-quiz-option__marker {
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
+
+  display:
+    inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color:
+    var(--lab-text-muted);
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: 50%;
+
+  font-size:
+    var(--text-xs);
+
+  font-weight:
+    var(--font-bold);
+}
+
+.boyle-quiz-option--selected.ui-button {
+  color:
+    var(--lab-text);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border-color:
+    var(--lab-topic-accent);
+}
+
+.boyle-quiz-option--selected
+  .boyle-quiz-option__marker {
+  color:
+    var(--lab-bg);
+
+  background:
+    var(--lab-topic-accent);
+
+  border-color:
+    var(--lab-topic-accent);
+}
+
+
+/* AFTER SUBMIT */
+
+.boyle-quiz-option--correct.ui-button {
+  color: #ccfbf1;
+
+  background:
+    rgba(13, 148, 136, 0.16);
+
+  border-color:
+    rgba(45, 212, 191, 0.55);
+}
+
+.boyle-quiz-option--correct
+  .boyle-quiz-option__marker {
+  color: #042f2e;
+
+  background: #5eead4;
+
+  border-color: #5eead4;
+}
+
+.boyle-quiz-option--wrong.ui-button {
+  color: #ffe4e6;
+
+  background:
+    rgba(159, 18, 57, 0.18);
+
+  border-color:
+    rgba(244, 63, 94, 0.52);
+}
+
+.boyle-quiz-option--wrong
+  .boyle-quiz-option__marker {
+  color: #fff;
+
+  background: #e11d48;
+
+  border-color: #fb7185;
+}
+
+.boyle-quiz-option.ui-button:disabled {
+  cursor: default;
+
+  opacity: 1;
+}
+
+
+/* SUBMIT */
+
+.boyle-quiz__submit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: var(--space-2);
+}
+
+.boyle-quiz__submit span {
+  color:
+    var(--lab-text-muted);
+
+  font-size:
+    var(--text-xs);
+}
+
+
+/* SCORE */
+
+.boyle-quiz-score {
+  padding: var(--space-5);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+
+  border-radius:
+    var(--radius-lg);
+
+  text-align: center;
+}
+
+.boyle-quiz-score > span {
+  color:
+    var(--lab-text-muted);
+
+  font-size:
+    var(--text-xs);
+
+  font-weight:
+    var(--font-bold);
+
+  letter-spacing:
+    0.07em;
+
+  text-transform: uppercase;
+}
+
+.boyle-quiz-score strong {
+  margin-top:
+    var(--space-2);
+
+  color:
+    var(--lab-topic-accent);
+
+  font-size: 36px;
+
+  line-height: 1;
+}
+
+.boyle-quiz-score p {
+  margin:
+    var(--space-3)
+    0
+    0;
+
+  color:
+    var(--lab-text-muted);
+
+  font-size:
+    var(--text-sm);
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 767px) {
+
+  .boyle-quiz-card {
+    padding:
+      var(--space-4);
+  }
+
+  .boyle-quiz-options {
+    grid-template-columns:
+      1fr;
+  }
+}
+
+
+@media (max-height: 520px) {
+
+  .boyle-quiz__inner {
+    gap:
+      var(--space-3);
+  }
+
+  .boyle-quiz-card {
+    padding:
+      var(--space-3);
+  }
+
+  .boyle-quiz-option.ui-button {
+    min-height: 46px;
+
+    padding:
+      var(--space-2)
+      var(--space-3);
+  }
+}
+
+/* =========================================================
+   BOYLE — REPORT
+   ========================================================= */
+
+.boyle-report {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+
+  color: var(--lab-text);
+}
+
+.boyle-report__screen {
+  width: min(100%, 1100px);
+
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+}
+
+.boyle-report__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: var(--space-5);
+}
+
+.boyle-report__heading h3 {
+  margin: 0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-xl);
+}
+
+.boyle-report__heading p {
+  max-width: 650px;
+
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+.boyle-report__actions {
+  display: flex;
+
+  gap: var(--space-2);
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   REPORT SECTION
+   ========================================================= */
+
+.boyle-report-reference,
+.boyle-report-preview {
+  padding: var(--space-5);
+
+  background:
+    var(--lab-surface-soft);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius:
+    var(--radius-lg);
+}
+
+.boyle-report-section-heading {
+  margin-bottom: var(--space-4);
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: var(--space-3);
+}
+
+.boyle-report-section-heading
+  > span {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color:
+    var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+
+  border-radius: 50%;
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+}
+
+.boyle-report-section-heading h4 {
+  margin: 0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-lg);
+}
+
+.boyle-report-section-heading p {
+  margin:
+    var(--space-1)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   REFERENCE TABLE
+   ========================================================= */
+
+.boyle-report-reference__table-wrap {
+  overflow-x: auto;
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius:
+    var(--radius-md);
+}
+
+.boyle-report-reference__table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-variant-numeric:
+    tabular-nums;
+}
+
+.boyle-report-reference__table th,
+.boyle-report-reference__table td {
+  padding:
+    var(--space-2)
+    var(--space-3);
+
+  color: var(--lab-text-soft);
+
+  border-bottom:
+    1px solid
+    var(--lab-border);
+
+  font-size: var(--text-xs);
+
+  text-align: right;
+
+  white-space: nowrap;
+}
+
+.boyle-report-reference__table thead th {
+  color: var(--lab-text-muted);
+
+  background:
+    rgba(2, 6, 23, 0.42);
+}
+
+.boyle-report-reference__table th:first-child,
+.boyle-report-reference__table td:first-child {
+  text-align: center;
+}
+
+.boyle-report-reference__table tbody
+  tr:last-child
+  > * {
+  border-bottom: 0;
+}
+
+.boyle-report-reference__empty {
+  padding: var(--space-5) !important;
+
+  color:
+    var(--lab-text-muted)
+    !important;
+
+  text-align:
+    center
+    !important;
+}
+
+.boyle-report-reference__units {
+  margin-top: var(--space-2);
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap:
+    var(--space-1)
+    var(--space-4);
+
+  color:
+    var(--lab-text-muted);
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   RECORDED OBSERVATIONS
+   ========================================================= */
+
+.boyle-report-observations {
+  margin-top: var(--space-4);
+
+  padding-top: var(--space-4);
+
+  border-top:
+    1px solid
+    var(--lab-border);
+}
+
+.boyle-report-observations h5 {
+  margin:
+    0
+    0
+    var(--space-3);
+
+  color: var(--lab-text);
+
+  font-size: var(--text-base);
+}
+
+.boyle-report-observation {
+  padding:
+    var(--space-3)
+    0;
+
+  display: grid;
+
+  grid-template-columns:
+    auto
+    1fr;
+
+  gap: var(--space-3);
+
+  border-bottom:
+    1px solid
+    var(--lab-border);
+}
+
+.boyle-report-observation:last-child {
+  border-bottom: 0;
+}
+
+.boyle-report-observation > span {
+  color:
+    var(--lab-topic-accent);
+
+  font-size: var(--text-sm);
+
+  font-weight: var(--font-bold);
+}
+
+.boyle-report-observation strong {
+  color:
+    var(--lab-text-soft);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.5;
+}
+
+.boyle-report-observation p {
+  margin:
+    var(--space-1)
+    0
+    0;
+
+  color:
+    var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.55;
+
+  white-space: pre-wrap;
+}
+
+
+/* =========================================================
+   A4 PREVIEW
+   ========================================================= */
+
+.boyle-report-sheet {
+  width: min(100%, 210mm);
+  min-height: 297mm;
+
+  margin: 0 auto;
+
+  padding: 16mm 18mm;
+
+  color: #111827;
+
+  background: #ffffff;
+
+  border:
+    1px solid
+    #cbd5e1;
+
+  box-shadow:
+    0 18px 50px
+    rgba(0, 0, 0, 0.32);
+
+  font-family:
+    "Times New Roman",
+    Times,
+    serif;
+
+  font-size: 15px;
+
+  line-height: 1.55;
+}
+
+.boyle-report-sheet__header {
+  text-align: center;
+}
+
+.boyle-report-sheet__header h1,
+.boyle-report-sheet__header h2 {
+  margin: 0;
+
+  color: #000;
+
+  font-family:
+    "Times New Roman",
+    Times,
+    serif;
+}
+
+.boyle-report-sheet__header h1 {
+  font-size: 24px;
+}
+
+.boyle-report-sheet__header h2 {
+  margin-top: 6px;
+
+  font-size: 19px;
+}
+
+.boyle-report-sheet__header p {
+  margin:
+    8px
+    0
+    0;
+
+  color: #111;
+
+  font-style: italic;
+}
+
+.boyle-report-sheet section {
+  margin-top: 22px;
+}
+
+.boyle-report-sheet h3 {
+  margin:
+    0
+    0
+    8px;
+
+  color: #000;
+
+  font-size: 17px;
+}
+
+.boyle-report-sheet p {
+  margin:
+    7px
+    0;
+
+  color: #111;
+}
+
+.boyle-report-sheet ul {
+  margin:
+    8px
+    0
+    0;
+
+  padding-left: 22px;
+}
+
+.boyle-report-sheet hr {
+  margin:
+    20px
+    0;
+
+  border: 0;
+  border-top:
+    2px solid #000;
+}
+
+
+/* IDENTITY */
+
+.boyle-report-sheet__identity {
+  margin-top: 24px;
+}
+
+.boyle-report-sheet__identity
+  > div,
+.boyle-report-sheet__identity-row
+  > div {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 10px;
+}
+
+.boyle-report-sheet__identity
+  span {
+  min-width: 80px;
+  height: 24px;
+
+  flex: 1;
+
+  border-bottom:
+    1px dotted #000;
+}
+
+.boyle-report-sheet__identity-row {
+  margin-top: 12px;
+
+  display: grid !important;
+
+  grid-template-columns:
+    1fr
+    1fr;
+
+  gap: 24px !important;
+}
+
+
+/* BLANK LINES */
+
+.boyle-report-sheet__blank-lines {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.boyle-report-sheet__blank-lines span {
+  height: 18px;
+
+  border-bottom:
+    1px dotted #000;
+}
+
+
+/* PRINT TABLE */
+
+.boyle-report-sheet__caption {
+  font-weight: 700;
+
+  text-align: center;
+}
+
+.boyle-report-sheet__table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  color: #000;
+}
+
+.boyle-report-sheet__table th,
+.boyle-report-sheet__table td {
+  height: 42px;
+
+  padding: 6px;
+
+  border:
+    1px solid #000;
+
+  text-align: center;
+}
+
+.boyle-report-sheet__table th {
+  font-weight: 700;
+}
+
+
+/* BLANK GRAPH */
+
+.boyle-report-sheet__graph-frame {
+  height: 190px;
+
+  margin:
+    12px
+    0
+    20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #555;
+
+  border:
+    2px dashed #000;
+
+  font-style: italic;
+}
+
+
+/* FORMULA */
+
+.boyle-report-sheet__formula {
+  margin:
+    16px
+    0;
+
+  font-size: 18px;
+
+  text-align: center;
+}
+
+.boyle-report-sheet__avoid-break {
+  break-inside: avoid;
+}
+
+
+/* SIGNATURE */
+
+.boyle-report-sheet__signature {
+  margin-top: 30px;
+
+  display: flex;
+  justify-content: flex-end;
+
+  color: #000;
+}
+
+.boyle-report-sheet__signature > div {
+  width: 280px;
+
+  text-align: center;
+}
+
+.boyle-report-sheet__signature p {
+  margin: 4px 0;
+}
+
+.boyle-report-sheet__signature
+  div
+  div {
+  height: 80px;
+}
+
+
+/* =========================================================
+   REPORT RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .boyle-report__heading {
+    flex-direction: column;
+  }
+
+  .boyle-report__actions {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+      1fr
+      1fr;
+  }
+
+  .boyle-report__actions
+    .experiment-template__button {
+    width: 100%;
+  }
+
+  .boyle-report-reference,
+  .boyle-report-preview {
+    padding: var(--space-4);
+  }
+
+  .boyle-report-sheet {
+    min-height: auto;
+
+    padding: 24px;
+
+    font-size: 13px;
+  }
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  html,
+  body,
+  #root {
+    height: auto !important;
+
+    overflow: visible !important;
+
+    background: #fff !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #boyle-printable-report,
+  #boyle-printable-report * {
+    visibility: visible;
+  }
+
+  #boyle-printable-report {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    min-height: auto;
+
+    margin: 0;
+
+    padding: 0;
+
+    border: 0;
+
+    box-shadow: none;
+  }
+}
+
+/* =========================================================
+   BOYLE — COMPOSED VIEW
+   ========================================================= */
+
+.boyle-view {
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+}
+
+.boyle-view__body {
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   COMPACT PHASE UTILITY
+   ========================================================= */
+
+.boyle-view__utility {
+  min-height: 48px;
+
+  flex-shrink: 0;
+
+  padding:
+    var(--space-2)
+    var(--space-4);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-4);
+
+  background:
+    rgba(5, 11, 20, 0.92);
+
+  border-bottom:
+    1px solid
+    var(--lab-border);
+}
+
+.boyle-view__phase-info {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--space-3);
+}
+
+.boyle-view__phase-info > span {
+  flex-shrink: 0;
+
+  color:
+    var(--lab-topic-accent);
+
+  font-size:
+    var(--text-xs);
+
+  font-weight:
+    var(--font-bold);
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+.boyle-view__phase-info > strong {
+  min-width: 0;
+
+  color:
+    var(--lab-text-soft);
+
+  font-size:
+    var(--text-sm);
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.boyle-view__reset {
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   STAGE
+   ========================================================= */
+
+.boyle-view__stage {
+  width: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1;
+}
+
+
+/* Các phase nội dung cần cuộn */
+
+.boyle-view__stage--content {
+  padding: var(--space-4);
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+
+/* Practice là workspace 3D.
+   Không padding, không scroll ngoài. */
+
+.boyle-view__stage--practice {
+  position: relative;
+
+  overflow: hidden;
+
+  padding: 0;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .boyle-view__utility {
+    min-height: 44px;
+
+    padding:
+      var(--space-2)
+      var(--space-3);
+  }
+
+  .boyle-view__phase-info {
+    gap: var(--space-2);
+  }
+
+  .boyle-view__phase-info
+    > strong {
+    display: none;
+  }
+
+  .boyle-view__reset {
+    min-height: 34px;
+
+    padding:
+      var(--space-1)
+      var(--space-3);
+
+    font-size:
+      var(--text-xs);
+  }
+
+  .boyle-view__stage--content {
+    padding: var(--space-3);
+  }
+}
+
+
+@media (max-height: 520px) {
+
+  .boyle-view__utility {
+    min-height: 38px;
+
+    padding:
+      var(--space-1)
+      var(--space-3);
+  }
+
+  .boyle-view__stage--content {
+    padding: var(--space-2);
+  }
+
+  .boyle-view__reset {
+    min-height: 30px;
+
+    padding:
+      4px
+      var(--space-2);
+  }
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+
+  .experiment-phase-nav,
+  .boyle-view__utility {
+    display: none !important;
+  }
+
+  .boyle-view__body,
+  .boyle-view__stage,
+  .boyle-view__stage--content {
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    padding: 0 !important;
+
+    overflow: visible !important;
+  }
+}
+
+/* =========================================================
+   BOYLE — SCROLL OWNERSHIP + STICKY PHASE NAV
+   ========================================================= */
+
+/*
+ * Experiment page trở thành scroll container chính.
+ *
+ * Trước đây:
+ * experiment-page khóa scroll
+ * → từng stage tự scroll
+ * → header không bao giờ rời viewport.
+ *
+ * Sau thay đổi:
+ * experiment-page sở hữu vertical scroll
+ * → header cuộn tự nhiên
+ * → phase nav sticky khi chạm đỉnh.
+ */
+
+.experiment-page {
+  height: 100dvh;
+  min-height: 100dvh;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  overscroll-behavior-y: contain;
+}
+
+
+/* Header giữ NGUYÊN visual hiện tại.
+   Không sticky, không resize, không animation.
+   Nó chỉ trôi đi cùng scroll. */
+
+.experiment-header {
+  position: relative;
+
+  flex-shrink: 0;
+}
+
+
+/*
+ * Main/workspace không được tạo thêm scroll container,
+ * nếu không sticky nav sẽ bị chặn ở ancestor.
+ */
+
+.experiment-main {
+  min-height: 0;
+
+  flex: 0 0 auto;
+
+  overflow: visible;
+}
+
+.experiment-workspace {
+  min-height: 0;
+
+  overflow: visible;
+}
+
+
+/* =========================================================
+   STICKY PHASE NAV
+   ========================================================= */
+
+.experiment-phase-nav {
+  position: sticky;
+  top: 0;
+
+  z-index: 50;
+
+  /*
+   * Giữ background đủ đặc khi nội dung chạy phía dưới.
+   */
+  background:
+    rgba(5, 11, 20, 0.97);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  box-shadow:
+    0 8px 24px
+    rgba(2, 6, 23, 0.18);
+}
+
+
+/* =========================================================
+   BOYLE SCROLL OWNERSHIP
+   ========================================================= */
+
+.boyle-view {
+  /*
+   * Phase nav hiện tại thực tế khoảng 60px:
+   * nav padding + track padding + button 36px.
+   */
+  --boyle-phase-nav-height: 60px;
+
+  height: auto;
+
+  /*
+   * Utility bar phải có đủ quãng scroll để cũng trôi đi,
+   * nhờ vậy trạng thái cuối chỉ còn phase nav.
+   */
+  min-height:
+    calc(
+      100dvh +
+      48px
+    );
+}
+
+
+/*
+ * Body không được khóa overflow nữa.
+ * Vertical scroll thuộc experiment-page.
+ */
+
+.boyle-view__body {
+  flex: 0 0 auto;
+
+  overflow: visible;
+}
+
+
+/*
+ * Mỗi stage ít nhất chiếm phần viewport còn lại
+ * sau phase nav.
+ *
+ * Kết quả sau khi scroll:
+ *
+ * ┌──────────────────────────┐
+ * │ phase nav sticky         │
+ * ├──────────────────────────┤
+ * │ stage                    │
+ * │                          │
+ * │                          │
+ * └──────────────────────────┘
+ */
+
+.boyle-view__stage {
+  min-height:
+    calc(
+      100dvh -
+      var(--boyle-phase-nav-height)
+    );
+
+  flex: 0 0 auto;
+}
+
+
+/*
+ * Content phase không còn tự tạo scrollbar.
+ */
+
+.boyle-view__stage--content {
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+
+/*
+ * Practice vẫn phải clip Canvas/panel trong workspace.
+ * Chỉ bỏ scroll container ngoài, không thay renderer.
+ */
+
+.boyle-view__stage--practice {
+  overflow: hidden;
+}
+
+/*
+ * Practice chứa toàn bộ Canvas/panel bằng absolute positioning.
+ * Vì vậy stage Practice bắt buộc phải có HEIGHT xác định,
+ * không chỉ min-height.
+ */
+
+.boyle-view__stage--practice {
+  height:
+    calc(
+      100dvh -
+      var(--boyle-phase-nav-height)
+    );
+
+  min-height:
+    calc(
+      100dvh -
+      var(--boyle-phase-nav-height)
+    );
+
+  flex: 0 0 auto;
+}
+
+
+/*
+ * Boyle Practice lấy đúng toàn bộ kích thước stage.
+ */
+
+.boyle-view__stage--practice
+  > .boyle-practice {
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .experiment-page {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+
+  .boyle-view {
+    /*
+     * Utility mobile hiện tại là 44px.
+     */
+    min-height:
+      calc(
+        100dvh +
+        44px
+      );
+  }
+}
+
+
+/* =========================================================
+   SHORT VIEWPORT
+   ========================================================= */
+
+@media (max-height: 520px) {
+
+  .boyle-view {
+    /*
+     * Utility short-height hiện tại là 38px.
+     */
+    min-height:
+      calc(
+        100dvh +
+        38px
+      );
+  }
+}
+
+
+/* =========================================================
+   PRINT SAFETY
+   ========================================================= */
+
+@media print {
+
+  .experiment-page {
+    height: auto !important;
+    min-height: 0 !important;
+
+    overflow: visible !important;
+  }
+
+  .experiment-main,
+  .experiment-workspace,
+  .boyle-view,
+  .boyle-view__body,
+  .boyle-view__stage {
+    height: auto !important;
+    min-height: 0 !important;
+
+    overflow: visible !important;
+  }
+
+  .experiment-phase-nav {
+    position: static !important;
+
+    box-shadow: none !important;
+  }
+}
+
+/* =========================================================
+   BOYLE — PRACTICE DATA PANELS
+   Measurement và Analysis là hai card độc lập.
+   ========================================================= */
+
+
+/* =========================================================
+   MEASUREMENT PANEL
+   ========================================================= */
+
+/*
+ * Card thu thập số liệu chỉ còn:
+ * live data + actions + table.
+ *
+ * Chia nửa trên bên phải workspace.
+ */
+
+.boyle-practice-panel--measurement {
+  top: var(--space-4);
+  right: var(--space-4);
+
+  width:
+    min(
+      360px,
+      32vw
+    );
+
+  max-height:
+    calc(
+      50% -
+      40px
+    );
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+
+/* =========================================================
+   ANALYSIS PANEL
+   ========================================================= */
+
+/*
+ * Analysis nằm độc lập ở nửa dưới bên phải.
+ * Khoảng đáy chừa không gian cho cụm điều khiển của workspace.
+ * Module tool rail phía sau tiếp tục tinh chỉnh vị trí panel.
+ */
+
+.boyle-practice-panel--analysis {
+  right: var(--space-4);
+  bottom: 88px;
+
+  width:
+    min(
+      360px,
+      32vw
+    );
+
+  max-height:
+    calc(
+      50% -
+      72px
+    );
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+
+/*
+ * BoyleGraph trước đây nằm nối tiếp bên dưới
+ * measurement nên có margin/padding/border top.
+ *
+ * Khi trở thành card độc lập thì bỏ separator đó.
+ */
+
+.boyle-practice-panel--analysis
+  .boyle-graph {
+  margin-top: 0;
+  padding-top: 0;
+
+  border-top: 0;
+}
+
+
+.boyle-practice-panel--analysis
+  .boyle-graph__chart {
+  margin-top: var(--space-2);
+}
+
+
+.boyle-practice-panel--analysis
+  .boyle-result {
+  margin-top: var(--space-2);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .boyle-practice-panel--measurement {
+    top: var(--space-3);
+    right: var(--space-3);
+
+    width:
+      min(
+        48vw,
+        290px
+      );
+
+    max-height:
+      calc(
+        50% -
+        36px
+      );
+  }
+
+
+  .boyle-practice-panel--analysis {
+    right: var(--space-3);
+    bottom: 72px;
+
+    width:
+      min(
+        48vw,
+        290px
+      );
+
+    max-height:
+      calc(
+        50% -
+        60px
+      );
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  /*
+   * Instructions đã bị ẩn bởi responsive hiện tại.
+   *
+   * Measurement ở trên,
+   * Analysis ở dưới,
+   * chừa giữa màn hình cho apparatus.
+   */
+
+  .boyle-practice-panel--measurement {
+    top: var(--space-3);
+    left: var(--space-3);
+    right: var(--space-3);
+
+    width:
+      calc(
+        100% -
+        24px
+      );
+
+    max-height: 36%;
+  }
+
+
+  .boyle-practice-panel--analysis {
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: 70px;
+
+    width:
+      calc(
+        100% -
+        24px
+      );
+
+    max-height: 36%;
+  }
+}
+
+
+/* =========================================================
+   SHORT VIEWPORT
+   ========================================================= */
+
+@media
+  (max-height: 520px)
+  and
+  (min-width: 481px) {
+
+  .boyle-practice-panel--measurement {
+    width:
+      min(
+        340px,
+        42vw
+      );
+
+    max-height:
+      calc(
+        50% -
+        32px
+      );
+  }
+
+
+  .boyle-practice-panel--analysis {
+    right: var(--space-3);
+    bottom: 64px;
+
+    width:
+      min(
+        340px,
+        42vw
+      );
+
+    max-height:
+      calc(
+        50% -
+        58px
+      );
+  }
+}
+
+/* =========================================================
+   BOYLE — PANEL SCROLLBAR BEHAVIOR
+   Vẫn cuộn được bằng wheel / trackpad / touch.
+   ========================================================= */
+
+.boyle-practice-panel--measurement,
+.boyle-practice-panel--analysis {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.boyle-practice-panel--measurement::-webkit-scrollbar,
+.boyle-practice-panel--analysis::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* =========================================================
+   BOYLE — PRACTICE TOOL RAIL
+   ========================================================= */
+
+
+/* Toolbar ngang cũ không còn được render.
+   Right rail là toolbar mới. */
+
+.boyle-practice-rail {
+  position: absolute;
+
+  z-index: 35;
+
+  top: 50%;
+  right: var(--space-3);
+
+  width: 52px;
+
+  padding: 6px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  gap: 5px;
+
+  transform:
+    translateY(-50%);
+
+  background:
+    rgba(7, 15, 28, 0.9);
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius:
+    var(--radius-lg);
+
+  box-shadow:
+    var(--shadow-lab);
+
+  backdrop-filter:
+    blur(14px);
+
+  -webkit-backdrop-filter:
+    blur(14px);
+
+  overflow: visible;
+
+  transition:
+    width
+    var(--transition-fast);
+}
+
+
+.boyle-practice-rail--expanded {
+  width: 190px;
+}
+
+
+/* =========================================================
+   RAIL TOOL
+   ========================================================= */
+
+.boyle-practice-rail
+  .boyle-practice-tool.ui-button {
+  position: relative;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+
+  padding:
+    var(--space-2);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-2);
+
+  color:
+    var(--lab-text-muted);
+
+  background:
+    rgba(255, 255, 255, 0.035);
+
+  border:
+    1px solid
+    transparent;
+
+  border-radius:
+    var(--radius-md);
+
+  box-shadow: none;
+
+  white-space: nowrap;
+
+  transform: none;
+}
+
+
+.boyle-practice-rail
+  .boyle-practice-tool.ui-button:hover:not(:disabled) {
+  color:
+    var(--lab-text);
+
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  border-color:
+    var(--lab-border-strong);
+
+  transform: none;
+}
+
+
+.boyle-practice-tool__icon {
+  width: 26px;
+  height: 26px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 17px;
+}
+
+
+.boyle-practice-tool__label {
+  display: none;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  font-size:
+    var(--text-xs);
+
+  font-weight:
+    var(--font-semibold);
+
+  text-align: left;
+}
+
+
+/* Khi mở rail */
+
+.boyle-practice-rail--expanded
+  .boyle-practice-tool.ui-button {
+  justify-content: flex-start;
+
+  padding:
+    var(--space-2)
+    var(--space-3);
+}
+
+
+.boyle-practice-rail--expanded
+  .boyle-practice-tool__label {
+  display: block;
+}
+
+
+/* =========================================================
+   ACTIVE TOOL
+   ========================================================= */
+
+.boyle-practice-rail
+  .boyle-practice-tool--active.ui-button {
+  color:
+    var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border-color:
+    var(--lab-topic-accent-border);
+}
+
+
+.boyle-practice-rail
+  .boyle-practice-tool--locked.ui-button {
+  color:
+    #fbbf24;
+
+  background:
+    rgba(245, 158, 11, 0.1);
+
+  border-color:
+    rgba(245, 158, 11, 0.24);
+}
+
+
+.boyle-practice-rail
+  .boyle-practice-tool--danger.ui-button {
+  color:
+    #fda4af;
+
+  background:
+    rgba(159, 18, 57, 0.14);
+
+  border-color:
+    rgba(244, 63, 94, 0.22);
+}
+
+
+.boyle-practice-rail
+  .boyle-practice-tool--danger.ui-button:hover:not(:disabled) {
+  color:
+    #ffe4e6;
+
+  background:
+    rgba(190, 18, 60, 0.22);
+
+  border-color:
+    rgba(244, 63, 94, 0.48);
+}
+
+
+/* =========================================================
+   RAIL SEPARATOR
+   ========================================================= */
+
+.boyle-practice-rail__separator {
+  width: calc(100% - 8px);
+  height: 1px;
+
+  margin:
+    2px
+    auto;
+
+  background:
+    var(--lab-border);
+}
+
+
+/* =========================================================
+   COLLAPSED TOOLTIP
+   ========================================================= */
+
+.boyle-practice-rail:not(
+    .boyle-practice-rail--expanded
+  )
+  .boyle-practice-tool.ui-button[data-tooltip]::after {
+  content:
+    attr(data-tooltip);
+
+  position: absolute;
+
+  top: 50%;
+  right:
+    calc(
+      100% +
+      10px
+    );
+
+  z-index: 80;
+
+  padding:
+    6px
+    9px;
+
+  color:
+    var(--lab-text);
+
+  background:
+    rgba(2, 6, 23, 0.96);
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius:
+    var(--radius-sm);
+
+  box-shadow:
+    var(--shadow-lab);
+
+  font-size:
+    var(--text-xs);
+
+  font-weight:
+    var(--font-semibold);
+
+  white-space: nowrap;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transform:
+    translate(
+      4px,
+      -50%
+    );
+
+  transition:
+    opacity
+      var(--transition-fast),
+    transform
+      var(--transition-fast);
+}
+
+
+.boyle-practice-rail:not(
+    .boyle-practice-rail--expanded
+  )
+  .boyle-practice-tool.ui-button[data-tooltip]:hover::after,
+.boyle-practice-rail:not(
+    .boyle-practice-rail--expanded
+  )
+  .boyle-practice-tool.ui-button[data-tooltip]:focus-visible::after {
+  opacity: 1;
+
+  transform:
+    translate(
+      0,
+      -50%
+    );
+}
+
+
+/* =========================================================
+   SHIFT RIGHT PANELS AROUND RAIL
+   ========================================================= */
+
+.boyle-practice-panel--measurement,
+.boyle-practice-panel--analysis {
+  right: 78px;
+}
+
+
+.boyle-practice--rail-expanded
+  .boyle-practice-panel--measurement,
+.boyle-practice--rail-expanded
+  .boyle-practice-panel--analysis {
+  right: 216px;
+}
+
+
+/* =========================================================
+   ANALYSIS POSITION
+   ========================================================= */
+
+.boyle-practice-panel--analysis {
+  bottom: var(--space-4);
+
+  max-height:
+    calc(
+      50% -
+      28px
+    );
+}
+
+
+/* =========================================================
+   TEMPERATURE STATUS
+   ========================================================= */
+
+.boyle-practice-temperature--floating {
+  position: absolute;
+
+  z-index: 30;
+
+  left: 50%;
+  bottom: var(--space-3);
+
+  min-height: 42px;
+
+  transform:
+    translateX(-50%);
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   MEASUREMENT COMPLETION
+   ========================================================= */
+
+.boyle-measurement-complete {
+  margin-top:
+    var(--space-3);
+
+  padding-top:
+    var(--space-3);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-3);
+
+  border-top:
+    1px solid
+    var(--lab-border);
+}
+
+
+.boyle-measurement-complete__status {
+  display: flex;
+  align-items: center;
+
+  gap: var(--space-3);
+
+  color:
+    #5eead4;
+}
+
+
+.boyle-measurement-complete__status
+  > span {
+  width: 30px;
+  height: 30px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(13, 148, 136, 0.16);
+
+  border:
+    1px solid
+    rgba(45, 212, 191, 0.34);
+
+  border-radius: 50%;
+
+  font-weight:
+    var(--font-bold);
+}
+
+
+.boyle-measurement-complete__status
+  > div {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+
+.boyle-measurement-complete__status
+  strong {
+  color:
+    #99f6e4;
+
+  font-size:
+    var(--text-xs);
+}
+
+
+.boyle-measurement-complete__status
+  div
+  span {
+  color:
+    var(--lab-text-muted);
+
+  font-size: 10px;
+}
+
+
+.boyle-measurement-complete
+  .experiment-template__button {
+  width: 100%;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .boyle-practice-rail {
+    right:
+      var(--space-2);
+
+    width: 48px;
+  }
+
+
+  .boyle-practice-rail--expanded {
+    width: 172px;
+  }
+
+
+  .boyle-practice-panel--measurement,
+  .boyle-practice-panel--analysis {
+    right: 68px;
+  }
+
+
+  .boyle-practice--rail-expanded
+    .boyle-practice-panel--measurement,
+  .boyle-practice--rail-expanded
+    .boyle-practice-panel--analysis {
+    right: 188px;
+  }
+
+
+  .boyle-practice-temperature--floating {
+    bottom:
+      var(--space-2);
+  }
+}
+
+
+/* =========================================================
+   SHORT VIEWPORT
+   ========================================================= */
+
+@media (max-height: 520px) {
+
+  .boyle-practice-rail {
+    gap: 3px;
+
+    padding: 4px;
+  }
+
+
+  .boyle-practice-rail
+    .boyle-practice-tool.ui-button {
+    min-height: 34px;
+
+    padding:
+      var(--space-1);
+  }
+
+
+  .boyle-practice-temperature--floating {
+    min-height: 34px;
+
+    bottom:
+      var(--space-2);
+  }
+}
+
+/* =========================================================
+   BOYLE — EXPANDED WORKSPACE
+   ========================================================= */
+
+
+/*
+ * BoyleView trở thành overlay nội bộ của app.
+ * Không gọi browser fullscreen API.
+ */
+
+.boyle-view--expanded {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 200;
+
+  width: 100vw;
+  height: 100dvh;
+  min-height: 100dvh;
+
+  background:
+    var(--lab-bg);
+
+  overflow: hidden;
+}
+
+
+/*
+ * Không cho experiment-page phía dưới tiếp tục scroll
+ * trong lúc workspace mở rộng.
+ */
+
+.experiment-page:has(
+  .boyle-view--expanded
+) {
+  overflow: hidden;
+}
+
+
+/*
+ * Expanded chỉ giữ:
+ * phase nav + workspace.
+ */
+
+.boyle-view--expanded
+  .boyle-view__utility {
+  display: none;
+}
+
+
+.boyle-view--expanded
+  .experiment-phase-nav {
+  position: relative;
+  top: auto;
+
+  flex-shrink: 0;
+
+  z-index: 60;
+}
+
+
+.boyle-view--expanded
+  .boyle-view__body {
+  min-height: 0;
+
+  flex: 1;
+
+  overflow: hidden;
+}
+
+
+.boyle-view--expanded
+  .boyle-view__stage {
+  min-height: 0;
+
+  flex: 1 1 auto;
+}
+
+
+.boyle-view--expanded
+  .boyle-view__stage--practice {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+
+  flex: 1 1 auto;
+
+  overflow: hidden;
+}
+
+
+.boyle-view--expanded
+  .boyle-view__stage--practice
+  > .boyle-practice {
+  width: 100%;
+  height: 100%;
+}
+
+
+/* =========================================================
+   CLEAN LINE ICONS
+   ========================================================= */
+
+.boyle-practice-tool__icon {
+  color: currentColor;
+}
+
+
+.boyle-practice-tool__icon svg {
+  width: 20px;
+  height: 20px;
+
+  display: block;
+
+  flex-shrink: 0;
+}
+
+
+.boyle-practice-temperature__icon {
+  width: 24px;
+  height: 24px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color:
+    var(--lab-topic-accent);
+}
+
+
+.boyle-practice-temperature__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+
+/* =========================================================
+   NO HOVER TOOLTIP ON TOUCH DEVICES
+   ========================================================= */
+
+@media (hover: none) {
+
+  .boyle-practice-rail
+    .boyle-practice-tool.ui-button[data-tooltip]::after {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   TABLET / IPAD
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  /*
+   * Khi rail mở rộng trên tablet,
+   * không ép các panel chạy thêm sang trái.
+   *
+   * Rail chỉ overlay tạm thời phía trên.
+   */
+
+  .boyle-practice--rail-expanded
+    .boyle-practice-panel--measurement,
+  .boyle-practice--rail-expanded
+    .boyle-practice-panel--analysis {
+    right: 68px;
+  }
+
+
+  .boyle-view--expanded
+    .experiment-phase-nav {
+    padding:
+      var(--space-2)
+      var(--space-3);
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  /*
+   * Chừa rail bên phải.
+   * Hai data panel thành sheet rộng theo màn hình.
+   */
+
+  .boyle-practice-panel--measurement,
+  .boyle-practice-panel--analysis {
+    left: var(--space-3);
+    right: 66px;
+
+    width: auto;
+  }
+
+
+  .boyle-practice-panel--measurement {
+    max-height: 35%;
+  }
+
+
+  .boyle-practice-panel--analysis {
+    max-height: 35%;
+  }
+
+
+  .boyle-practice--rail-expanded
+    .boyle-practice-panel--measurement,
+  .boyle-practice--rail-expanded
+    .boyle-practice-panel--analysis {
+    right: 66px;
+  }
+
+
+  .boyle-practice-temperature--floating {
+    left: var(--space-3);
+
+    transform: none;
+  }
+}
+
+
+/* =========================================================
+   SHORT LANDSCAPE / IPAD LANDSCAPE
+   ========================================================= */
+
+@media (max-height: 520px) {
+
+  .boyle-practice-rail {
+    max-height:
+      calc(
+        100% -
+        16px
+      );
+
+    overflow-y: auto;
+
+    scrollbar-width: none;
+  }
+
+
+  .boyle-practice-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  .boyle-practice-tool__icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+
+  .boyle-view--expanded
+    .experiment-phase-nav {
+    padding:
+      var(--space-1)
+      var(--space-3);
+  }
+}
+
+/* =========================================================
+   JOULE — CONTENT PHASES
+   Intro, content cards và navigation của các phase dạng tài liệu.
+   ========================================================= */
+
+.joule-content-phase {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  color: var(--lab-text);
+}
+
+.joule-content-phase__inner {
+  width: min(100%, 980px);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+}
+
+.joule-content-phase__badge {
+  width: fit-content;
+
+  align-self: center;
+
+  padding:
+    var(--space-1)
+    var(--space-3);
+
+  color: var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+
+  border-radius: var(--radius-round);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.07em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   JOULE INTRO
+   ========================================================= */
+
+.joule-intro__grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: var(--space-4);
+}
+
+.joule-info-card {
+  min-width: 0;
+
+  padding: var(--space-5);
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: var(--space-4);
+
+  background:
+    var(--lab-surface-soft);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-lg);
+}
+
+.joule-info-card__icon {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+
+  border-radius: var(--radius-md);
+
+  font-size: 22px;
+}
+
+.joule-info-card h3 {
+  margin: 0;
+
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-lg);
+}
+
+.joule-info-card p {
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.65;
+}
+
+.joule-formula-card {
+  padding:
+    var(--space-6)
+    var(--space-5);
+
+  text-align: center;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-lg);
+}
+
+.joule-formula-card__label {
+  display: block;
+
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.07em;
+
+  text-transform: uppercase;
+}
+
+.joule-formula {
+  margin:
+    var(--space-5)
+    0
+    var(--space-3);
+
+  color: var(--lab-text);
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(34px, 5vw, 52px);
+
+  line-height: 1;
+
+  text-shadow:
+    0 0 22px
+    var(--lab-topic-accent-glow);
+}
+
+.joule-formula--secondary {
+  margin-top: 0;
+
+  color: var(--lab-topic-accent);
+
+  font-size: clamp(21px, 3vw, 30px);
+}
+
+.joule-formula-card p {
+  max-width: 760px;
+
+  margin:
+    var(--space-3)
+    auto
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+.joule-formula-card__note {
+  color: var(--lab-text-soft) !important;
+
+  font-size: var(--text-xs) !important;
+}
+
+
+/* =========================================================
+   JOULE PREPARATION
+   ========================================================= */
+
+.joule-preparation__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: var(--space-5);
+}
+
+.joule-preparation__heading h3 {
+  margin: 0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-xl);
+}
+
+.joule-preparation__heading p {
+  max-width: 680px;
+
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+.joule-preparation__progress {
+  min-width: 96px;
+
+  padding:
+    var(--space-2)
+    var(--space-3);
+
+  flex-shrink: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  gap: 2px;
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+
+  border-radius: var(--radius-md);
+}
+
+.joule-preparation__progress span {
+  color: var(--lab-text-muted);
+
+  font-size: 10px;
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.07em;
+
+  text-transform: uppercase;
+}
+
+.joule-preparation__progress strong {
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-sm);
+}
+
+.joule-preparation__feedback {
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  border-radius: var(--radius-md);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.5;
+}
+
+.joule-preparation__feedback--error {
+  color: #fda4af;
+
+  background:
+    rgba(159, 18, 57, 0.18);
+
+  border:
+    1px solid
+    rgba(244, 63, 94, 0.38);
+}
+
+.joule-preparation__feedback--success {
+  color: var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+}
+
+.joule-tool-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: var(--space-3);
+}
+
+.joule-tool-card.ui-button {
+  width: 100%;
+  min-width: 0;
+  min-height: 88px;
+
+  padding: var(--space-4);
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: var(--space-3);
+
+  color: var(--lab-text-soft);
+
+  background:
+    var(--lab-surface-soft);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: none;
+
+  text-align: left;
+}
+
+.joule-tool-card.ui-button:hover:not(:disabled) {
+  color: var(--lab-text);
+
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  border-color:
+    var(--lab-border-strong);
+
+  transform: none;
+}
+
+.joule-tool-card--selected.ui-button,
+.joule-tool-card--selected.ui-button:disabled {
+  color: var(--lab-text);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border-color:
+    var(--lab-topic-accent);
+
+  box-shadow:
+    0 0 16px
+    var(--lab-topic-accent-glow);
+
+  opacity: 1;
+}
+
+.joule-tool-card__icon {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-md);
+
+  font-size: 22px;
+}
+
+.joule-tool-card__content {
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.joule-tool-card__name {
+  color: inherit;
+
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+
+  line-height: 1.4;
+}
+
+.joule-tool-card__description {
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+
+  line-height: 1.4;
+}
+
+.joule-tool-card__check {
+  width: 22px;
+  height: 22px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: transparent;
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: 50%;
+
+  font-size: 12px;
+  font-weight: var(--font-bold);
+}
+
+.joule-tool-card--selected
+  .joule-tool-card__check {
+  color: var(--lab-bg);
+
+  background:
+    var(--lab-topic-accent);
+
+  border-color:
+    var(--lab-topic-accent);
+}
+
+
+/* =========================================================
+   JOULE PHASE ACTIONS
+   ========================================================= */
+
+.joule-phase-actions {
+  margin-top: auto;
+
+  padding-top: var(--space-4);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+
+  border-top:
+    1px solid
+    var(--lab-border);
+}
+
+.joule-phase-actions--end {
+  justify-content: flex-end;
+}
+
+
+/* =========================================================
+   JOULE RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .joule-content-phase__inner {
+    gap: var(--space-4);
+  }
+
+  .joule-content-phase__badge {
+    align-self: flex-start;
+  }
+
+  .joule-intro__grid,
+  .joule-tool-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .joule-info-card {
+    padding: var(--space-4);
+  }
+
+  .joule-formula-card {
+    padding:
+      var(--space-5)
+      var(--space-4);
+  }
+
+  .joule-preparation__heading {
+    flex-direction: column;
+  }
+
+  .joule-preparation__progress {
+    width: 100%;
+
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .joule-phase-actions {
+    display: grid;
+
+    grid-template-columns:
+      1fr
+      1fr;
+  }
+
+  .joule-phase-actions--end {
+    grid-template-columns: 1fr;
+  }
+
+  .joule-phase-actions
+    .experiment-template__button {
+    width: 100%;
+  }
+}
+
+
+@media (max-height: 520px) {
+
+  .joule-content-phase__inner {
+    gap: var(--space-3);
+  }
+
+  .joule-info-card {
+    padding: var(--space-3);
+  }
+
+  .joule-formula-card {
+    padding: var(--space-4);
+  }
+
+  .joule-formula {
+    margin:
+      var(--space-3)
+      0;
+
+    font-size: 32px;
+  }
+
+  .joule-formula--secondary {
+    font-size: 22px;
+  }
+
+  .joule-tool-card.ui-button {
+    min-height: 68px;
+
+    padding: var(--space-3);
+  }
+
+  .joule-phase-actions {
+    padding-top: var(--space-3);
+  }
+}
+
+/* =========================================================
+   JOULE — PREPARATION 3D WORKSPACE
+   Inventory + drag/drop + progressive assembly.
+   ========================================================= */
+
+.joule-preparation-workspace {
+  width: 100%;
+  height: clamp(
+    560px,
+    calc(100vh - 230px),
+    740px
+  );
+  min-height: 560px;
+
+  display: flex;
+
+  overflow: hidden;
+
+  color: var(--lab-text);
+  background: var(--lab-bg);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius:
+    var(--radius-xl);
+
+  box-shadow:
+    var(--shadow-lab);
+}
+
+.joule-preparation-inventory {
+  width: 350px;
+  min-width: 350px;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background:
+    rgba(12, 23, 42, 0.92);
+
+  border-right:
+    1px solid
+    var(--lab-border);
+
+  backdrop-filter:
+    blur(14px);
+
+  -webkit-backdrop-filter:
+    blur(14px);
+}
+
+.joule-preparation-inventory__header {
+  position: relative;
+  z-index: 2;
+
+  flex-shrink: 0;
+
+  padding:
+    var(--space-5)
+    var(--space-5)
+    var(--space-4);
+
+  background:
+    rgba(12, 23, 42, 0.97);
+
+  border-bottom:
+    1px solid
+    var(--lab-border);
+}
+
+.joule-preparation-inventory__eyebrow {
+  display: block;
+
+  margin-bottom:
+    var(--space-2);
+
+  color:
+    var(--lab-topic-accent);
+
+  font-size:
+    var(--text-xs);
+
+  font-weight:
+    var(--font-bold);
+
+  letter-spacing:
+    0.07em;
+
+  text-transform:
+    uppercase;
+}
+
+.joule-preparation-inventory__header h2 {
+  margin: 0;
+
+  color:
+    var(--lab-text);
+
+  font-size:
+    clamp(
+      24px,
+      2.4vw,
+      32px
+    );
+
+  line-height: 1.05;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    0.04em;
+}
+
+.joule-preparation-inventory__header p {
+  margin:
+    var(--space-3)
+    0
+    0;
+
+  color:
+    var(--lab-text-muted);
+
+  font-size:
+    var(--text-xs);
+
+  line-height: 1.6;
+}
+
+.joule-preparation-progress {
+  margin-top:
+    var(--space-4);
+}
+
+.joule-preparation-progress__label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap:
+    var(--space-3);
+
+  color:
+    var(--lab-text-muted);
+
+  font-size: 10px;
+  font-weight:
+    var(--font-bold);
+
+  letter-spacing:
+    0.08em;
+
+  text-transform:
+    uppercase;
+}
+
+.joule-preparation-progress__label strong {
+  padding:
+    3px
+    10px;
+
+  color:
+    var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border-radius:
+    var(--radius-md);
+}
+
+.joule-preparation-progress__track {
+  width: 100%;
+  height: 6px;
+
+  margin-top:
+    var(--space-2);
+
+  overflow: hidden;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.07
+    );
+
+  border-radius:
+    var(--radius-round);
+}
+
+.joule-preparation-progress__track span {
+  height: 100%;
+
+  display: block;
+
+  background:
+    var(--lab-topic-accent);
+
+  border-radius:
+    inherit;
+
+  box-shadow:
+    0 0 12px
+    var(--lab-topic-accent-glow);
+
+  transition:
+    width
+    var(--transition-fast);
+}
+
+.joule-preparation-inventory__list {
+  flex: 1;
+  min-height: 0;
+
+  padding:
+    var(--space-4);
+
+  display: flex;
+  flex-direction: column;
+
+  gap:
+    var(--space-3);
+
+  overflow-y: auto;
+
+  scrollbar-width: thin;
+}
+
+.joule-preparation-tool.ui-button {
+  width: 100%;
+  min-height: 78px;
+
+  padding:
+    var(--space-3);
+
+  display: grid;
+
+  grid-template-columns:
+    58px
+    minmax(0, 1fr)
+    24px;
+
+  align-items: center;
+
+  gap:
+    var(--space-3);
+
+  color:
+    var(--lab-text-soft);
+
+  background:
+    rgba(
+      30,
+      41,
+      59,
+      0.82
+    );
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius:
+    var(--radius-lg);
+
+  box-shadow: none;
+
+  text-align: left;
+
+  cursor: grab;
+
+  user-select: none;
+}
+
+.joule-preparation-tool.ui-button:hover:not(:disabled) {
+  color:
+    var(--lab-text);
+
+  background:
+    rgba(
+      30,
+      41,
+      59,
+      0.98
+    );
+
+  border-color:
+    var(--lab-topic-accent);
+
+  transform:
+    translateY(-1px);
+}
+
+.joule-preparation-tool.ui-button:active:not(:disabled) {
+  cursor: grabbing;
+
+  transform:
+    translateY(0);
+}
+
+.joule-preparation-tool--assembled.ui-button,
+.joule-preparation-tool--assembled.ui-button:disabled {
+  opacity: 0.48;
+
+  color:
+    var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border-color:
+    var(--lab-topic-accent);
+
+  filter:
+    saturate(0.7);
+
+  cursor: default;
+}
+
+.joule-preparation-tool--dragging.ui-button {
+  opacity: 0.5;
+}
+
+.joule-preparation-tool__icon {
+  width: 58px;
+  height: 58px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 30px;
+
+  background:
+    rgba(
+      2,
+      6,
+      23,
+      0.45
+    );
+
+  border-radius:
+    var(--radius-md);
+}
+
+.joule-preparation-tool__content {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.joule-preparation-tool__content strong {
+  color:
+    inherit;
+
+  font-size:
+    var(--text-sm);
+
+  line-height: 1.3;
+}
+
+.joule-preparation-tool__content small {
+  color:
+    var(--lab-text-muted);
+
+  font-size: 10px;
+
+  line-height: 1.4;
+}
+
+.joule-preparation-tool__state {
+  color:
+    var(--lab-text-muted);
+
+  font-size: 18px;
+  font-weight:
+    var(--font-bold);
+
+  text-align: right;
+}
+
+.joule-preparation-tool--assembled
+  .joule-preparation-tool__state {
+  color:
+    var(--lab-topic-accent);
+}
+
+.joule-preparation-inventory__footer {
+  flex-shrink: 0;
+
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  background:
+    rgba(12, 23, 42, 0.97);
+
+  border-top:
+    1px solid
+    var(--lab-border);
+}
+
+.joule-preparation-inventory__footer
+  .experiment-template__button {
+  width: 100%;
+}
+
+.joule-preparation-stage {
+  position: relative;
+
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+
+  overflow: hidden;
+
+  background:
+    #050b14;
+}
+
+.joule-preparation-scene,
+.joule-preparation-scene canvas {
+  width: 100% !important;
+  height: 100% !important;
+
+  display: block;
+}
+
+.joule-preparation-scene {
+  position: absolute;
+  inset: 0;
+}
+
+.joule-preparation-scene canvas {
+  touch-action: none;
+}
+
+.joule-preparation-stage--drag-over {
+  box-shadow:
+    inset 0 0 0 3px
+    var(--lab-topic-accent);
+}
+
+.joule-preparation-stage__instruction {
+  position: absolute;
+  z-index: 5;
+
+  top:
+    var(--space-4);
+  left: 50%;
+
+  transform:
+    translateX(-50%);
+
+  max-width:
+    calc(100% - 32px);
+
+  padding:
+    8px
+    14px;
+
+  color:
+    var(--lab-text-soft);
+
+  background:
+    rgba(
+      5,
+      11,
+      20,
+      0.82
+    );
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius:
+    var(--radius-round);
+
+  font-size:
+    var(--text-xs);
+
+  pointer-events: none;
+
+  backdrop-filter:
+    blur(10px);
+}
+
+.joule-preparation-toast {
+  position: absolute;
+  z-index: 30;
+
+  top:
+    var(--space-5);
+  left: 50%;
+
+  width:
+    min(
+      calc(100% - 32px),
+      520px
+    );
+
+  transform:
+    translateX(-50%);
+
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  border-radius:
+    var(--radius-md);
+
+  box-shadow:
+    var(--shadow-lab);
+
+  font-size:
+    var(--text-sm);
+
+  font-weight:
+    var(--font-semibold);
+
+  text-align: center;
+
+  backdrop-filter:
+    blur(12px);
+}
+
+.joule-preparation-toast--success {
+  color:
+    var(--lab-topic-accent);
+
+  background:
+    rgba(
+      7,
+      15,
+      28,
+      0.96
+    );
+
+  border:
+    1px solid
+    var(--lab-topic-accent);
+}
+
+.joule-preparation-toast--error {
+  color: #fecdd3;
+
+  background:
+    rgba(
+      136,
+      19,
+      55,
+      0.94
+    );
+
+  border:
+    1px solid
+    rgba(
+      251,
+      113,
+      133,
+      0.62
+    );
+}
+
+.joule-preparation-drop-overlay {
+  position: absolute;
+  z-index: 20;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color:
+    var(--lab-text);
+
+  background:
+    rgba(
+      245,
+      158,
+      11,
+      0.05
+    );
+
+  border:
+    3px solid
+    rgba(
+      245,
+      158,
+      11,
+      0.58
+    );
+
+  pointer-events: none;
+}
+
+.joule-preparation-drop-overlay strong {
+  padding:
+    var(--space-3)
+    var(--space-5);
+
+  background:
+    rgba(
+      5,
+      11,
+      20,
+      0.92
+    );
+
+  border:
+    1px solid
+    rgba(
+      245,
+      158,
+      11,
+      0.72
+    );
+
+  border-radius:
+    var(--radius-lg);
+
+  font-size:
+    var(--text-sm);
+}
+
+.joule-preparation-ready.ui-button {
+  position: absolute;
+  z-index: 40;
+
+  right:
+    var(--space-5);
+  bottom:
+    var(--space-5);
+
+  min-height: 52px;
+
+  padding:
+    var(--space-3)
+    var(--space-5);
+
+  display: inline-flex;
+  align-items: center;
+
+  gap:
+    var(--space-3);
+
+  color:
+    #05111d;
+
+  background:
+    var(--lab-topic-accent);
+
+  border:
+    1px solid
+    var(--lab-topic-accent);
+
+  border-radius:
+    var(--radius-lg);
+
+  box-shadow:
+    0 10px 30px
+    var(--lab-topic-accent-glow);
+
+  font-size:
+    var(--text-sm);
+
+  font-weight:
+    var(--font-bold);
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    0.06em;
+}
+
+.joule-preparation-ready.ui-button:hover {
+  filter: brightness(1.08);
+
+  transform:
+    translateY(-2px);
+}
+
+.joule-preparation-ready span {
+  font-size: 20px;
+}
+
+@media (max-width: 1100px) {
+  .joule-preparation-inventory {
+    width: 310px;
+    min-width: 310px;
+  }
+
+  .joule-preparation-tool.ui-button {
+    min-height: 72px;
+
+    grid-template-columns:
+      50px
+      minmax(0, 1fr)
+      20px;
+  }
+
+  .joule-preparation-tool__icon {
+    width: 50px;
+    height: 50px;
+
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 767px) {
+  .joule-preparation-workspace {
+    height:
+      calc(100vh - 180px);
+
+    min-height: 680px;
+
+    flex-direction: column;
+  }
+
+  .joule-preparation-inventory {
+    width: 100%;
+    min-width: 0;
+    height: 44%;
+
+    border-right: 0;
+
+    border-bottom:
+      1px solid
+      var(--lab-border);
+  }
+
+  .joule-preparation-inventory__header {
+    padding:
+      var(--space-3)
+      var(--space-4);
+  }
+
+  .joule-preparation-inventory__header h2 {
+    font-size: 22px;
+  }
+
+  .joule-preparation-inventory__header p {
+    margin-top:
+      var(--space-2);
+
+    line-height: 1.45;
+  }
+
+  .joule-preparation-progress {
+    margin-top:
+      var(--space-3);
+  }
+
+  .joule-preparation-inventory__list {
+    padding:
+      var(--space-3);
+
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+
+    gap:
+      var(--space-2);
+  }
+
+  .joule-preparation-tool.ui-button {
+    min-height: 64px;
+
+    grid-template-columns:
+      42px
+      minmax(0, 1fr)
+      18px;
+
+    padding:
+      var(--space-2);
+  }
+
+  .joule-preparation-tool__icon {
+    width: 42px;
+    height: 42px;
+
+    font-size: 22px;
+  }
+
+  .joule-preparation-tool__content strong {
+    font-size:
+      var(--text-xs);
+  }
+
+  .joule-preparation-tool__content small {
+    display: none;
+  }
+
+  .joule-preparation-inventory__footer {
+    display: none;
+  }
+
+  .joule-preparation-stage {
+    min-height: 56%;
+  }
+
+  .joule-preparation-ready.ui-button {
+    right:
+      var(--space-3);
+    bottom:
+      var(--space-3);
+
+    min-height: 46px;
+
+    padding:
+      var(--space-2)
+      var(--space-4);
+
+    font-size:
+      var(--text-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .joule-preparation-workspace {
+    min-height: 720px;
+  }
+
+  .joule-preparation-inventory {
+    height: 48%;
+  }
+
+  .joule-preparation-stage {
+    min-height: 52%;
+  }
+
+  .joule-preparation-inventory__list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   JOULE — SIMULATION ENGINE
+   Canvas shell dùng cho workspace thực hành.
+   ========================================================= */
+
+.joule-simulation {
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: var(--lab-bg);
+}
+
+.joule-simulation canvas {
+  width: 100% !important;
+  height: 100% !important;
+
+  display: block;
+
+  touch-action: none;
+}
+
+/* =========================================================
+   JOULE — PRACTICE WORKSPACE
+   Canvas là lớp nền chính. Mọi panel dữ liệu chỉ xuất hiện theo yêu cầu.
+   ========================================================= */
+
+.joule-practice {
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  position: relative;
+
+  overflow: hidden;
+
+  color: var(--lab-text);
+  background: var(--lab-bg);
+}
+
+.joule-practice__simulation {
+  position: absolute;
+  inset: 0;
+
+  z-index: 1;
+}
+
+
+/* =========================================================
+   JOULE PRACTICE — FEEDBACK
+   ========================================================= */
+
+.joule-practice__feedback {
+  position: absolute;
+
+  z-index: 60;
+
+  top: var(--space-4);
+  left: 50%;
+
+  width:
+    min(
+      calc(100% - 32px),
+      520px
+    );
+
+  transform:
+    translateX(-50%);
+
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-lab);
+
+  font-size: var(--text-sm);
+  text-align: center;
+
+  pointer-events: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.joule-practice__feedback--success {
+  color: var(--lab-topic-accent);
+
+  background:
+    rgba(7, 15, 28, 0.96);
+
+  border:
+    1px solid
+    var(--lab-topic-accent);
+}
+
+.joule-practice__feedback--error {
+  color: #fda4af;
+
+  background:
+    rgba(136, 19, 55, 0.94);
+
+  border:
+    1px solid
+    rgba(251, 113, 133, 0.55);
+}
+
+.joule-practice__feedback--info {
+  color: var(--lab-text-soft);
+
+  background:
+    rgba(7, 15, 28, 0.96);
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+}
+
+
+/* =========================================================
+   JOULE PRACTICE — COMPACT STATUS
+   Luôn hiện nhưng không cản thao tác trên canvas.
+   ========================================================= */
+
+.joule-practice-status {
+  position: absolute;
+
+  z-index: 25;
+
+  left: var(--space-4);
+  bottom: var(--space-4);
+
+  max-width:
+    calc(100% - 104px);
+
+  min-height: 38px;
+
+  padding:
+    var(--space-2)
+    var(--space-3);
+
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap:
+    var(--space-1)
+    var(--space-2);
+
+  color: var(--lab-text-muted);
+
+  background:
+    rgba(7, 15, 28, 0.84);
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-round);
+
+  box-shadow: var(--shadow-lab);
+
+  font-size: var(--text-xs);
+
+  pointer-events: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.joule-practice-status strong {
+  color: var(--lab-text);
+}
+
+.joule-practice-status__state {
+  color: var(--lab-text-soft);
+}
+
+.joule-practice-status__state--falling,
+.joule-practice-status__state--spinning {
+  color: #fbbf24;
+}
+
+.joule-practice-status__state--finished {
+  color: var(--lab-topic-accent);
+}
+
+
+/* =========================================================
+   JOULE PRACTICE — ON-DEMAND PANEL
+   Chỉ một panel được render tại một thời điểm.
+   ========================================================= */
+
+.joule-practice-panel {
+  position: absolute;
+
+  z-index: 35;
+
+  top: var(--space-4);
+  right: 84px;
+
+  width:
+    min(
+      360px,
+      calc(100% - 120px)
+    );
+
+  max-height:
+    calc(100% - 32px);
+
+  padding: var(--space-4);
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  color: var(--lab-text);
+
+  background:
+    rgba(7, 15, 28, 0.92);
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-lab);
+
+  scrollbar-width: thin;
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.joule-practice--rail-expanded
+  .joule-practice-panel {
+  right: 208px;
+}
+
+.joule-practice-panel--setup {
+  width:
+    min(
+      350px,
+      calc(100% - 120px)
+    );
+}
+
+.joule-practice-panel--energy {
+  width:
+    min(
+      320px,
+      calc(100% - 120px)
+    );
+}
+
+.joule-practice-panel--graph {
+  width:
+    min(
+      430px,
+      calc(100% - 120px)
+    );
+}
+
+.joule-practice-panel--measurements {
+  width:
+    min(
+      640px,
+      calc(100% - 120px)
+    );
+}
+
+.joule-practice--rail-expanded
+  .joule-practice-panel--setup,
+.joule-practice--rail-expanded
+  .joule-practice-panel--energy,
+.joule-practice--rail-expanded
+  .joule-practice-panel--graph,
+.joule-practice--rail-expanded
+  .joule-practice-panel--measurements {
+  max-width:
+    calc(100% - 228px);
+}
+
+.joule-practice-panel__header,
+.joule-measurement__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+}
+
+.joule-practice-panel__header h3,
+.joule-measurement__header h3 {
+  margin:
+    var(--space-1)
+    0
+    0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-lg);
+}
+
+.joule-practice-panel__eyebrow {
+  display: block;
+
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.07em;
+
+  text-transform: uppercase;
+}
+
+.joule-practice-panel__close.ui-button {
+  width: 34px;
+  height: 34px;
+
+  min-width: 34px;
+  min-height: 34px;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  color: var(--lab-text-muted);
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-md);
+
+  box-shadow: none;
+
+  font-size: 20px;
+  line-height: 1;
+}
+
+.joule-practice-panel__close.ui-button:hover {
+  color: var(--lab-text);
+
+  background:
+    rgba(255, 255, 255, 0.1);
+
+  border-color:
+    var(--lab-topic-accent);
+
+  transform: none;
+}
+
+
+/* =========================================================
+   JOULE PRACTICE — SETUP
+   ========================================================= */
+
+.joule-setting {
+  padding:
+    var(--space-3)
+    0;
+
+  border-top:
+    1px solid
+    var(--lab-border);
+}
+
+.joule-setting:first-of-type {
+  margin-top: var(--space-3);
+}
+
+.joule-setting__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+}
+
+.joule-setting__header span {
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+}
+
+.joule-setting__header strong {
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-sm);
+}
+
+.joule-setting__stepper {
+  margin-top: var(--space-3);
+
+  display: grid;
+
+  grid-template-columns:
+    38px
+    1fr
+    38px;
+
+  align-items: center;
+
+  gap: var(--space-2);
+}
+
+.joule-setting__stepper > span {
+  color: var(--lab-text-soft);
+
+  font-size: var(--text-xs);
+
+  text-align: center;
+}
+
+.joule-setting__step-button.ui-button {
+  width: 38px;
+  height: 38px;
+
+  min-height: 38px;
+
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--lab-text);
+
+  background:
+    rgba(255, 255, 255, 0.06);
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-md);
+
+  box-shadow: none;
+
+  font-size: 20px;
+}
+
+.joule-setting__step-button.ui-button:hover:not(:disabled) {
+  background:
+    var(--lab-topic-accent-soft);
+
+  border-color:
+    var(--lab-topic-accent);
+
+  transform: none;
+}
+
+.joule-setting__hint {
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+
+  line-height: 1.5;
+}
+
+.joule-runtime-state {
+  padding:
+    var(--space-3)
+    0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+
+  border-top:
+    1px solid
+    var(--lab-border);
+}
+
+.joule-runtime-state > span {
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+}
+
+.joule-runtime-state__value {
+  color: var(--lab-text-soft);
+
+  font-size: var(--text-xs);
+}
+
+.joule-runtime-state__value--falling,
+.joule-runtime-state__value--spinning {
+  color: #fbbf24;
+}
+
+.joule-runtime-state__value--finished {
+  color: var(--lab-topic-accent);
+}
+
+.joule-practice-panel__actions {
+  padding-top: var(--space-3);
+
+  border-top:
+    1px solid
+    var(--lab-border);
+}
+
+.joule-practice-panel__actions
+  .experiment-template__button {
+  width: 100%;
+}
+
+
+/* =========================================================
+   JOULE PRACTICE — LIVE ENERGY
+   ========================================================= */
+
+.joule-live-data {
+  margin-top: var(--space-3);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.joule-live-data__item {
+  padding:
+    var(--space-2)
+    0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+
+  border-bottom:
+    1px solid
+    var(--lab-border);
+}
+
+.joule-live-data__item:last-child {
+  border-bottom: 0;
+}
+
+.joule-live-data__item span {
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+}
+
+.joule-live-data__item strong {
+  color: var(--lab-text);
+
+  font-size: var(--text-xs);
+
+  text-align: right;
+}
+
+
+/* =========================================================
+   JOULE PRACTICE — MEASUREMENT
+   ========================================================= */
+
+.joule-measurement__header-actions {
+  display: flex;
+  align-items: center;
+
+  gap: var(--space-2);
+}
+
+.joule-measurement__count {
+  min-width: 48px;
+
+  padding:
+    var(--space-1)
+    var(--space-2);
+
+  color: var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+
+  border-radius: var(--radius-round);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  text-align: center;
+}
+
+.joule-measurement__progress {
+  width: 100%;
+  height: 6px;
+
+  margin:
+    var(--space-3)
+    0;
+
+  overflow: hidden;
+
+  background:
+    rgba(255, 255, 255, 0.07);
+
+  border-radius: var(--radius-round);
+}
+
+.joule-measurement__progress span {
+  height: 100%;
+
+  display: block;
+
+  background:
+    var(--lab-topic-accent);
+
+  border-radius: inherit;
+
+  transition:
+    width var(--transition-fast);
+}
+
+.joule-measurement__table-wrap {
+  width: 100%;
+
+  overflow-x: auto;
+
+  scrollbar-width: thin;
+}
+
+.joule-measurement-table {
+  width: 100%;
+  min-width: 650px;
+
+  border-collapse: collapse;
+
+  font-size: var(--text-xs);
+}
+
+.joule-measurement-table th,
+.joule-measurement-table td {
+  padding:
+    7px
+    var(--space-2);
+
+  text-align: right;
+
+  border-bottom:
+    1px solid
+    var(--lab-border);
+
+  white-space: nowrap;
+}
+
+.joule-measurement-table th:first-child,
+.joule-measurement-table td:first-child {
+  text-align: left;
+}
+
+.joule-measurement-table thead th {
+  color: var(--lab-text-muted);
+
+  font-weight: var(--font-bold);
+}
+
+.joule-measurement-table tbody th {
+  color: var(--lab-topic-accent);
+}
+
+.joule-measurement-table tbody td {
+  color: var(--lab-text-soft);
+}
+
+.joule-measurement__units {
+  margin-top: var(--space-2);
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap:
+    var(--space-1)
+    var(--space-3);
+
+  color: var(--lab-text-muted);
+
+  font-size: 10px;
+}
+
+.joule-measurement__clear {
+  width: 100%;
+
+  margin-top: var(--space-3);
+}
+
+.joule-result-summary {
+  margin-top: var(--space-3);
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: var(--space-2);
+}
+
+.joule-result-summary__item {
+  min-width: 0;
+
+  padding: var(--space-2);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+
+  background:
+    rgba(255, 255, 255, 0.035);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-md);
+}
+
+.joule-result-summary__item span {
+  color: var(--lab-text-muted);
+
+  font-size: 10px;
+}
+
+.joule-result-summary__item strong {
+  color: var(--lab-text);
+
+  font-size: var(--text-xs);
+
+  line-height: 1.35;
+}
+
+
+/* =========================================================
+   JOULE PRACTICE — GRAPH
+   ========================================================= */
+
+.joule-graph {
+  min-width: 0;
+
+  margin-top: var(--space-3);
+}
+
+.joule-graph__svg {
+  width: 100%;
+  height: auto;
+
+  display: block;
+}
+
+.joule-graph__axis {
+  stroke: var(--lab-border-strong);
+  stroke-width: 1.2;
+}
+
+.joule-graph__grid {
+  stroke: rgba(255, 255, 255, 0.07);
+  stroke-width: 1;
+}
+
+.joule-graph__tick,
+.joule-graph__axis-label {
+  fill: var(--lab-text-muted);
+
+  font-family: var(--font-main);
+  font-size: 11px;
+}
+
+.joule-graph__axis-label {
+  font-weight: var(--font-semibold);
+}
+
+.joule-graph__line {
+  stroke: var(--lab-topic-accent);
+
+  stroke-width: 2.4;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  filter:
+    drop-shadow(
+      0 0 4px
+      var(--lab-topic-accent-glow)
+    );
+}
+
+.joule-graph__point {
+  fill: var(--lab-topic-accent);
+
+  stroke: var(--lab-bg);
+  stroke-width: 2;
+}
+
+.joule-graph__summary {
+  margin-top: var(--space-2);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+}
+
+.joule-graph__summary strong {
+  color: var(--lab-topic-accent);
+}
+
+.joule-graph__empty {
+  min-height: 150px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-2);
+
+  padding: var(--space-4);
+
+  color: var(--lab-text-muted);
+
+  border:
+    1px dashed
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-md);
+
+  text-align: center;
+}
+
+.joule-graph__empty span {
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+}
+
+.joule-graph__empty p {
+  max-width: 300px;
+
+  margin: 0;
+
+  font-size: var(--text-xs);
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   JOULE PRACTICE — RIGHT TOOL RAIL
+   ========================================================= */
+
+.joule-practice-rail {
+  position: absolute;
+
+  z-index: 50;
+
+  top: 50%;
+  right: var(--space-3);
+
+  width: 52px;
+
+  max-height:
+    calc(100% - 24px);
+
+  padding: 6px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  gap: 5px;
+
+  transform:
+    translateY(-50%);
+
+  overflow-y: auto;
+
+  background:
+    rgba(7, 15, 28, 0.92);
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-lab);
+
+  scrollbar-width: none;
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  transition:
+    width var(--transition-fast);
+}
+
+.joule-practice-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.joule-practice-rail--expanded {
+  width: 188px;
+}
+
+.joule-practice-tool.ui-button {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+
+  padding:
+    var(--space-2);
+
+  display: grid;
+
+  grid-template-columns:
+    34px
+    minmax(0, 1fr);
+
+  align-items: center;
+
+  gap: var(--space-2);
+
+  color: var(--lab-text-soft);
+
+  background:
+    rgba(255, 255, 255, 0.055);
+
+  border:
+    1px solid
+    transparent;
+
+  border-radius: var(--radius-md);
+
+  box-shadow: none;
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  text-align: left;
+
+  white-space: nowrap;
+
+  overflow: visible;
+}
+
+.joule-practice-rail:not(
+    .joule-practice-rail--expanded
+  )
+  .joule-practice-tool.ui-button {
+  grid-template-columns: 1fr;
+
+  justify-items: center;
+}
+
+.joule-practice-tool.ui-button:hover:not(:disabled) {
+  color: var(--lab-text);
+
+  background:
+    rgba(255, 255, 255, 0.1);
+
+  border-color:
+    var(--lab-topic-accent);
+
+  transform: none;
+}
+
+.joule-practice-tool--active.ui-button {
+  color: var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border-color:
+    var(--lab-topic-accent);
+}
+
+.joule-practice-tool--locked.ui-button {
+  color: #fbbf24;
+
+  background:
+    rgba(120, 53, 15, 0.18);
+
+  border-color:
+    rgba(251, 191, 36, 0.42);
+}
+
+.joule-practice-tool__icon {
+  width: 34px;
+  height: 28px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.joule-practice-tool__icon svg {
+  width: 20px;
+  height: 20px;
+
+  display: block;
+}
+
+.joule-practice-tool__label {
+  min-width: 0;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.joule-practice-rail:not(
+    .joule-practice-rail--expanded
+  )
+  .joule-practice-tool__label {
+  display: none;
+}
+
+.joule-practice-tool--rail-toggle.ui-button {
+  color: var(--lab-text-muted);
+}
+
+.joule-practice-rail__separator {
+  height: 1px;
+
+  margin:
+    2px
+    4px;
+
+  flex-shrink: 0;
+
+  background:
+    var(--lab-border);
+}
+
+.joule-practice-rail:not(
+    .joule-practice-rail--expanded
+  )
+  .joule-practice-tool.ui-button[data-tooltip] {
+  position: relative;
+}
+
+.joule-practice-rail:not(
+    .joule-practice-rail--expanded
+  )
+  .joule-practice-tool.ui-button[data-tooltip]::after {
+  position: absolute;
+
+  z-index: 80;
+
+  top: 50%;
+  right:
+    calc(100% + 10px);
+
+  transform:
+    translateY(-50%);
+
+  padding:
+    6px
+    9px;
+
+  color: var(--lab-text);
+
+  background:
+    rgba(5, 11, 20, 0.96);
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-lab);
+
+  content:
+    attr(data-tooltip);
+
+  font-size: 11px;
+  font-weight: var(--font-semibold);
+
+  white-space: nowrap;
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity var(--transition-fast),
+    visibility var(--transition-fast);
+}
+
+.joule-practice-rail:not(
+    .joule-practice-rail--expanded
+  )
+  .joule-practice-tool.ui-button[data-tooltip]:hover::after,
+.joule-practice-rail:not(
+    .joule-practice-rail--expanded
+  )
+  .joule-practice-tool.ui-button[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+/* =========================================================
+   JOULE PRACTICE — RESPONSIVE
+   ========================================================= */
+
+@media (hover: none) {
+  .joule-practice-rail:not(
+      .joule-practice-rail--expanded
+    )
+    .joule-practice-tool.ui-button[data-tooltip]::after {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .joule-practice-rail {
+    right: var(--space-2);
+
+    width: 48px;
+  }
+
+  .joule-practice-rail--expanded {
+    width: 168px;
+  }
+
+  .joule-practice-panel,
+  .joule-practice-panel--setup,
+  .joule-practice-panel--energy,
+  .joule-practice-panel--graph,
+  .joule-practice-panel--measurements {
+    top: var(--space-3);
+    left: var(--space-3);
+    right: 68px;
+
+    width: auto;
+    max-width: none;
+
+    max-height:
+      calc(100% - 24px);
+
+    padding: var(--space-3);
+  }
+
+  .joule-practice--rail-expanded
+    .joule-practice-panel,
+  .joule-practice--rail-expanded
+    .joule-practice-panel--setup,
+  .joule-practice--rail-expanded
+    .joule-practice-panel--energy,
+  .joule-practice--rail-expanded
+    .joule-practice-panel--graph,
+  .joule-practice--rail-expanded
+    .joule-practice-panel--measurements {
+    right: 188px;
+
+    max-width: none;
+  }
+
+  .joule-practice-status {
+    left: var(--space-3);
+    right: 68px;
+    bottom: var(--space-3);
+
+    max-width: none;
+
+    border-radius: var(--radius-md);
+  }
+
+  .joule-result-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .joule-practice-rail--expanded {
+    width: 156px;
+  }
+
+  .joule-practice--rail-expanded
+    .joule-practice-panel,
+  .joule-practice--rail-expanded
+    .joule-practice-panel--setup,
+  .joule-practice--rail-expanded
+    .joule-practice-panel--energy,
+  .joule-practice--rail-expanded
+    .joule-practice-panel--graph,
+  .joule-practice--rail-expanded
+    .joule-practice-panel--measurements {
+    right: 176px;
+  }
+
+  .joule-practice-status {
+    font-size: 10px;
+  }
+
+  .joule-live-data__item {
+    display: block;
+  }
+
+  .joule-live-data__item strong {
+    display: block;
+
+    margin-top: 2px;
+
+    text-align: left;
+  }
+}
+
+@media (max-height: 620px) {
+  .joule-practice-rail {
+    top: var(--space-2);
+    bottom: var(--space-2);
+
+    max-height: none;
+
+    transform: none;
+  }
+
+  .joule-practice-panel,
+  .joule-practice-panel--setup,
+  .joule-practice-panel--energy,
+  .joule-practice-panel--graph,
+  .joule-practice-panel--measurements {
+    max-height:
+      calc(100% - 16px);
+  }
+
+  .joule-practice-status {
+    min-height: 34px;
+
+    padding:
+      var(--space-1)
+      var(--space-2);
+  }
+}
+
+/* =========================================================
+   JOULE — CONCLUSION
+   ========================================================= */
+
+.joule-conclusion__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: var(--space-5);
+}
+
+.joule-conclusion__heading h2 {
+  margin:
+    0
+    0
+    var(--space-2);
+
+  color: var(--lab-text);
+
+  font-size:
+    clamp(
+      26px,
+      4vw,
+      42px
+    );
+
+  line-height: 1.1;
+}
+
+.joule-conclusion__heading p {
+  max-width: 620px;
+
+  margin: 0;
+
+  color: var(--lab-text-muted);
+
+  line-height: 1.6;
+}
+
+.joule-conclusion__status {
+  min-width: 120px;
+
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-1);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.04
+    );
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-lg);
+}
+
+.joule-conclusion__status span {
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+}
+
+.joule-conclusion__status strong {
+  color: var(--lab-text);
+
+  font-size: var(--text-xl);
+}
+
+.joule-conclusion__status--complete {
+  border-color:
+    var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+}
+
+.joule-conclusion__status--complete
+  strong {
+  color: var(--lab-topic-accent);
+}
+
+.joule-conclusion__warning {
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  color: #fbbf24;
+
+  background:
+    rgba(
+      245,
+      158,
+      11,
+      0.08
+    );
+
+  border:
+    1px solid
+    rgba(
+      245,
+      158,
+      11,
+      0.35
+    );
+
+  border-radius: var(--radius-md);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.5;
+}
+
+.joule-conclusion-results {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+
+  gap: var(--space-3);
+}
+
+.joule-conclusion-result {
+  min-width: 0;
+
+  padding: var(--space-4);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-2);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.035
+    );
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-lg);
+}
+
+.joule-conclusion-result span {
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+
+  line-height: 1.4;
+}
+
+.joule-conclusion-result strong {
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-lg);
+
+  line-height: 1.3;
+}
+
+.joule-conclusion-main {
+  padding:
+    var(--space-6);
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--lab-topic-accent-soft),
+      rgba(
+        255,
+        255,
+        255,
+        0.025
+      )
+    );
+
+  border:
+    1px solid
+    var(--lab-topic-accent);
+
+  border-radius: var(--radius-xl);
+}
+
+.joule-conclusion-main__label {
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+.joule-conclusion-main p {
+  margin:
+    var(--space-4)
+    0
+    0;
+
+  color: var(--lab-text-soft);
+
+  line-height: 1.7;
+}
+
+.joule-conclusion-formula {
+  margin:
+    var(--space-5)
+    0;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  align-items: center;
+  justify-content: center;
+
+  gap:
+    var(--space-4)
+    var(--space-6);
+
+  text-align: center;
+}
+
+.joule-conclusion-formula span {
+  color: var(--lab-text);
+
+  font-size:
+    clamp(
+      28px,
+      5vw,
+      44px
+    );
+
+  font-weight: var(--font-bold);
+}
+
+.joule-conclusion-formula strong {
+  color: var(--lab-topic-accent);
+
+  font-size:
+    clamp(
+      22px,
+      4vw,
+      34px
+    );
+}
+
+.joule-conclusion-applications {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-4);
+}
+
+.joule-conclusion-applications__heading span {
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.07em;
+}
+
+.joule-conclusion-applications__heading h3 {
+  margin:
+    var(--space-1)
+    0
+    0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-xl);
+}
+
+.joule-conclusion-applications__grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: var(--space-4);
+}
+
+.joule-application-card {
+  padding: var(--space-5);
+
+  display: flex;
+
+  gap: var(--space-4);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.035
+    );
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-lg);
+}
+
+.joule-application-card__icon {
+  flex: 0 0 auto;
+
+  font-size: 30px;
+}
+
+.joule-application-card h4 {
+  margin:
+    0
+    0
+    var(--space-2);
+
+  color: var(--lab-text);
+
+  font-size: var(--text-base);
+}
+
+.joule-application-card p {
+  margin: 0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+
+  .joule-conclusion-results {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+@media (max-width: 767px) {
+
+  .joule-conclusion__heading {
+    flex-direction: column;
+  }
+
+  .joule-conclusion__status {
+    width: 100%;
+
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .joule-conclusion-results {
+    grid-template-columns: 1fr;
+  }
+
+  .joule-conclusion-applications__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .joule-conclusion-main {
+    padding: var(--space-4);
+  }
+}
+
+/* =========================================================
+   JOULE — QUIZ
+   ========================================================= */
+
+.joule-quiz__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: var(--space-5);
+}
+
+.joule-quiz__heading h2 {
+  margin:
+    0
+    0
+    var(--space-2);
+
+  color: var(--lab-text);
+
+  font-size:
+    clamp(
+      26px,
+      4vw,
+      40px
+    );
+
+  line-height: 1.15;
+}
+
+.joule-quiz__heading p {
+  max-width: 650px;
+
+  margin: 0;
+
+  color: var(--lab-text-muted);
+
+  line-height: 1.6;
+}
+
+.joule-quiz__progress {
+  min-width: 120px;
+
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-1);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.04
+    );
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-lg);
+}
+
+.joule-quiz__progress span {
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+}
+
+.joule-quiz__progress strong {
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-xl);
+}
+
+.joule-quiz__questions {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-4);
+}
+
+.joule-quiz-card {
+  padding: var(--space-5);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.035
+    );
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius: var(--radius-xl);
+}
+
+.joule-quiz-card__heading {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-2);
+
+  margin-bottom: var(--space-4);
+}
+
+.joule-quiz-card__heading > span {
+  color: var(--lab-topic-accent);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.07em;
+
+  text-transform: uppercase;
+}
+
+.joule-quiz-card__heading h3 {
+  margin: 0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-base);
+
+  line-height: 1.55;
+}
+
+.joule-quiz-options {
+  display: grid;
+
+  gap: var(--space-2);
+}
+
+.joule-quiz-option.ui-button {
+  width: 100%;
+  min-height: 48px;
+
+  padding:
+    var(--space-3)
+    var(--space-4);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+
+  color: var(--lab-text-soft);
+
+  background:
+    rgba(
+      7,
+      15,
+      28,
+      0.72
+    );
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-md);
+
+  box-shadow: none;
+
+  text-align: left;
+
+  white-space: normal;
+}
+
+.joule-quiz-option.ui-button:hover:not(:disabled) {
+  color: var(--lab-text);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.07
+    );
+
+  border-color:
+    var(--lab-topic-accent);
+
+  transform: none;
+}
+
+.joule-quiz-option--selected.ui-button {
+  color: var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border-color:
+    var(--lab-topic-accent);
+}
+
+.joule-quiz-option--correct.ui-button,
+.joule-quiz-option--correct.ui-button:disabled {
+  color: #86efac;
+
+  background:
+    rgba(
+      34,
+      197,
+      94,
+      0.12
+    );
+
+  border-color:
+    rgba(
+      34,
+      197,
+      94,
+      0.65
+    );
+
+  opacity: 1;
+}
+
+.joule-quiz-option--wrong.ui-button,
+.joule-quiz-option--wrong.ui-button:disabled {
+  color: #fda4af;
+
+  background:
+    rgba(
+      244,
+      63,
+      94,
+      0.12
+    );
+
+  border-color:
+    rgba(
+      244,
+      63,
+      94,
+      0.65
+    );
+
+  opacity: 1;
+}
+
+.joule-quiz-option--muted.ui-button,
+.joule-quiz-option--muted.ui-button:disabled {
+  opacity: 0.48;
+}
+
+.joule-quiz-option__text {
+  min-width: 0;
+
+  line-height: 1.5;
+}
+
+.joule-quiz-option__mark {
+  flex: 0 0 auto;
+
+  font-size: 18px;
+  font-weight: var(--font-bold);
+}
+
+.joule-quiz-result {
+  padding: var(--space-5);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-5);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.035
+    );
+
+  border:
+    1px solid
+    var(--lab-border-strong);
+
+  border-radius: var(--radius-xl);
+}
+
+.joule-quiz-result > div {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-1);
+}
+
+.joule-quiz-result span {
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.07em;
+}
+
+.joule-quiz-result strong {
+  color: var(--lab-text);
+
+  font-size: 30px;
+}
+
+.joule-quiz-result p {
+  max-width: 480px;
+
+  margin: 0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.55;
+}
+
+.joule-quiz-result--perfect {
+  background:
+    rgba(
+      34,
+      197,
+      94,
+      0.08
+    );
+
+  border-color:
+    rgba(
+      34,
+      197,
+      94,
+      0.45
+    );
+}
+
+.joule-quiz-result--perfect strong {
+  color: #86efac;
+}
+
+@media (max-width: 767px) {
+
+  .joule-quiz__heading {
+    flex-direction: column;
+  }
+
+  .joule-quiz__progress {
+    width: 100%;
+
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .joule-quiz-card {
+    padding: var(--space-4);
+  }
+
+  .joule-quiz-result {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* =========================================================
+   JOULE — REPORT
+   ========================================================= */
+
+.joule-report {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+
+  color: var(--lab-text);
+}
+
+.joule-report__screen {
+  width: min(100%, 1100px);
+
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+}
+
+.joule-report__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: var(--space-5);
+}
+
+.joule-report__heading h3 {
+  margin: 0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-xl);
+}
+
+.joule-report__heading p {
+  max-width: 650px;
+
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+.joule-report__actions {
+  display: flex;
+
+  gap: var(--space-2);
+
+  flex-shrink: 0;
+}
+
+.joule-report-reference,
+.joule-report-preview {
+  padding: var(--space-5);
+
+  background:
+    var(--lab-surface-soft);
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius:
+    var(--radius-lg);
+}
+
+.joule-report-section-heading {
+  margin-bottom: var(--space-4);
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: var(--space-3);
+}
+
+.joule-report-section-heading
+  > span {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color:
+    var(--lab-topic-accent);
+
+  background:
+    var(--lab-topic-accent-soft);
+
+  border:
+    1px solid
+    var(--lab-topic-accent-border);
+
+  border-radius: 50%;
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+}
+
+.joule-report-section-heading h4 {
+  margin: 0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-lg);
+}
+
+.joule-report-section-heading p {
+  margin:
+    var(--space-1)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.5;
+}
+
+.joule-report-reference__table-wrap {
+  overflow-x: auto;
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius:
+    var(--radius-md);
+}
+
+.joule-report-reference__table {
+  width: 100%;
+  min-width: 720px;
+
+  border-collapse: collapse;
+
+  font-variant-numeric:
+    tabular-nums;
+}
+
+.joule-report-reference__table th,
+.joule-report-reference__table td {
+  padding:
+    var(--space-2)
+    var(--space-3);
+
+  color: var(--lab-text-soft);
+
+  border-bottom:
+    1px solid
+    var(--lab-border);
+
+  font-size: var(--text-xs);
+
+  text-align: right;
+
+  white-space: nowrap;
+}
+
+.joule-report-reference__table
+  thead
+  th {
+  color: var(--lab-text-muted);
+
+  background:
+    rgba(2, 6, 23, 0.42);
+}
+
+.joule-report-reference__table
+  th:first-child,
+.joule-report-reference__table
+  td:first-child {
+  text-align: center;
+}
+
+.joule-report-reference__table
+  tbody
+  tr:last-child
+  > * {
+  border-bottom: 0;
+}
+
+.joule-report-reference__empty {
+  padding:
+    var(--space-5)
+    !important;
+
+  color:
+    var(--lab-text-muted)
+    !important;
+
+  text-align:
+    center
+    !important;
+}
+
+.joule-report-reference__units {
+  margin-top: var(--space-2);
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap:
+    var(--space-1)
+    var(--space-4);
+
+  color:
+    var(--lab-text-muted);
+
+  font-size: 10px;
+}
+
+.joule-report-reference__summary {
+  margin-top: var(--space-4);
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+
+  gap: var(--space-3);
+}
+
+.joule-report-reference__summary
+  article {
+  min-width: 0;
+
+  padding: var(--space-3);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-1);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.035
+    );
+
+  border:
+    1px solid
+    var(--lab-border);
+
+  border-radius:
+    var(--radius-md);
+}
+
+.joule-report-reference__summary
+  span {
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-xs);
+}
+
+.joule-report-reference__summary
+  strong {
+  color:
+    var(--lab-topic-accent);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   JOULE REPORT — A4 SHEET
+   ========================================================= */
+
+.joule-report-sheet {
+  width: min(100%, 210mm);
+  min-height: 297mm;
+
+  margin: 0 auto;
+
+  padding: 16mm 18mm;
+
+  color: #111827;
+
+  background: #ffffff;
+
+  border:
+    1px solid
+    #cbd5e1;
+
+  box-shadow:
+    0 18px 50px
+    rgba(0, 0, 0, 0.32);
+
+  font-family:
+    "Times New Roman",
+    Times,
+    serif;
+
+  font-size: 15px;
+
+  line-height: 1.55;
+}
+
+.joule-report-sheet__header {
+  text-align: center;
+}
+
+.joule-report-sheet__header h1,
+.joule-report-sheet__header h2 {
+  margin: 0;
+
+  color: #000;
+
+  font-family:
+    "Times New Roman",
+    Times,
+    serif;
+}
+
+.joule-report-sheet__header h1 {
+  font-size: 24px;
+}
+
+.joule-report-sheet__header h2 {
+  margin-top: 6px;
+
+  font-size: 19px;
+}
+
+.joule-report-sheet__header p {
+  margin:
+    8px
+    0
+    0;
+
+  color: #111;
+
+  font-style: italic;
+}
+
+.joule-report-sheet section {
+  margin-top: 22px;
+}
+
+.joule-report-sheet h3 {
+  margin:
+    0
+    0
+    8px;
+
+  color: #000;
+
+  font-size: 17px;
+}
+
+.joule-report-sheet p {
+  margin:
+    7px
+    0;
+
+  color: #111;
+}
+
+.joule-report-sheet ul {
+  margin:
+    8px
+    0
+    0;
+
+  padding-left: 22px;
+}
+
+.joule-report-sheet hr {
+  margin:
+    20px
+    0;
+
+  border: 0;
+
+  border-top:
+    2px solid #000;
+}
+
+
+/* IDENTITY */
+
+.joule-report-sheet__identity {
+  margin-top: 24px;
+}
+
+.joule-report-sheet__identity
+  > div,
+.joule-report-sheet__identity-row
+  > div {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 10px;
+}
+
+.joule-report-sheet__identity
+  span {
+  min-width: 80px;
+  height: 24px;
+
+  flex: 1;
+
+  border-bottom:
+    1px dotted #000;
+}
+
+.joule-report-sheet__identity-row {
+  margin-top: 12px;
+
+  display: grid !important;
+
+  grid-template-columns:
+    1fr
+    1fr;
+
+  gap: 24px !important;
+}
+
+
+/* NOTE */
+
+.joule-report-sheet__note {
+  color: #4b5563 !important;
+
+  font-size: 13px;
+
+  font-style: italic;
+}
+
+
+/* TABLE */
+
+.joule-report-sheet__table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  color: #000;
+
+  font-size: 12px;
+}
+
+.joule-report-sheet__table th,
+.joule-report-sheet__table td {
+  height: 46px;
+
+  padding: 5px;
+
+  border:
+    1px solid #000;
+
+  text-align: center;
+}
+
+.joule-report-sheet__table th {
+  font-weight: 700;
+}
+
+
+/* FORMULA */
+
+.joule-report-sheet__formula {
+  margin:
+    16px
+    0;
+
+  font-size: 17px;
+
+  text-align: center;
+}
+
+
+/* BLANK LINES */
+
+.joule-report-sheet__blank-lines {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.joule-report-sheet__blank-lines
+  span {
+  height: 18px;
+
+  border-bottom:
+    1px dotted #000;
+}
+
+
+/* ANALYSIS */
+
+.joule-report-sheet__analysis {
+  margin-top: 30px !important;
+
+  padding-top: 20px;
+
+  border-top:
+    2px solid #000;
+}
+
+.joule-report-sheet__analysis
+  > h3 {
+  text-align: center;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.04em;
+}
+
+.joule-report-sheet__question {
+  margin-top: 20px;
+}
+
+.joule-report-sheet__avoid-break {
+  break-inside: avoid;
+}
+
+
+/* SIGNATURE */
+
+.joule-report-sheet__signature {
+  margin-top: 36px;
+
+  display: flex;
+  justify-content: flex-end;
+
+  color: #000;
+}
+
+.joule-report-sheet__signature
+  > div {
+  width: 280px;
+
+  text-align: center;
+}
+
+.joule-report-sheet__signature p {
+  margin: 4px 0;
+}
+
+.joule-report-sheet__signature
+  div
+  div {
+  height: 80px;
+}
+
+
+/* =========================================================
+   JOULE REPORT — RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .joule-report-reference__summary {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+@media (max-width: 767px) {
+
+  .joule-report__heading {
+    flex-direction: column;
+  }
+
+  .joule-report__actions {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+      1fr
+      1fr;
+  }
+
+  .joule-report__actions
+    .experiment-template__button {
+    width: 100%;
+  }
+
+  .joule-report-reference,
+  .joule-report-preview {
+    padding: var(--space-4);
+  }
+
+  .joule-report-reference__summary {
+    grid-template-columns:
+      1fr;
+  }
+
+  .joule-report-sheet {
+    min-height: auto;
+
+    padding: 24px;
+
+    font-size: 13px;
+  }
+
+  .joule-report-sheet__table {
+    font-size: 10px;
+  }
+}
+
+
+/* =========================================================
+   JOULE REPORT — PRINT
+   ========================================================= */
+
+@media print {
+
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  html,
+  body,
+  #root {
+    height: auto !important;
+
+    overflow: visible !important;
+
+    background: #fff !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #joule-printable-report,
+  #joule-printable-report * {
+    visibility: visible;
+  }
+
+  #joule-printable-report {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    min-height: auto;
+
+    margin: 0;
+
+    padding: 0;
+
+    border: 0;
+
+    box-shadow: none;
+  }
+
+  .joule-report-sheet__avoid-break,
+  .joule-report-sheet__question {
+    break-inside: avoid;
+  }
+}
+
+/* =========================================================
+   JOULE — CONTENT RESPONSIVE REFINEMENT
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .joule-content-phase__inner {
+    width: 100%;
+  }
+
+  .joule-conclusion__heading h2,
+  .joule-quiz__heading h2 {
+    font-size:
+      clamp(
+        24px,
+        8vw,
+        32px
+      );
+  }
+
+  .joule-conclusion-main,
+  .joule-quiz-card {
+    border-radius: var(--radius-lg);
+  }
+}
+
+
+/* =========================================================
+   JOULE — REPORT PREVIEW
+   A4 giữ đúng kích thước khi xem; print dùng chiều rộng trang in.
+   ========================================================= */
+
+@media screen {
+  .joule-report-preview {
+    overflow-x: auto;
+  }
+
+  .joule-report-sheet {
+    width: 210mm;
+    min-width: 210mm;
+    min-height: 297mm;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .joule-report-reference,
+  .joule-report-preview {
+    padding: var(--space-3);
+  }
+
+  .joule-report__actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  .joule-report-sheet {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: auto !important;
+  }
+}
+
+/* =========================================================
+   JOULE — COMPOSED VIEW
+   Phase navigation + utility + stage ownership.
+   ========================================================= */
+
+.joule-view {
+  --joule-phase-nav-height: 60px;
+
+  width: 100%;
+  height: auto;
+
+  min-width: 0;
+
+  min-height:
+    calc(
+      100dvh +
+      48px
+    );
+}
+
+.joule-view__body {
+  min-width: 0;
+  min-height: 0;
+
+  flex: 0 0 auto;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: visible;
+}
+
+
+/* =========================================================
+   JOULE VIEW — PHASE UTILITY
+   ========================================================= */
+
+.joule-view__utility {
+  min-height: 48px;
+
+  flex-shrink: 0;
+
+  padding:
+    var(--space-2)
+    var(--space-4);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-4);
+
+  background:
+    rgba(5, 11, 20, 0.92);
+
+  border-bottom:
+    1px solid
+    var(--lab-border);
+}
+
+.joule-view__phase-info {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--space-3);
+}
+
+.joule-view__phase-info > span {
+  flex-shrink: 0;
+
+  color:
+    var(--lab-topic-accent);
+
+  font-size:
+    var(--text-xs);
+
+  font-weight:
+    var(--font-bold);
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+.joule-view__phase-info > strong {
+  min-width: 0;
+
+  color:
+    var(--lab-text-soft);
+
+  font-size:
+    var(--text-sm);
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.joule-view__utility-actions {
+  display: flex;
+  align-items: center;
+
+  gap: var(--space-2);
+
+  flex-shrink: 0;
+}
+
+.joule-view__expand,
+.joule-view__reset {
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   JOULE VIEW — STAGE
+   ========================================================= */
+
+.joule-view__stage {
+  width: 100%;
+
+  min-width: 0;
+
+  min-height:
+    calc(
+      100dvh -
+      var(--joule-phase-nav-height)
+    );
+
+  flex: 0 0 auto;
+}
+
+.joule-view__stage--content {
+  padding: var(--space-4);
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.joule-view__stage--practice {
+  position: relative;
+
+  width: 100%;
+
+  min-width: 0;
+
+  min-height:
+    calc(
+      100dvh -
+      var(--joule-phase-nav-height)
+    );
+
+  height:
+    calc(
+      100dvh -
+      var(--joule-phase-nav-height)
+    );
+
+  flex: 0 0 auto;
+
+  display: flex;
+
+  padding: 0;
+
+  overflow: hidden;
+}
+
+.joule-view__stage--practice
+  > .joule-practice {
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1 1 auto;
+}
+
+
+/* =========================================================
+   JOULE VIEW — EXPANDED WORKSPACE
+   Overlay nội bộ của app, không dùng browser Fullscreen API.
+   ========================================================= */
+
+.joule-view--expanded {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 200;
+
+  width: 100vw;
+  height: 100dvh;
+  min-height: 100dvh;
+
+  background: var(--lab-bg);
+
+  overflow: hidden;
+}
+
+.experiment-page:has(
+  .joule-view--expanded
+) {
+  overflow: hidden;
+}
+
+.joule-view--expanded
+  .joule-view__utility {
+  display: none;
+}
+
+.joule-view--expanded
+  .experiment-phase-nav {
+  position: relative;
+  top: auto;
+
+  flex-shrink: 0;
+
+  z-index: 60;
+}
+
+.joule-view--expanded
+  .joule-view__body {
+  min-height: 0;
+
+  flex: 1 1 auto;
+
+  overflow: hidden;
+}
+
+.joule-view--expanded
+  .joule-view__stage {
+  min-height: 0;
+
+  flex: 1 1 auto;
+}
+
+.joule-view--expanded
+  .joule-view__stage--practice {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+
+  flex: 1 1 auto;
+
+  overflow: hidden;
+}
+
+.joule-view--expanded
+  .joule-view__stage--practice
+  > .joule-practice {
+  width: 100%;
+  height: 100%;
+}
+
+
+/* =========================================================
+   JOULE VIEW — RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .joule-view__utility {
+    min-height: 44px;
+
+    padding:
+      var(--space-2)
+      var(--space-3);
+  }
+
+  .joule-view__phase-info {
+    gap: var(--space-2);
+  }
+
+  .joule-view__phase-info > strong {
+    display: none;
+  }
+
+  .joule-view__utility-actions {
+    gap: var(--space-1);
+  }
+
+  .joule-view__expand,
+  .joule-view__reset {
+    min-height: 34px;
+
+    padding:
+      var(--space-1)
+      var(--space-3);
+
+    font-size:
+      var(--text-xs);
+  }
+
+  .joule-view__stage--content {
+    padding: var(--space-3);
+  }
+
+  .joule-view--expanded
+    .experiment-phase-nav {
+    padding:
+      var(--space-2)
+      var(--space-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .joule-view__expand {
+    display: none;
+  }
+}
+
+@media (max-height: 520px) {
+  .joule-view__utility {
+    min-height: 38px;
+
+    padding:
+      var(--space-1)
+      var(--space-3);
+  }
+
+  .joule-view__stage--content {
+    padding: var(--space-2);
+  }
+
+  .joule-view__expand,
+  .joule-view__reset {
+    min-height: 30px;
+
+    padding:
+      4px
+      var(--space-2);
+  }
+
+  .joule-view--expanded
+    .experiment-phase-nav {
+    padding:
+      var(--space-1)
+      var(--space-3);
+  }
+}
+
+
+/* =========================================================
+   JOULE VIEW — PRINT
+   ========================================================= */
+
+@media print {
+  .experiment-phase-nav,
+  .joule-view__utility {
+    display: none !important;
+  }
+
+  .joule-view,
+  .joule-view__body,
+  .joule-view__stage,
+  .joule-view__stage--content {
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    padding: 0 !important;
+
+    overflow: visible !important;
+  }
+}

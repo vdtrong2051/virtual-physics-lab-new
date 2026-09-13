@@ -1,0 +1,285 @@
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+
+  margin: 0;
+
+  font-family: var(--font-main);
+
+  color: var(--color-text-main);
+  background: var(--portal-page-background);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =========================================================
+   BUTTON
+   Shared primitive cho toàn Portal:
+   Public / Auth / App / Admin
+   ========================================================= */
+
+.ui-button {
+  min-height: 40px;
+
+  padding:
+    var(--space-2)
+    var(--space-4);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-2);
+
+  color: var(--color-white);
+  background: var(--portal-gradient);
+
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+
+  font-family: var(--font-main);
+  font-size: var(--text-md);
+  font-weight: var(--font-semibold);
+
+  cursor: pointer;
+
+  box-shadow: var(--shadow-sm);
+
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.ui-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  box-shadow: var(--shadow-md);
+}
+
+.ui-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.ui-button:focus-visible {
+  outline: 2px solid var(--portal-purple);
+  outline-offset: 3px;
+}
+
+.ui-button:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+
+  box-shadow: none;
+}
+
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+.ui-input-group {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-2);
+}
+
+.ui-input-group > span {
+  color: var(--color-text-soft);
+
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+}
+
+.ui-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+
+  padding:
+    var(--space-2)
+    var(--space-3);
+
+  color: var(--color-text-main);
+
+  background: var(--glass-surface-strong);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  font-family: var(--font-main);
+  font-size: var(--text-md);
+
+  outline: none;
+
+  box-shadow: none;
+
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.ui-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.ui-input:hover:not(:disabled) {
+  border-color: var(--portal-purple);
+}
+
+.ui-input:focus {
+  background: var(--color-white);
+
+  border-color: var(--portal-purple);
+
+  box-shadow:
+    0 0 0 3px var(--portal-purple-soft);
+}
+
+.ui-input:disabled {
+  color: var(--color-text-muted);
+  background: var(--portal-surface-soft);
+
+  cursor: not-allowed;
+
+  opacity: 0.65;
+}
+
+
+/* =========================================================
+   CARD
+   Portal glass card chuẩn.
+   Page riêng chỉ override layout, không tự nghĩ surface khác.
+   ========================================================= */
+
+.ui-card {
+  min-width: 0;
+
+  padding: var(--space-5);
+
+  background: var(--glass-surface);
+
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-sm);
+
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+}
+
+
+/* =========================================================
+   PAGE TITLE
+   ========================================================= */
+
+.ui-page-title {
+  margin-bottom: var(--space-6);
+}
+
+.ui-page-title h1 {
+  margin: 0;
+
+  color: var(--color-text-main);
+
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.ui-page-title p {
+  max-width: 760px;
+
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--color-text-muted);
+
+  font-size: var(--text-md);
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   SHARED INTERACTION
+   ========================================================= */
+
+.ui-card a,
+.ui-page-title a {
+  color: var(--portal-purple);
+}
+
+.ui-card a:focus-visible,
+.ui-page-title a:focus-visible {
+  outline: 2px solid var(--portal-purple);
+  outline-offset: 3px;
+
+  border-radius: var(--radius-sm);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1024px) {
+  .ui-card {
+    padding: var(--space-4);
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .ui-page-title {
+    margin-bottom: var(--space-5);
+  }
+
+  .ui-page-title h1 {
+    font-size: var(--text-xl);
+  }
+
+  .ui-page-title p {
+    font-size: var(--text-sm);
+  }
+}

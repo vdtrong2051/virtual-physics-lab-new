@@ -1,0 +1,359 @@
+/* =========================================================
+   ADMIN USERS
+   Portal Mode
+   ========================================================= */
+
+.admin-users {
+  width: 100%;
+}
+
+
+/* =========================================================
+   DATA NOTICE
+   ========================================================= */
+
+.admin-users__notice {
+  margin-bottom: var(--space-6);
+}
+
+.admin-users__notice-card {
+  position: relative;
+
+  overflow: hidden;
+
+  padding: var(--space-5);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-5);
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--portal-purple-soft),
+      rgba(255, 255, 255, 0.8)
+    );
+
+  border-color: rgba(139, 92, 246, 0.18);
+}
+
+.admin-users__notice-card::after {
+  content: "";
+
+  position: absolute;
+  right: -50px;
+  top: -60px;
+
+  width: 150px;
+  height: 150px;
+
+  background:
+    radial-gradient(
+      circle,
+      var(--portal-cyan-soft),
+      transparent 70%
+    );
+
+  pointer-events: none;
+}
+
+.admin-users__notice-card > div,
+.admin-users__status {
+  position: relative;
+  z-index: 1;
+}
+
+.admin-users__notice-card > div {
+  min-width: 0;
+}
+
+.admin-users__notice-label {
+  color: var(--portal-purple);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.06em;
+}
+
+.admin-users__notice-card h2 {
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--color-text-main);
+
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+}
+
+.admin-users__notice-card p {
+  max-width: 700px;
+
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--color-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+.admin-users__status {
+  flex-shrink: 0;
+
+  padding:
+    var(--space-2)
+    var(--space-3);
+
+  color: var(--portal-purple);
+
+  background: var(--glass-surface-strong);
+
+  border: 1px solid rgba(139, 92, 246, 0.16);
+  border-radius: var(--radius-round);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+
+  box-shadow: var(--shadow-sm);
+}
+
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.admin-users__toolbar {
+  margin-bottom: var(--space-5);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-4);
+}
+
+.admin-users__search {
+  width: 100%;
+  max-width: 360px;
+}
+
+.admin-users__toolbar .ui-button {
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   TABLE CARD
+   ========================================================= */
+
+.admin-users__table-card {
+  padding: 0;
+
+  overflow: hidden;
+}
+
+.admin-users__table-header {
+  min-height: 82px;
+
+  padding:
+    var(--space-4)
+    var(--space-5);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-4);
+
+  background: rgba(255, 255, 255, 0.35);
+
+  border-bottom: 1px solid var(--color-border-soft);
+}
+
+.admin-users__table-header h2 {
+  margin: 0;
+
+  color: var(--color-text-main);
+
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+}
+
+.admin-users__table-header p {
+  margin:
+    var(--space-1)
+    0
+    0;
+
+  color: var(--color-text-muted);
+
+  font-size: var(--text-sm);
+}
+
+.admin-users__count {
+  min-width: 36px;
+
+  padding:
+    var(--space-1)
+    var(--space-3);
+
+  color: var(--portal-purple);
+
+  background: var(--portal-purple-soft);
+
+  border-radius: var(--radius-round);
+
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.admin-users__table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.admin-users__table {
+  width: 100%;
+  min-width: 760px;
+
+  border-collapse: collapse;
+}
+
+.admin-users__table th {
+  padding:
+    var(--space-3)
+    var(--space-5);
+
+  color: var(--color-text-soft);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(243, 232, 255, 0.7),
+      rgba(255, 255, 255, 0.72)
+    );
+
+  border-bottom: 1px solid var(--color-border-soft);
+
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+
+  text-align: left;
+}
+
+.admin-users__table td {
+  padding:
+    var(--space-4)
+    var(--space-5);
+
+  color: var(--color-text-soft);
+
+  background: rgba(255, 255, 255, 0.18);
+
+  border-bottom: 1px solid var(--color-border-soft);
+
+  font-size: var(--text-sm);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.admin-users__empty-row td {
+  height: 280px;
+
+  border-bottom: 0;
+}
+
+.admin-users__empty {
+  max-width: 420px;
+
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.admin-users__empty strong {
+  color: var(--color-text-main);
+
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+}
+
+.admin-users__empty p {
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--color-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .admin-users__notice-card {
+    align-items: flex-start;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .admin-users__notice-card {
+    flex-direction: column;
+  }
+
+  .admin-users__toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-users__search {
+    max-width: none;
+  }
+
+  .admin-users__toolbar .ui-button {
+    width: 100%;
+  }
+
+  .admin-users__table-header {
+    padding: var(--space-4);
+  }
+
+  .admin-users__table th,
+  .admin-users__table td {
+    padding:
+      var(--space-3)
+      var(--space-4);
+  }
+}
