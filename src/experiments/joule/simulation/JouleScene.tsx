@@ -39,7 +39,33 @@ const LEFT_X = -2.8;
 const RIGHT_X = 2.8;
 const CENTER_X = 0;
 
+const FRAME_LEFT_X = -3.55;
+const FRAME_RIGHT_X = 3.55;
+const FRAME_TOP_Y = 4.05;
+
 const PULLEY_Y = 3.2;
+const PULLEY_RADIUS = 0.34;
+
+const LEFT_ROPE_Z = 0.18;
+const RIGHT_ROPE_Z = -0.18;
+
+const VERTICAL_ROPE_TOP_Y =
+  PULLEY_Y - PULLEY_RADIUS;
+
+const DRIVE_ROPE_Y =
+  PULLEY_Y + PULLEY_RADIUS;
+
+const DRIVE_DRUM_Y = DRIVE_ROPE_Y;
+const DRIVE_DRUM_RADIUS = 0.42;
+const DRIVE_DRUM_HEIGHT = 0.48;
+const DRIVE_ROPE_RADIUS = 0.022;
+
+const CALORIMETER_CENTER_Y = -1;
+const CALORIMETER_RADIUS = 1.42;
+const CALORIMETER_HEIGHT = 2.8;
+
+const WATER_RADIUS = 1.24;
+const WATER_HEIGHT = 2.18;
 
 const WEIGHT_DISC_HEIGHT = 0.3;
 const WEIGHT_BASE_CLEARANCE = 0.4;
@@ -192,27 +218,58 @@ function WeightStack({
           index * WEIGHT_DISC_HEIGHT;
 
         return (
-          <mesh
+          <group
             key={index}
             position={[0, y, 0]}
-            castShadow
-            receiveShadow
           >
-            <cylinderGeometry
-              args={[
-                0.5,
-                0.5,
-                WEIGHT_DISC_HEIGHT * 0.86,
-                40,
-              ]}
-            />
+            <mesh
+              castShadow
+              receiveShadow
+            >
+              <cylinderGeometry
+                args={[
+                  0.44,
+                  0.44,
+                  WEIGHT_DISC_HEIGHT * 0.78,
+                  40,
+                ]}
+              />
 
-            <meshStandardMaterial
-              color="#f59e0b"
-              metalness={0.86}
-              roughness={0.28}
-            />
-          </mesh>
+              <meshStandardMaterial
+                color="#5b4636"
+                metalness={0.72}
+                roughness={0.34}
+              />
+            </mesh>
+
+            <mesh
+              position={[
+                0,
+                WEIGHT_DISC_HEIGHT * 0.4,
+                0,
+              ]}
+              rotation={[
+                Math.PI / 2,
+                0,
+                0,
+              ]}
+            >
+              <torusGeometry
+                args={[
+                  0.35,
+                  0.018,
+                  10,
+                  36,
+                ]}
+              />
+
+              <meshStandardMaterial
+                color="#a9712a"
+                metalness={0.8}
+                roughness={0.3}
+              />
+            </mesh>
+          </group>
         );
       })}
 
@@ -222,72 +279,187 @@ function WeightStack({
           stackHeight / 2 + 0.12,
           0,
         ]}
+        castShadow
       >
         <torusGeometry
-          args={[0.13, 0.035, 12, 28]}
+          args={[
+            0.13,
+            0.035,
+            12,
+            28,
+          ]}
         />
 
         <meshStandardMaterial
-          color="#d97706"
-          metalness={0.9}
-          roughness={0.3}
+          color="#b7791f"
+          metalness={0.86}
+          roughness={0.28}
         />
       </mesh>
     </group>
   );
 }
 
-function Stand({
-  x,
-}: {
-  x: number;
-}) {
+function SupportFrame() {
+  const uprights = [
+    FRAME_LEFT_X,
+    FRAME_RIGHT_X,
+  ];
+
   return (
-    <group
-      position={[x, FLOOR_Y, -1.2]}
-    >
+    <group>
+      {uprights.map((x) => (
+        <group key={x}>
+          <mesh
+            position={[
+              x,
+              FLOOR_Y + 0.08,
+              -0.62,
+            ]}
+            castShadow
+            receiveShadow
+          >
+            <boxGeometry
+              args={[
+                1.15,
+                0.18,
+                1.2,
+              ]}
+            />
+
+            <meshStandardMaterial
+              color="#111827"
+              metalness={0.72}
+              roughness={0.42}
+            />
+          </mesh>
+
+          <mesh
+            position={[
+              x,
+              0.6,
+              -0.62,
+            ]}
+            castShadow
+          >
+            <boxGeometry
+              args={[
+                0.22,
+                6.25,
+                0.22,
+              ]}
+            />
+
+            <meshStandardMaterial
+              color="#475569"
+              metalness={0.86}
+              roughness={0.3}
+            />
+          </mesh>
+        </group>
+      ))}
+
       <mesh
-        position={[0, 0.12, 0]}
+        position={[
+          CENTER_X,
+          FRAME_TOP_Y,
+          -0.62,
+        ]}
         castShadow
-        receiveShadow
       >
         <boxGeometry
-          args={[1.5, 0.24, 1.5]}
-        />
-
-        <meshStandardMaterial
-          color="#1a1c1e"
-          metalness={0.75}
-          roughness={0.5}
-        />
-      </mesh>
-
-      <mesh
-        position={[0, 3, 0]}
-        castShadow
-      >
-        <cylinderGeometry
           args={[
-            0.15,
-            0.15,
-            6.5,
-            28,
+            7.35,
+            0.22,
+            0.24,
           ]}
         />
 
         <meshStandardMaterial
-          color="#7f8ea3"
-          metalness={0.92}
-          roughness={0.32}
+          color="#475569"
+          metalness={0.86}
+          roughness={0.3}
         />
       </mesh>
 
+      {[
+        [LEFT_X, LEFT_ROPE_Z],
+        [RIGHT_X, RIGHT_ROPE_Z],
+      ].map(([x, z]) => (
+        <group key={`${x}-${z}`}>
+          <mesh
+            position={[
+              x,
+              (FRAME_TOP_Y + PULLEY_Y) / 2,
+              z,
+            ]}
+            castShadow
+          >
+            <boxGeometry
+              args={[
+                0.14,
+                FRAME_TOP_Y -
+                  PULLEY_Y +
+                  0.08,
+                0.14,
+              ]}
+            />
+
+            <meshStandardMaterial
+              color="#64748b"
+              metalness={0.9}
+              roughness={0.28}
+            />
+          </mesh>
+
+          <mesh
+            position={[
+              x,
+              FRAME_TOP_Y - 0.08,
+              (z - 0.62) / 2,
+            ]}
+            castShadow
+          >
+            <boxGeometry
+              args={[
+                0.16,
+                0.16,
+                Math.abs(z + 0.62),
+              ]}
+            />
+
+            <meshStandardMaterial
+              color="#64748b"
+              metalness={0.9}
+              roughness={0.28}
+            />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+function Pulley({
+  groupRef,
+  x,
+  z,
+}: {
+  groupRef:
+    RefObject<THREE.Group | null>;
+  x: number;
+  z: number;
+}) {
+  return (
+    <group
+      ref={groupRef}
+      position={[
+        x,
+        PULLEY_Y,
+        z,
+      ]}
+    >
       <mesh
-        position={[
-          0,
-          PULLEY_Y - FLOOR_Y,
-          1.2,
-        ]}
         rotation={[
           Math.PI / 2,
           0,
@@ -297,90 +469,1036 @@ function Stand({
       >
         <cylinderGeometry
           args={[
-            0.08,
-            0.08,
-            1.2,
-            16,
+            PULLEY_RADIUS,
+            PULLEY_RADIUS,
+            0.16,
+            40,
           ]}
         />
 
         <meshStandardMaterial
-          color="#374151"
-          metalness={0.88}
-          roughness={0.36}
+          color="#1f2937"
+          metalness={0.9}
+          roughness={0.28}
+        />
+      </mesh>
+
+      <mesh castShadow>
+        <torusGeometry
+          args={[
+            PULLEY_RADIUS - 0.035,
+            0.045,
+            12,
+            40,
+          ]}
+        />
+
+        <meshStandardMaterial
+          color="#94a3b8"
+          metalness={0.94}
+          roughness={0.22}
+        />
+      </mesh>
+
+      <mesh
+        rotation={[
+          Math.PI / 2,
+          0,
+          0,
+        ]}
+      >
+        <cylinderGeometry
+          args={[
+            0.07,
+            0.07,
+            0.34,
+            20,
+          ]}
+        />
+
+        <meshStandardMaterial
+          color="#cbd5e1"
+          metalness={0.96}
+          roughness={0.2}
         />
       </mesh>
     </group>
   );
 }
 
-function Pulley({
-  groupRef,
-  x,
+type RopePoint = [
+  number,
+  number,
+  number,
+];
+
+function RopeSegment({
+  start,
+  end,
 }: {
-  groupRef: RefObject<THREE.Group | null>;
-  x: number;
+  start: RopePoint;
+  end: RopePoint;
 }) {
+  const startVector =
+    new THREE.Vector3(
+      start[0],
+      start[1],
+      start[2],
+    );
+
+  const endVector =
+    new THREE.Vector3(
+      end[0],
+      end[1],
+      end[2],
+    );
+
+  const direction =
+    new THREE.Vector3()
+      .subVectors(
+        endVector,
+        startVector,
+      );
+
+  const length =
+    direction.length();
+
+  const midpoint =
+    new THREE.Vector3()
+      .addVectors(
+        startVector,
+        endVector,
+      )
+      .multiplyScalar(0.5);
+
+  const quaternion =
+    new THREE.Quaternion()
+      .setFromUnitVectors(
+        new THREE.Vector3(0, 1, 0),
+        direction
+          .clone()
+          .normalize(),
+      );
+
+  return (
+    <mesh
+      position={[
+        midpoint.x,
+        midpoint.y,
+        midpoint.z,
+      ]}
+      quaternion={quaternion}
+      castShadow
+    >
+      <cylinderGeometry
+        args={[
+          DRIVE_ROPE_RADIUS,
+          DRIVE_ROPE_RADIUS,
+          length,
+          12,
+        ]}
+      />
+
+      <meshStandardMaterial
+        color="#d6d3d1"
+        roughness={0.74}
+        metalness={0.05}
+      />
+    </mesh>
+  );
+}
+
+function DriveRopeSystem() {
+  return (
+    <group>
+      <RopeSegment
+        start={[
+          LEFT_X +
+            PULLEY_RADIUS * 0.1,
+          DRIVE_ROPE_Y,
+          LEFT_ROPE_Z,
+        ]}
+        end={[
+          -DRIVE_DRUM_RADIUS,
+          DRIVE_ROPE_Y,
+          LEFT_ROPE_Z,
+        ]}
+      />
+
+      <RopeSegment
+        start={[
+          DRIVE_DRUM_RADIUS,
+          DRIVE_ROPE_Y,
+          RIGHT_ROPE_Z,
+        ]}
+        end={[
+          RIGHT_X -
+            PULLEY_RADIUS * 0.1,
+          DRIVE_ROPE_Y,
+          RIGHT_ROPE_Z,
+        ]}
+      />
+    </group>
+  );
+}
+
+function HeightScale() {
   return (
     <group
-      ref={groupRef}
-      position={[x, PULLEY_Y, 0]}
+      position={[
+        LEFT_X + 0.72,
+        0.35,
+        -0.72,
+      ]}
+    >
+      <mesh>
+        <boxGeometry
+          args={[
+            0.08,
+            5.45,
+            0.06,
+          ]}
+        />
+
+        <meshStandardMaterial
+          color="#d6b84b"
+          metalness={0.2}
+          roughness={0.62}
+        />
+      </mesh>
+
+      {Array.from({
+        length: 11,
+      }).map((_, index) => {
+        const y =
+          -2.5 + index * 0.5;
+
+        const major =
+          index % 2 === 0;
+
+        return (
+          <mesh
+            key={index}
+            position={[
+              major
+                ? 0.16
+                : 0.12,
+              y,
+              0.01,
+            ]}
+          >
+            <boxGeometry
+              args={[
+                major
+                  ? 0.28
+                  : 0.2,
+                0.025,
+                0.07,
+              ]}
+            />
+
+            <meshStandardMaterial
+              color="#fde68a"
+              metalness={0.15}
+              roughness={0.58}
+            />
+          </mesh>
+        );
+      })}
+    </group>
+  );
+}
+
+function StationaryVanes() {
+  const vaneLevels = [
+    -1.42,
+    -0.92,
+    -0.42,
+  ];
+
+  return (
+    <group>
+      {vaneLevels.flatMap(
+        (levelY) => [
+          <mesh
+            key={`${levelY}-right`}
+            position={[
+              0.95,
+              levelY,
+              0,
+            ]}
+            castShadow
+          >
+            <boxGeometry
+              args={[
+                0.58,
+                0.11,
+                0.28,
+              ]}
+            />
+
+            <meshStandardMaterial
+              color="#b08d57"
+              metalness={0.82}
+              roughness={0.3}
+            />
+          </mesh>,
+
+          <mesh
+            key={`${levelY}-left`}
+            position={[
+              -0.95,
+              levelY,
+              0,
+            ]}
+            castShadow
+          >
+            <boxGeometry
+              args={[
+                0.58,
+                0.11,
+                0.28,
+              ]}
+            />
+
+            <meshStandardMaterial
+              color="#b08d57"
+              metalness={0.82}
+              roughness={0.3}
+            />
+          </mesh>,
+
+          <mesh
+            key={`${levelY}-front`}
+            position={[
+              0,
+              levelY,
+              0.95,
+            ]}
+            castShadow
+          >
+            <boxGeometry
+              args={[
+                0.28,
+                0.11,
+                0.58,
+              ]}
+            />
+
+            <meshStandardMaterial
+              color="#b08d57"
+              metalness={0.82}
+              roughness={0.3}
+            />
+          </mesh>,
+
+          <mesh
+            key={`${levelY}-back`}
+            position={[
+              0,
+              levelY,
+              -0.95,
+            ]}
+            castShadow
+          >
+            <boxGeometry
+              args={[
+                0.28,
+                0.11,
+                0.58,
+              ]}
+            />
+
+            <meshStandardMaterial
+              color="#b08d57"
+              metalness={0.82}
+              roughness={0.3}
+            />
+          </mesh>,
+        ],
+      )}
+    </group>
+  );
+}
+
+function RotatingDriveAssembly({
+  groupRef,
+}: {
+  groupRef:
+    RefObject<THREE.Group | null>;
+}) {
+  const paddleLevels = [
+    -1.68,
+    -1.18,
+    -0.68,
+    -0.18,
+  ];
+
+  const shaftBottomY = -2.05;
+  const shaftTopY =
+    DRIVE_DRUM_Y + 0.5;
+
+  const shaftLength =
+    shaftTopY - shaftBottomY;
+
+  return (
+    <group ref={groupRef}>
+      <mesh
+        position={[
+          CENTER_X,
+          shaftBottomY +
+            shaftLength / 2,
+          0,
+        ]}
+        castShadow
+      >
+        <cylinderGeometry
+          args={[
+            0.065,
+            0.065,
+            shaftLength,
+            24,
+          ]}
+        />
+
+        <meshStandardMaterial
+          color="#d1d5db"
+          metalness={0.94}
+          roughness={0.2}
+        />
+      </mesh>
+
+      <mesh
+        position={[
+          CENTER_X,
+          DRIVE_DRUM_Y,
+          0,
+        ]}
+        castShadow
+      >
+        <cylinderGeometry
+          args={[
+            DRIVE_DRUM_RADIUS,
+            DRIVE_DRUM_RADIUS,
+            DRIVE_DRUM_HEIGHT,
+            48,
+          ]}
+        />
+
+        <meshStandardMaterial
+          color="#6b4f3a"
+          metalness={0.58}
+          roughness={0.38}
+        />
+      </mesh>
+
+      {[
+        -1,
+        1,
+      ].map((direction) => (
+        <mesh
+          key={direction}
+          position={[
+            CENTER_X,
+            DRIVE_DRUM_Y +
+              direction *
+                (
+                  DRIVE_DRUM_HEIGHT /
+                    2 +
+                  0.035
+                ),
+            0,
+          ]}
+          castShadow
+        >
+          <cylinderGeometry
+            args={[
+              DRIVE_DRUM_RADIUS +
+                0.07,
+              DRIVE_DRUM_RADIUS +
+                0.07,
+              0.07,
+              48,
+            ]}
+          />
+
+          <meshStandardMaterial
+            color="#8b6f47"
+            metalness={0.7}
+            roughness={0.32}
+          />
+        </mesh>
+      ))}
+
+      {[
+        -0.11,
+        0.11,
+      ].map((offset) => (
+        <mesh
+          key={offset}
+          position={[
+            CENTER_X,
+            DRIVE_DRUM_Y + offset,
+            0,
+          ]}
+          rotation={[
+            Math.PI / 2,
+            0,
+            0,
+          ]}
+        >
+          <torusGeometry
+            args={[
+              DRIVE_DRUM_RADIUS +
+                0.012,
+              0.025,
+              10,
+              40,
+            ]}
+          />
+
+          <meshStandardMaterial
+            color="#d6d3d1"
+            roughness={0.7}
+            metalness={0.06}
+          />
+        </mesh>
+      ))}
+
+      <mesh
+        position={[
+          CENTER_X,
+          DRIVE_DRUM_Y -
+            DRIVE_DRUM_HEIGHT /
+              2 -
+            0.16,
+          0,
+        ]}
+        castShadow
+      >
+        <cylinderGeometry
+          args={[
+            0.16,
+            0.16,
+            0.22,
+            24,
+          ]}
+        />
+
+        <meshStandardMaterial
+          color="#64748b"
+          metalness={0.9}
+          roughness={0.26}
+        />
+      </mesh>
+
+      {/* Tay quay dùng để cuốn tạ lên trước mỗi lượt */}
+      <mesh
+        position={[
+          0.42,
+          DRIVE_DRUM_Y + 0.46,
+          0,
+        ]}
+        castShadow
+      >
+        <boxGeometry
+          args={[
+            0.84,
+            0.07,
+            0.07,
+          ]}
+        />
+
+        <meshStandardMaterial
+          color="#c7964b"
+          metalness={0.72}
+          roughness={0.3}
+        />
+      </mesh>
+
+      <mesh
+        position={[
+          0.82,
+          DRIVE_DRUM_Y + 0.63,
+          0,
+        ]}
+        castShadow
+      >
+        <cylinderGeometry
+          args={[
+            0.055,
+            0.055,
+            0.34,
+            18,
+          ]}
+        />
+
+        <meshStandardMaterial
+          color="#a9712a"
+          metalness={0.58}
+          roughness={0.4}
+        />
+      </mesh>
+
+      {paddleLevels.map(
+        (levelY) => (
+          <group
+            key={levelY}
+            position={[
+              CENTER_X,
+              levelY,
+              0,
+            ]}
+          >
+            <mesh castShadow>
+              <cylinderGeometry
+                args={[
+                  0.13,
+                  0.13,
+                  0.16,
+                  24,
+                ]}
+              />
+
+              <meshStandardMaterial
+                color="#d6b46a"
+                metalness={0.86}
+                roughness={0.26}
+              />
+            </mesh>
+
+            <mesh
+              position={[
+                0.48,
+                0,
+                0,
+              ]}
+              castShadow
+            >
+              <boxGeometry
+                args={[
+                  0.82,
+                  0.12,
+                  0.26,
+                ]}
+              />
+
+              <meshStandardMaterial
+                color="#d6b46a"
+                metalness={0.86}
+                roughness={0.26}
+              />
+            </mesh>
+
+            <mesh
+              position={[
+                -0.48,
+                0,
+                0,
+              ]}
+              castShadow
+            >
+              <boxGeometry
+                args={[
+                  0.82,
+                  0.12,
+                  0.26,
+                ]}
+              />
+
+              <meshStandardMaterial
+                color="#d6b46a"
+                metalness={0.86}
+                roughness={0.26}
+              />
+            </mesh>
+
+            <mesh
+              position={[
+                0,
+                0,
+                0.48,
+              ]}
+              castShadow
+            >
+              <boxGeometry
+                args={[
+                  0.26,
+                  0.12,
+                  0.82,
+                ]}
+              />
+
+              <meshStandardMaterial
+                color="#d6b46a"
+                metalness={0.86}
+                roughness={0.26}
+              />
+            </mesh>
+
+            <mesh
+              position={[
+                0,
+                0,
+                -0.48,
+              ]}
+              castShadow
+            >
+              <boxGeometry
+                args={[
+                  0.26,
+                  0.12,
+                  0.82,
+                ]}
+              />
+
+              <meshStandardMaterial
+                color="#d6b46a"
+                metalness={0.86}
+                roughness={0.26}
+              />
+            </mesh>
+          </group>
+        ),
+      )}
+    </group>
+  );
+}
+
+function ThermometerProbe() {
+  return (
+    <group
+      position={[
+        0.87,
+        0.34,
+        0.42,
+      ]}
       rotation={[
         0,
         0,
-        Math.PI / 2,
+        -0.05,
       ]}
     >
       <mesh castShadow>
         <cylinderGeometry
           args={[
-            0.28,
-            0.28,
+            0.052,
+            0.052,
+            2.7,
+            20,
+          ]}
+        />
+
+        <meshPhysicalMaterial
+          color="#e2e8f0"
+          transparent
+          opacity={0.48}
+          roughness={0.08}
+          transmission={0.42}
+        />
+      </mesh>
+
+      <mesh
+        position={[
+          0,
+          -0.42,
+          0,
+        ]}
+      >
+        <cylinderGeometry
+          args={[
+            0.018,
+            0.018,
+            1.72,
+            14,
+          ]}
+        />
+
+        <meshStandardMaterial
+          color="#ef4444"
+          emissive="#7f1d1d"
+          emissiveIntensity={0.22}
+        />
+      </mesh>
+
+      <mesh
+        position={[
+          0,
+          -1.32,
+          0,
+        ]}
+      >
+        <sphereGeometry
+          args={[
+            0.105,
+            20,
+            20,
+          ]}
+        />
+
+        <meshStandardMaterial
+          color="#ef4444"
+          emissive="#7f1d1d"
+          emissiveIntensity={0.28}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+function Calorimeter({
+  waterRef,
+}: {
+  waterRef:
+    RefObject<THREE.Mesh | null>;
+}) {
+  const topY =
+    CALORIMETER_CENTER_Y +
+    CALORIMETER_HEIGHT / 2;
+
+  const bottomY =
+    CALORIMETER_CENTER_Y -
+    CALORIMETER_HEIGHT / 2;
+
+  return (
+    <group>
+      <mesh
+        position={[
+          CENTER_X,
+          CALORIMETER_CENTER_Y,
+          0,
+        ]}
+        castShadow
+        receiveShadow
+      >
+        <cylinderGeometry
+          args={[
+            CALORIMETER_RADIUS,
+            CALORIMETER_RADIUS,
+            CALORIMETER_HEIGHT,
+            64,
+            1,
+            true,
+          ]}
+        />
+
+        <meshPhysicalMaterial
+          color="#b87333"
+          transparent
+          opacity={0.28}
+          transmission={0.22}
+          roughness={0.25}
+          metalness={0.72}
+          side={THREE.DoubleSide}
+          depthWrite={false}
+        />
+      </mesh>
+
+      <mesh
+        position={[
+          CENTER_X,
+          bottomY,
+          0,
+        ]}
+        castShadow
+        receiveShadow
+      >
+        <cylinderGeometry
+          args={[
+            CALORIMETER_RADIUS +
+              0.03,
+            CALORIMETER_RADIUS +
+              0.03,
+            0.14,
+            64,
+          ]}
+        />
+
+        <meshStandardMaterial
+          color="#8f5428"
+          metalness={0.8}
+          roughness={0.3}
+        />
+      </mesh>
+
+      <mesh
+        position={[
+          CENTER_X,
+          topY,
+          0,
+        ]}
+        castShadow
+      >
+        <cylinderGeometry
+          args={[
+            CALORIMETER_RADIUS +
+              0.05,
+            CALORIMETER_RADIUS +
+              0.05,
+            0.13,
+            64,
+          ]}
+        />
+
+        <meshPhysicalMaterial
+          color="#b87333"
+          transparent
+          opacity={0.72}
+          roughness={0.24}
+          metalness={0.78}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {[topY, bottomY].map(
+        (y) => (
+          <mesh
+            key={y}
+            position={[
+              CENTER_X,
+              y,
+              0,
+            ]}
+            rotation={[
+              Math.PI / 2,
+              0,
+              0,
+            ]}
+          >
+            <torusGeometry
+              args={[
+                CALORIMETER_RADIUS +
+                  0.035,
+                0.055,
+                12,
+                64,
+              ]}
+            />
+
+            <meshStandardMaterial
+              color="#d09555"
+              metalness={0.8}
+              roughness={0.28}
+            />
+          </mesh>
+        ),
+      )}
+
+      <mesh
+        ref={waterRef}
+        position={[
+          CENTER_X,
+          CALORIMETER_CENTER_Y -
+            0.12,
+          0,
+        ]}
+      >
+        <cylinderGeometry
+          args={[
+            WATER_RADIUS,
+            WATER_RADIUS,
+            WATER_HEIGHT,
+            64,
+          ]}
+        />
+
+        <meshPhysicalMaterial
+          color="#1583a6"
+          transparent
+          opacity={0.34}
+          transmission={0.36}
+          roughness={0.18}
+          metalness={0.02}
+          depthWrite={false}
+        />
+      </mesh>
+
+      <StationaryVanes />
+
+      <mesh
+        position={[
+          CENTER_X,
+          topY + 0.11,
+          0,
+        ]}
+      >
+        <cylinderGeometry
+          args={[
             0.18,
-            32,
+            0.18,
+            0.18,
+            28,
           ]}
         />
 
         <meshStandardMaterial
-          color="#334155"
-          metalness={0.9}
-          roughness={0.32}
+          color="#7c4a28"
+          metalness={0.78}
+          roughness={0.3}
         />
       </mesh>
 
-      <mesh position={[0, -0.11, 0]}>
+      <mesh
+        position={[
+          0.87,
+          topY + 0.09,
+          0.42,
+        ]}
+      >
         <cylinderGeometry
           args={[
-            0.32,
-            0.32,
-            0.035,
-            32,
+            0.12,
+            0.12,
+            0.15,
+            24,
           ]}
         />
 
         <meshStandardMaterial
-          color="#64748b"
-          metalness={0.95}
-          roughness={0.28}
+          color="#7c4a28"
+          metalness={0.78}
+          roughness={0.3}
         />
       </mesh>
 
-      <mesh position={[0, 0.11, 0]}>
-        <cylinderGeometry
-          args={[
-            0.32,
-            0.32,
-            0.035,
-            32,
-          ]}
-        />
+      <ThermometerProbe />
+    </group>
+  );
+}
 
-        <meshStandardMaterial
-          color="#64748b"
-          metalness={0.95}
-          roughness={0.28}
-        />
-      </mesh>
+function WeightCatchPads() {
+  return (
+    <group>
+      {[LEFT_X, RIGHT_X].map(
+        (x) => (
+          <mesh
+            key={x}
+            position={[
+              x,
+              FLOOR_Y +
+                WEIGHT_BASE_CLEARANCE -
+                0.04,
+              0,
+            ]}
+            receiveShadow
+          >
+            <cylinderGeometry
+              args={[
+                0.62,
+                0.7,
+                0.1,
+                36,
+              ]}
+            />
+
+            <meshStandardMaterial
+              color="#172033"
+              metalness={0.42}
+              roughness={0.56}
+            />
+          </mesh>
+        ),
+      )}
     </group>
   );
 }
@@ -907,7 +2025,8 @@ export default function JouleScene({
     const ropeLength =
       Math.max(
         0.05,
-        PULLEY_Y - ropeBottomY,
+        VERTICAL_ROPE_TOP_Y -
+          ropeBottomY,
       );
 
     for (
@@ -934,12 +2053,12 @@ export default function JouleScene({
       0.4;
 
     if (leftPulleyRef.current) {
-      leftPulleyRef.current.rotation.x -=
+      leftPulleyRef.current.rotation.z -=
         pulleyRotationDelta;
     }
 
     if (rightPulleyRef.current) {
-      rightPulleyRef.current.rotation.x +=
+      rightPulleyRef.current.rotation.z +=
         pulleyRotationDelta;
     }
 
@@ -1000,59 +2119,67 @@ export default function JouleScene({
       {/* Bàn thí nghiệm */}
       <mesh
         position={[
-          0,
-          FLOOR_Y - 0.4,
+          CENTER_X,
+          FLOOR_Y - 0.42,
           0,
         ]}
         receiveShadow
       >
         <boxGeometry
-          args={[14, 0.8, 8]}
+          args={[
+            12.5,
+            0.72,
+            7.2,
+          ]}
         />
 
         <meshStandardMaterial
-          color="#2d251f"
-          roughness={0.82}
+          color="#26211d"
+          roughness={0.8}
           metalness={0.08}
         />
       </mesh>
 
-      {/* Hai giá đỡ */}
-      <Stand x={LEFT_X} />
-      <Stand x={RIGHT_X} />
+      {/* Khung chịu lực và hệ ròng rọc */}
+      <SupportFrame />
 
-      {/* Hai ròng rọc */}
       <Pulley
         groupRef={leftPulleyRef}
         x={LEFT_X}
+        z={LEFT_ROPE_Z}
       />
 
       <Pulley
         groupRef={rightPulleyRef}
         x={RIGHT_X}
+        z={RIGHT_ROPE_Z}
       />
 
-      {/* Dây treo */}
+      <DriveRopeSystem />
+
+      {/* Hai dây treo thay đổi theo độ cao tạ */}
       <mesh
         ref={leftRopeRef}
         position={[
           LEFT_X,
           PULLEY_Y - 1,
-          0,
+          LEFT_ROPE_Z,
         ]}
+        castShadow
       >
         <cylinderGeometry
           args={[
-            0.025,
-            0.025,
+            DRIVE_ROPE_RADIUS,
+            DRIVE_ROPE_RADIUS,
             1,
             12,
           ]}
         />
 
         <meshStandardMaterial
-          color="#94a3b8"
-          roughness={0.7}
+          color="#d6d3d1"
+          roughness={0.74}
+          metalness={0.05}
         />
       </mesh>
 
@@ -1061,32 +2188,34 @@ export default function JouleScene({
         position={[
           RIGHT_X,
           PULLEY_Y - 1,
-          0,
+          RIGHT_ROPE_Z,
         ]}
+        castShadow
       >
         <cylinderGeometry
           args={[
-            0.025,
-            0.025,
+            DRIVE_ROPE_RADIUS,
+            DRIVE_ROPE_RADIUS,
             1,
             12,
           ]}
         />
 
         <meshStandardMaterial
-          color="#94a3b8"
-          roughness={0.7}
+          color="#d6d3d1"
+          roughness={0.74}
+          metalness={0.05}
         />
       </mesh>
 
-      {/* Hai chồng tạ */}
+      {/* Hai khối tạ tương tác trực tiếp */}
       <group
         ref={leftWeightRef}
         position={[
           LEFT_X,
           stopY +
             effectiveDropHeightM,
-          0,
+          LEFT_ROPE_Z,
         ]}
         onPointerDown={
           handleWeightPointerDown
@@ -1111,7 +2240,7 @@ export default function JouleScene({
           RIGHT_X,
           stopY +
             effectiveDropHeightM,
-          0,
+          RIGHT_ROPE_Z,
         ]}
         onPointerDown={
           handleWeightPointerDown
@@ -1130,232 +2259,20 @@ export default function JouleScene({
         />
       </group>
 
-      {/* Bình nhiệt lượng */}
-      <group
-        position={[
-          CENTER_X,
-          -1,
-          0,
-        ]}
-      >
-        <mesh
-          castShadow
-          receiveShadow
-        >
-          <cylinderGeometry
-            args={[
-              1.5,
-              1.5,
-              3.2,
-              64,
-              1,
-              true,
-            ]}
-          />
+      <WeightCatchPads />
+      <HeightScale />
 
-          <meshPhysicalMaterial
-            color="#dbeafe"
-            transparent
-            opacity={0.22}
-            transmission={0.78}
-            roughness={0.08}
-            metalness={0.08}
-            side={THREE.DoubleSide}
-            depthWrite={false}
-          />
-        </mesh>
+      {/* Bình nhiệt lượng:
+          vỏ đồng, nước, vane tĩnh và nhiệt kế */}
+      <Calorimeter
+        waterRef={waterRef}
+      />
 
-        <mesh
-          ref={waterRef}
-          position={[0, -0.12, 0]}
-        >
-          <cylinderGeometry
-            args={[
-              1.42,
-              1.42,
-              2.72,
-              64,
-            ]}
-          />
-
-          <meshPhysicalMaterial
-            color="#0ea5e9"
-            transparent
-            opacity={0.58}
-            roughness={0.08}
-            metalness={0.06}
-          />
-        </mesh>
-
-        {/* Trục + cánh khuấy */}
-        <group ref={paddleRef}>
-          <mesh
-            position={[0, 0.25, 0]}
-            castShadow
-          >
-            <cylinderGeometry
-              args={[
-                0.06,
-                0.06,
-                4.2,
-                24,
-              ]}
-            />
-
-            <meshStandardMaterial
-              color="#cbd5e1"
-              metalness={0.92}
-              roughness={0.22}
-            />
-          </mesh>
-
-          {Array.from({
-            length: 6,
-          }).map((_, index) => {
-            const y =
-              -1.05 + index * 0.4;
-
-            const angle =
-              index *
-              (Math.PI / 3);
-
-            return (
-              <mesh
-                key={index}
-                position={[0, y, 0]}
-                rotation={[
-                  0,
-                  angle,
-                  0,
-                ]}
-                castShadow
-              >
-                <boxGeometry
-                  args={[
-                    1.8,
-                    0.12,
-                    0.08,
-                  ]}
-                />
-
-                <meshStandardMaterial
-                  color="#e2e8f0"
-                  metalness={0.94}
-                  roughness={0.2}
-                />
-              </mesh>
-            );
-          })}
-        </group>
-
-        {/* Nhiệt kế */}
-        <group
-          position={[1.05, 0.8, 0]}
-        >
-          <mesh>
-            <cylinderGeometry
-              args={[
-                0.055,
-                0.055,
-                2.5,
-                18,
-              ]}
-            />
-
-            <meshPhysicalMaterial
-              color="#f8fafc"
-              transparent
-              opacity={0.72}
-              roughness={0.12}
-            />
-          </mesh>
-
-          <mesh
-            position={[0, -1.05, 0]}
-          >
-            <sphereGeometry
-              args={[0.12, 20, 20]}
-            />
-
-            <meshStandardMaterial
-              color="#ef4444"
-              emissive="#7f1d1d"
-              emissiveIntensity={0.3}
-            />
-          </mesh>
-        </group>
-      </group>
-
-      {/* Mốc cao độ trực quan */}
-      <mesh
-        position={[
-          LEFT_X + 0.55,
-          FLOOR_Y + 3,
-          -1.18,
-        ]}
-      >
-        <boxGeometry
-          args={[0.16, 5.8, 0.03]}
-        />
-
-        <meshStandardMaterial
-          color="#fde047"
-          roughness={0.75}
-        />
-      </mesh>
-
-      {/* Giới hạn dưới của chồng tạ */}
-      <mesh
-        position={[
-          LEFT_X,
-          FLOOR_Y +
-            WEIGHT_BASE_CLEARANCE -
-            0.02,
-          0,
-        ]}
-        receiveShadow
-      >
-        <cylinderGeometry
-          args={[
-            0.64,
-            0.64,
-            0.04,
-            32,
-          ]}
-        />
-
-        <meshStandardMaterial
-          color="#334155"
-          metalness={0.65}
-          roughness={0.42}
-        />
-      </mesh>
-
-      <mesh
-        position={[
-          RIGHT_X,
-          FLOOR_Y +
-            WEIGHT_BASE_CLEARANCE -
-            0.02,
-          0,
-        ]}
-        receiveShadow
-      >
-        <cylinderGeometry
-          args={[
-            0.64,
-            0.64,
-            0.04,
-            32,
-          ]}
-        />
-
-        <meshStandardMaterial
-          color="#334155"
-          metalness={0.65}
-          roughness={0.42}
-        />
-      </mesh>
+      {/* Cụm quay:
+          tang cuốn → trục → paddle wheel */}
+      <RotatingDriveAssembly
+        groupRef={paddleRef}
+      />
     </group>
   );
 }

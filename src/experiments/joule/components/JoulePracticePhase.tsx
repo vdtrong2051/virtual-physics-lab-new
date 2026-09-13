@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -87,6 +88,8 @@ type FeedbackState = {
   tone: FeedbackTone;
   message: string;
 };
+
+const FEEDBACK_AUTO_HIDE_MS = 3000;
 
 type RailIconName =
   | "chevron-left"
@@ -313,6 +316,21 @@ export default function JoulePracticePhase({
   ] = useState<
     FeedbackState | null
   >(null);
+
+  useEffect(() => {
+    if (!feedback) {
+      return;
+    }
+
+    const timeoutId =
+      window.setTimeout(() => {
+        setFeedback(null);
+      }, FEEDBACK_AUTO_HIDE_MS);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [feedback]);
 
   const [
     temperaturePoints,
@@ -828,11 +846,18 @@ export default function JoulePracticePhase({
       {feedback && (
         <div
           className={`joule-practice__feedback joule-practice__feedback--${feedback.tone}`}
-          role="status"
-        >
-          {
-            feedback.message
+          role={
+            feedback.tone === "error"
+              ? "alert"
+              : "status"
           }
+          aria-live={
+            feedback.tone === "error"
+              ? "assertive"
+              : "polite"
+          }
+        >
+          {feedback.message}
         </div>
       )}
 

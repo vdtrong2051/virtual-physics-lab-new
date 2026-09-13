@@ -76,45 +76,138 @@ export default function JouleSimulation({
         dpr={[1, 1.5]}
         camera={{
           position: [
-            0,
-            3.6,
-            11.8,
+            4.8,
+            4.35,
+            12.8,
           ],
-          fov: 45,
+          fov: 42,
+          near: 0.1,
+          far: 100,
         }}
         gl={{
           antialias: true,
+
           toneMapping:
             THREE.ACESFilmicToneMapping,
+
+          powerPreference:
+            "high-performance",
+        }}
+        onCreated={({ gl }) => {
+          gl.toneMappingExposure =
+            1.08;
         }}
       >
+        {/* Background riêng cho workspace */}
         <color
           attach="background"
-          args={["#0b1121"]}
+          args={[
+            "#08111f",
+          ]}
         />
 
+        {/*
+         * Ambient chỉ đủ nâng vùng tối.
+         * Không dùng ambient quá mạnh vì sẽ
+         * làm mất hình khối kim loại.
+         */}
         <ambientLight
-          intensity={1.15}
+          intensity={0.38}
         />
 
+        {/*
+         * Ánh sáng môi trường:
+         * xanh lạnh từ trên, nâu tối từ bàn.
+         */}
         <hemisphereLight
           color="#dbeafe"
-          groundColor="#020617"
-          intensity={0.75}
+          groundColor="#211711"
+          intensity={0.82}
         />
 
+        {/*
+         * KEY LIGHT
+         * Ánh sáng chính từ trên-phải-phía trước.
+         * Đây là nguồn duy nhất cast shadow.
+         */}
         <directionalLight
           castShadow
-          position={[5, 10, 5]}
-          intensity={1.8}
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
+          position={[
+            6.5,
+            10,
+            7.5,
+          ]}
+          color="#fff7ed"
+          intensity={2.35}
+          shadow-mapSize-width={
+            2048
+          }
+          shadow-mapSize-height={
+            2048
+          }
+          shadow-camera-near={1}
+          shadow-camera-far={30}
+          shadow-camera-left={-7}
+          shadow-camera-right={7}
+          shadow-camera-top={7}
+          shadow-camera-bottom={-6}
+          shadow-bias={
+            -0.00015
+          }
+          shadow-normalBias={
+            0.025
+          }
         />
 
+        {/*
+         * FILL LIGHT
+         * Mở chi tiết mặt trái của frame,
+         * pulley và calorimeter.
+         */}
+        <directionalLight
+          position={[
+            -5.5,
+            4.5,
+            6,
+          ]}
+          color="#bfdbfe"
+          intensity={0.72}
+        />
+
+        {/*
+         * FRONT SOFT LIGHT
+         * Giúp vật liệu đồng/thép không
+         * biến thành các khối đen.
+         */}
+        <pointLight
+          position={[
+            0,
+            2.5,
+            6,
+          ]}
+          color="#ffffff"
+          intensity={0.62}
+          distance={14}
+          decay={2}
+        />
+
+        {/*
+         * RIM LIGHT
+         * Tách silhouette phía sau khỏi
+         * background tối.
+         */}
         <spotLight
-          position={[-5, 6, 5]}
-          intensity={0.85}
-          color="#fb923c"
+          position={[
+            -4,
+            7.5,
+            -4.5,
+          ]}
+          color="#fbbf24"
+          intensity={1.1}
+          distance={22}
+          angle={0.72}
+          penumbra={0.8}
+          decay={2}
         />
 
         <JouleScene
@@ -150,37 +243,21 @@ export default function JouleSimulation({
           }
         />
 
-        <mesh
-          rotation={[
-            -Math.PI / 2,
-            0,
-            0,
-          ]}
-          position={[0, -2.91, 0]}
-          receiveShadow
-        >
-          <planeGeometry
-            args={[18, 14]}
-          />
-
-          <shadowMaterial
-            transparent
-            opacity={0.3}
-          />
-        </mesh>
-
         <OrbitControls
           enabled={
             orbitEnabled &&
             !weightDragging
           }
+          enableDamping
+          dampingFactor={0.08}
+          rotateSpeed={0.55}
           enableZoom={false}
           enablePan={false}
           minPolarAngle={
             Math.PI / 4
           }
           maxPolarAngle={
-            Math.PI / 2 - 0.08
+            Math.PI / 2 - 0.1
           }
           minAzimuthAngle={
             -Math.PI / 3
@@ -188,7 +265,11 @@ export default function JouleSimulation({
           maxAzimuthAngle={
             Math.PI / 3
           }
-          target={[0, 0, 0]}
+          target={[
+            0,
+            0.35,
+            0,
+          ]}
         />
       </Canvas>
     </div>

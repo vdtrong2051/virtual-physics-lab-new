@@ -7327,7 +7327,7 @@
 
 
 /* =========================================================
-   JOULE PRACTICE — FEEDBACK
+   JOULE PRACTICE — FEEDBACK TOAST
    ========================================================= */
 
 .joule-practice__feedback {
@@ -7338,17 +7338,18 @@
   top: var(--space-4);
   left: 50%;
 
-  width:
+  width: max-content;
+  max-width:
     min(
-      calc(100% - 32px),
-      520px
+      360px,
+      calc(100% - 96px)
     );
 
   transform:
     translateX(-50%);
 
   padding:
-    var(--space-3)
+    10px
     var(--space-4);
 
   border-radius: var(--radius-md);
@@ -7356,23 +7357,30 @@
   box-shadow: var(--shadow-lab);
 
   font-size: var(--text-sm);
+  line-height: 1.45;
+
   text-align: center;
 
   pointer-events: none;
 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+
+  animation:
+    joule-feedback-in
+    180ms
+    ease-out;
 }
 
 .joule-practice__feedback--success {
-  color: var(--lab-topic-accent);
+  color: #5eead4;
 
   background:
-    rgba(7, 15, 28, 0.96);
+    rgba(7, 15, 28, 0.94);
 
   border:
     1px solid
-    var(--lab-topic-accent);
+    rgba(45, 212, 191, 0.48);
 }
 
 .joule-practice__feedback--error {
@@ -7390,11 +7398,31 @@
   color: var(--lab-text-soft);
 
   background:
-    rgba(7, 15, 28, 0.96);
+    rgba(7, 15, 28, 0.94);
 
   border:
     1px solid
     var(--lab-border-strong);
+}
+
+@keyframes joule-feedback-in {
+  from {
+    opacity: 0;
+
+    transform:
+      translateX(-50%)
+      translateY(-8px)
+      scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateX(-50%)
+      translateY(0)
+      scale(1);
+  }
 }
 
 
@@ -10055,6 +10083,88 @@
     min-width: 0 !important;
     min-height: auto !important;
   }
+}
+
+/* =========================================================
+   JOULE — SCROLLBARS
+
+   Giữ nguyên khả năng scroll.
+   Chỉ đồng bộ visual với Lab dark theme.
+   ========================================================= */
+
+.joule-view__stage--content,
+.joule-preparation-inventory__list,
+.joule-practice-panel,
+.joule-measurement__table-wrap,
+.joule-report-reference__table-wrap,
+.joule-report-preview {
+  scrollbar-width: thin;
+
+  scrollbar-color:
+    rgba(148, 163, 184, 0.34)
+    transparent;
+}
+
+.joule-view__stage--content::-webkit-scrollbar,
+.joule-preparation-inventory__list::-webkit-scrollbar,
+.joule-practice-panel::-webkit-scrollbar,
+.joule-measurement__table-wrap::-webkit-scrollbar,
+.joule-report-reference__table-wrap::-webkit-scrollbar,
+.joule-report-preview::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.joule-view__stage--content::-webkit-scrollbar-track,
+.joule-preparation-inventory__list::-webkit-scrollbar-track,
+.joule-practice-panel::-webkit-scrollbar-track,
+.joule-measurement__table-wrap::-webkit-scrollbar-track,
+.joule-report-reference__table-wrap::-webkit-scrollbar-track,
+.joule-report-preview::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.joule-view__stage--content::-webkit-scrollbar-thumb,
+.joule-preparation-inventory__list::-webkit-scrollbar-thumb,
+.joule-practice-panel::-webkit-scrollbar-thumb,
+.joule-measurement__table-wrap::-webkit-scrollbar-thumb,
+.joule-report-reference__table-wrap::-webkit-scrollbar-thumb,
+.joule-report-preview::-webkit-scrollbar-thumb {
+  background:
+    rgba(148, 163, 184, 0.34);
+
+  border:
+    2px solid transparent;
+
+  border-radius: 999px;
+
+  background-clip:
+    padding-box;
+}
+
+.joule-view__stage--content::-webkit-scrollbar-thumb:hover,
+.joule-preparation-inventory__list::-webkit-scrollbar-thumb:hover,
+.joule-practice-panel::-webkit-scrollbar-thumb:hover,
+.joule-measurement__table-wrap::-webkit-scrollbar-thumb:hover,
+.joule-report-reference__table-wrap::-webkit-scrollbar-thumb:hover,
+.joule-report-preview::-webkit-scrollbar-thumb:hover {
+  background:
+    rgba(94, 234, 212, 0.5);
+
+  border:
+    2px solid transparent;
+
+  background-clip:
+    padding-box;
+}
+
+.joule-view__stage--content::-webkit-scrollbar-corner,
+.joule-preparation-inventory__list::-webkit-scrollbar-corner,
+.joule-practice-panel::-webkit-scrollbar-corner,
+.joule-measurement__table-wrap::-webkit-scrollbar-corner,
+.joule-report-reference__table-wrap::-webkit-scrollbar-corner,
+.joule-report-preview::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* =========================================================
