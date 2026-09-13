@@ -74,13 +74,8 @@ type JoulePracticePhaseProps = {
 
   onResetRuntime: () => void;
 
-  /*
-   * Optional để View hiện tại vẫn compile ngay.
-   * Khi View truyền 2 prop này xuống,
-   * nút mở rộng workspace sẽ nằm luôn trong rail.
-   */
-  workspaceExpanded?: boolean;
-  onToggleWorkspaceExpanded?: () => void;
+  workspaceExpanded: boolean;
+  onToggleWorkspaceExpanded: () => void;
 };
 
 type FeedbackTone =

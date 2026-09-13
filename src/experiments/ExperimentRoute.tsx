@@ -1,6 +1,8 @@
-import { useParams } from "react-router";
+import {
+  Navigate,
+  useParams,
+} from "react-router";
 
-import { ExperimentView } from "./_template";
 import BoyleView from "./boyle";
 import JouleView from "./joule";
 
@@ -15,5 +17,10 @@ export default function ExperimentRoute() {
     return <JouleView />;
   }
 
-  return <ExperimentView />;
+  return (
+    <Navigate
+      to="/app/experiments"
+      replace
+    />
+  );
 }
