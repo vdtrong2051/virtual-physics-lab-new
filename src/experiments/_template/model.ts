@@ -1,40 +1,56 @@
+import type {
+  ExperimentAssessmentState as SharedExperimentAssessmentState,
+  ExperimentPhaseDefinition as SharedExperimentPhaseDefinition,
+} from "../shared/model";
+
 export type ExperimentPhaseId =
   | "intro"
-  | "preparation"
-  | "experiment"
-  | "conclusion"
-  | "practice"
+  | "prep"
+  | "prac"
+  | "conc"
+  | "test"
   | "report";
 
-export type ExperimentPhaseDefinition<TPhaseId extends string> = {
-  id: TPhaseId;
-  label: string;
-  title: string;
-  description?: string;
-  disabled?: boolean;
-};
+export type ExperimentPhaseDefinition<
+  TPhaseId extends string,
+> =
+  SharedExperimentPhaseDefinition<
+    TPhaseId
+  >;
 
-declare const templateRuntimeMarker: unique symbol;
-declare const templateMeasurementMarker: unique symbol;
-declare const templateObservationMarker: unique symbol;
+declare const templateRuntimeMarker:
+  unique symbol;
 
-// TODO: Mỗi thí nghiệm thật cần thay thế hoặc mở rộng shape runtime này.
+declare const templateMeasurementMarker:
+  unique symbol;
+
+declare const templateObservationMarker:
+  unique symbol;
+
+// TODO:
+// Mỗi thí nghiệm thật phải định nghĩa
+// runtime state riêng.
 export type TemplateRuntimeState = {
   readonly [templateRuntimeMarker]?: never;
 };
 
-// TODO: Mỗi thí nghiệm thật cần thay thế hoặc mở rộng shape measurement này.
+// TODO:
+// Mỗi thí nghiệm thật phải định nghĩa
+// measurement riêng.
 export type TemplateMeasurement = {
   readonly [templateMeasurementMarker]?: never;
 };
 
-// TODO: Mỗi thí nghiệm thật cần thay thế hoặc mở rộng shape observation này.
+// TODO:
+// Chỉ dùng nếu thí nghiệm có phần
+// ghi nhận quan sát của người học.
 export type TemplateObservation = {
   readonly [templateObservationMarker]?: never;
 };
 
-// TODO: Mỗi thí nghiệm thật cần thay thế hoặc mở rộng shape assessment này.
-export type TemplateAssessmentState = {
-  answers: Record<string, unknown>;
-  submitted: boolean;
-};
+// Template mặc định dùng dạng câu hỏi
+// trắc nghiệm chuẩn của hệ thống.
+export type TemplateAssessmentState =
+  SharedExperimentAssessmentState<
+    string
+  >;

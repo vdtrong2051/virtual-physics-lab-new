@@ -1,3 +1,11 @@
+import type {
+  ExperimentAnswerIndex,
+  ExperimentAssessmentQuestion,
+  ExperimentAssessmentState,
+  ExperimentPhaseDefinition,
+  ExperimentPreparationToolDefinition,
+} from "../shared/model";
+
 export type JoulePhaseId =
   | "intro"
   | "prep"
@@ -6,13 +14,10 @@ export type JoulePhaseId =
   | "test"
   | "report";
 
-export type JoulePhaseDefinition = {
-  id: JoulePhaseId;
-  label: string;
-  title: string;
-  description?: string;
-  disabled?: boolean;
-};
+export type JoulePhaseDefinition =
+  ExperimentPhaseDefinition<
+    JoulePhaseId
+  >;
 
 export type JouleMotionPhase =
   | "idle"
@@ -36,16 +41,14 @@ export type JoulePreparationToolId =
   | "scale"
   | "beaker";
 
-export type JoulePreparationToolDefinition = {
-  id: JoulePreparationToolId;
-  name: string;
-  description: string;
-  icon: string;
-  correct: boolean;
-};
+export type JoulePreparationToolDefinition =
+  ExperimentPreparationToolDefinition<
+    JoulePreparationToolId
+  >;
 
 export type JoulePreparationState = {
-  selectedToolIds: JoulePreparationToolId[];
+  selectedToolIds:
+    JoulePreparationToolId[];
 };
 
 export type JouleMeasurement = {
@@ -61,26 +64,14 @@ export type JouleQuestionId =
   | "q3";
 
 export type JouleAnswerIndex =
-  | 0
-  | 1
-  | 2
-  | 3;
+  ExperimentAnswerIndex;
 
-export type JouleAssessmentQuestion = {
-  id: JouleQuestionId;
-  prompt: string;
-  options: readonly [
-    string,
-    string,
-    string,
-    string
-  ];
-  correctOption: JouleAnswerIndex;
-};
-
-export type JouleAssessmentState = {
-  answers: Partial<
-    Record<JouleQuestionId, JouleAnswerIndex>
+export type JouleAssessmentQuestion =
+  ExperimentAssessmentQuestion<
+    JouleQuestionId
   >;
-  submitted: boolean;
-};
+
+export type JouleAssessmentState =
+  ExperimentAssessmentState<
+    JouleQuestionId
+  >;

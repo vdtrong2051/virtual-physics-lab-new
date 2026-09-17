@@ -10,42 +10,36 @@ import {
   getExperimentBySlug,
 } from "../experiments/registry";
 
+import type {
+  ExperimentDomain,
+} from "../experiments/registry";
+
 import "../styles/experiment.css";
 
-function getTopicAccentClass(
-  topic: string,
+const domainAccentClasses:
+  Record<
+    ExperimentDomain,
+    string
+  > = {
+  thermal:
+    "experiment-page--thermal",
+
+  gas:
+    "experiment-page--gas",
+
+  magnetic:
+    "experiment-page--magnetic",
+
+  nuclear:
+    "experiment-page--nuclear",
+};
+
+function getDomainAccentClass(
+  domain: ExperimentDomain,
 ) {
-  const normalizedTopic = topic
-    .trim()
-    .toLowerCase();
-
-  if (
-    normalizedTopic.includes("nhiệt")
-  ) {
-    return "experiment-page--thermal";
-  }
-
-  if (
-    normalizedTopic.includes("khí")
-  ) {
-    return "experiment-page--gas";
-  }
-
-  if (
-    normalizedTopic.includes("từ") ||
-    normalizedTopic.includes("điện từ")
-  ) {
-    return "experiment-page--magnetic";
-  }
-
-  if (
-    normalizedTopic.includes("hạt nhân") ||
-    normalizedTopic.includes("phóng xạ")
-  ) {
-    return "experiment-page--nuclear";
-  }
-
-  return "experiment-page--default";
+  return domainAccentClasses[
+    domain
+  ];
 }
 
 export default function ExperimentLayout() {
@@ -115,14 +109,14 @@ export default function ExperimentLayout() {
     );
   }
 
-  const topicAccentClass =
-    getTopicAccentClass(
-      experiment.topic,
+  const domainAccentClass =
+    getDomainAccentClass(
+      experiment.domain,
     );
 
   return (
     <div
-      className={`experiment-page ${topicAccentClass}`}
+      className={`experiment-page ${domainAccentClass}`}
     >
       <header className="experiment-header">
         <Link

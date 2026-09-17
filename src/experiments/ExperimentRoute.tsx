@@ -1,26 +1,53 @@
 import {
+  Suspense,
+} from "react";
+
+import {
   Navigate,
   useParams,
 } from "react-router";
 
-import BoyleView from "./boyle";
-import JouleView from "./joule";
+import {
+  experimentModules,
+} from "./modules";
+
+import type {
+  ExperimentModuleSlug,
+} from "./modules";
+
+function isExperimentModuleSlug(
+  slug: string,
+): slug is ExperimentModuleSlug {
+  return slug in experimentModules;
+}
 
 export default function ExperimentRoute() {
   const { slug } = useParams();
 
-  if (slug === "boyle") {
-    return <BoyleView />;
+  if (
+    !slug ||
+    !isExperimentModuleSlug(slug)
+  ) {
+    return (
+      <Navigate
+        to="/app/experiments"
+        replace
+      />
+    );
   }
 
-  if (slug === "joule") {
-    return <JouleView />;
-  }
+  const ExperimentComponent =
+    experimentModules[slug];
 
   return (
-    <Navigate
-      to="/app/experiments"
-      replace
-    />
+    <Suspense
+      fallback={
+        <div>
+          Đang tải thí nghiệm...
+        </div>
+      }
+    >
+      <ExperimentComponent />
+    </Suspense>
   );
 }

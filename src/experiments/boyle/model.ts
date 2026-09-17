@@ -1,3 +1,11 @@
+import type {
+  ExperimentAnswerIndex,
+  ExperimentAssessmentQuestion,
+  ExperimentAssessmentState,
+  ExperimentPhaseDefinition,
+  ExperimentPreparationToolDefinition,
+} from "../shared/model";
+
 export type BoylePhaseId =
   | "intro"
   | "prep"
@@ -6,13 +14,10 @@ export type BoylePhaseId =
   | "test"
   | "report";
 
-export type BoylePhaseDefinition = {
-  id: BoylePhaseId;
-  label: string;
-  title: string;
-  description?: string;
-  disabled?: boolean;
-};
+export type BoylePhaseDefinition =
+  ExperimentPhaseDefinition<
+    BoylePhaseId
+  >;
 
 export type BoyleThermalCondition =
   | "equilibrium"
@@ -20,7 +25,8 @@ export type BoyleThermalCondition =
 
 export type BoyleRuntimeState = {
   volume: number;
-  thermalCondition: BoyleThermalCondition;
+  thermalCondition:
+    BoyleThermalCondition;
 };
 
 export type BoylePreparationToolId =
@@ -31,15 +37,14 @@ export type BoylePreparationToolId =
   | "balance"
   | "flask";
 
-export type BoylePreparationToolDefinition = {
-  id: BoylePreparationToolId;
-  name: string;
-  icon: string;
-  correct: boolean;
-};
+export type BoylePreparationToolDefinition =
+  ExperimentPreparationToolDefinition<
+    BoylePreparationToolId
+  >;
 
 export type BoylePreparationState = {
-  selectedToolIds: BoylePreparationToolId[];
+  selectedToolIds:
+    BoylePreparationToolId[];
 };
 
 export type BoyleMeasurement = {
@@ -64,26 +69,14 @@ export type BoyleQuestionId =
   | "q4";
 
 export type BoyleAnswerIndex =
-  | 0
-  | 1
-  | 2
-  | 3;
+  ExperimentAnswerIndex;
 
-export type BoyleAssessmentQuestion = {
-  id: BoyleQuestionId;
-  prompt: string;
-  options: readonly [
-    string,
-    string,
-    string,
-    string
-  ];
-  correctOption: BoyleAnswerIndex;
-};
-
-export type BoyleAssessmentState = {
-  answers: Partial<
-    Record<BoyleQuestionId, BoyleAnswerIndex>
+export type BoyleAssessmentQuestion =
+  ExperimentAssessmentQuestion<
+    BoyleQuestionId
   >;
-  submitted: boolean;
-};
+
+export type BoyleAssessmentState =
+  ExperimentAssessmentState<
+    BoyleQuestionId
+  >;
