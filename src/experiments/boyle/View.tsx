@@ -3,7 +3,7 @@ import {
   useState,
 } from "react";
 
-import ExperimentPhaseNav from "../../components/experiment/ExperimentPhaseNav";
+import ExperimentViewShell from "../../components/experiment/ExperimentViewShell";
 import Button from "../../components/ui/Button";
 
 import BoyleConclusionPhase from "./components/BoyleConclusionPhase";
@@ -18,7 +18,6 @@ import {
 } from "./controller";
 
 import {
-  boylePhaseOrder,
   boylePhases,
 } from "./data";
 
@@ -34,11 +33,6 @@ export default function BoyleView() {
     workspaceExpanded,
     setWorkspaceExpanded,
   ] = useState(false);
-
-  const currentPhaseIndex =
-    boylePhaseOrder.indexOf(
-      controller.activePhase,
-    );
 
   useEffect(() => {
     if (!workspaceExpanded) {
@@ -251,68 +245,37 @@ export default function BoyleView() {
     "prac";
 
   return (
-    <div
-      className={`experiment-template boyle-view ${
+    <ExperimentViewShell
+      viewClassName="boyle-view"
+      phases={boylePhases}
+      activePhase={
+        controller.activePhase
+      }
+      onPhaseChange={
+        handlePhaseChange
+      }
+      ariaLabel="Điều hướng thí nghiệm Boyle-Mariotte"
+      workspaceExpanded={
         workspaceExpanded
-          ? "boyle-view--expanded"
-          : ""
-      }`}
-    >
-      <ExperimentPhaseNav
-        items={[
-          ...boylePhases,
-        ]}
-        activePhase={
-          controller.activePhase
-        }
-        onPhaseChange={
-          handlePhaseChange
-        }
-        ariaLabel="Điều hướng thí nghiệm Boyle-Mariotte"
-      />
-
-      <div className="boyle-view__body">
-        <div className="boyle-view__utility">
-          <div className="boyle-view__phase-info">
-            <span>
-              Bước{" "}
-              {currentPhaseIndex + 1}
-              {" / "}
-              {boylePhases.length}
-            </span>
-
-            <strong>
-              {
-                controller
-                  .activePhaseDefinition
-                  .title
-              }
-            </strong>
-          </div>
-
-          <Button
-            type="button"
-            className="experiment-template__reset boyle-view__reset"
-            onClick={
-              handleResetExperiment
-            }
-          >
-            Đặt lại toàn bộ thí nghiệm
-          </Button>
-        </div>
-
-        <main
-          className={`boyle-view__stage ${
-            isPractice
-              ? "boyle-view__stage--practice"
-              : "boyle-view__stage--content"
-          }`}
+      }
+      isPractice={
+        isPractice
+      }
+      utilityActions={
+        <Button
+          type="button"
+          className="experiment-template__reset boyle-view__reset"
+          onClick={
+            handleResetExperiment
+          }
         >
-          {renderActivePhase(
-            controller.activePhase,
-          )}
-        </main>
-      </div>
-    </div>
+          Đặt lại toàn bộ thí nghiệm
+        </Button>
+      }
+    >
+      {renderActivePhase(
+        controller.activePhase,
+      )}
+    </ExperimentViewShell>
   );
 }

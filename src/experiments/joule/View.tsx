@@ -3,7 +3,7 @@ import {
   useState,
 } from "react";
 
-import ExperimentPhaseNav from "../../components/experiment/ExperimentPhaseNav";
+import ExperimentViewShell from "../../components/experiment/ExperimentViewShell";
 import Button from "../../components/ui/Button";
 
 import JouleConclusionPhase from "./components/JouleConclusionPhase";
@@ -18,7 +18,6 @@ import {
 } from "./controller";
 
 import {
-  joulePhaseOrder,
   joulePhases,
 } from "./data";
 
@@ -30,31 +29,15 @@ export default function JouleView() {
   const controller =
     useJouleController();
 
-  /*
-   * Workspace expanded thuộc View,
-   * giống ownership đã chứng minh ở Boyle.
-   *
-   * Đây không phải browser Fullscreen API.
-   * CSS sẽ biến .joule-view--expanded
-   * thành lab workspace overlay.
-   */
   const [
     workspaceExpanded,
     setWorkspaceExpanded,
   ] = useState(false);
 
-  const currentPhaseIndex =
-    joulePhaseOrder.indexOf(
-      controller.activePhase,
-    );
-
   const isPractice =
     controller.activePhase ===
     "prac";
 
-  /*
-   * Escape luôn thoát expanded workspace.
-   */
   useEffect(() => {
     if (!workspaceExpanded) {
       return;
@@ -94,16 +77,6 @@ export default function JouleView() {
       return;
     }
 
-    /*
-     * Rời Practice:
-     *
-     * - thoát expanded
-     * - reset runtime về idle
-     * - KHÔNG xóa measurements
-     *
-     * Tránh Scene unmount khi controller
-     * vẫn giữ falling / spinning.
-     */
     if (
       controller.activePhase ===
         "prac" &&
@@ -291,70 +264,39 @@ export default function JouleView() {
   }
 
   return (
-    <div
-      className={`experiment-template joule-view ${
+    <ExperimentViewShell
+      viewClassName="joule-view"
+      phases={joulePhases}
+      activePhase={
+        controller.activePhase
+      }
+      onPhaseChange={
+        handlePhaseChange
+      }
+      ariaLabel="Điều hướng thí nghiệm Joule"
+      workspaceExpanded={
         workspaceExpanded
-          ? "joule-view--expanded"
-          : ""
-      }`}
-    >
-      <ExperimentPhaseNav
-        items={[
-          ...joulePhases,
-        ]}
-        activePhase={
-          controller.activePhase
-        }
-        onPhaseChange={
-          handlePhaseChange
-        }
-        ariaLabel="Điều hướng thí nghiệm Joule"
-      />
-
-      <div className="joule-view__body">
-        <div className="joule-view__utility">
-          <div className="joule-view__phase-info">
-            <span>
-              Bước{" "}
-              {currentPhaseIndex + 1}
-              {" / "}
-              {joulePhases.length}
-            </span>
-
-            <strong>
-              {
-                controller
-                  .activePhaseDefinition
-                  .title
-              }
-            </strong>
-          </div>
-
-          <div className="joule-view__utility-actions">
-            <Button
-              type="button"
-              className="experiment-template__reset joule-view__reset"
-              onClick={
-                handleResetExperiment
-              }
-            >
-              Đặt lại toàn bộ thí nghiệm
-            </Button>
-          </div>
+      }
+      isPractice={
+        isPractice
+      }
+      utilityActions={
+        <div className="joule-view__utility-actions">
+          <Button
+            type="button"
+            className="experiment-template__reset joule-view__reset"
+            onClick={
+              handleResetExperiment
+            }
+          >
+            Đặt lại toàn bộ thí nghiệm
+          </Button>
         </div>
-
-        <main
-          className={`joule-view__stage ${
-            isPractice
-              ? "joule-view__stage--practice"
-              : "joule-view__stage--content"
-          }`}
-        >
-          {renderActivePhase(
-            controller.activePhase,
-          )}
-        </main>
-      </div>
-    </div>
+      }
+    >
+      {renderActivePhase(
+        controller.activePhase,
+      )}
+    </ExperimentViewShell>
   );
 }
