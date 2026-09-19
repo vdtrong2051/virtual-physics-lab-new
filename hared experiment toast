@@ -1,0 +1,154 @@
+[1mdiff --git a/src/components/experiment/ExperimentToast.tsx b/src/components/experiment/ExperimentToast.tsx[m
+[1mnew file mode 100644[m
+[1mindex 0000000..47c7dda[m
+[1m--- /dev/null[m
+[1m+++ b/src/components/experiment/ExperimentToast.tsx[m
+[36m@@ -0,0 +1,39 @@[m
+[32m+[m[32mexport type ExperimentToastTone =[m
+[32m+[m[32m  | "success"[m
+[32m+[m[32m  | "error"[m
+[32m+[m[32m  | "info";[m
+[32m+[m
+[32m+[m[32mexport type ExperimentToastProps = {[m
+[32m+[m[32m  className: string;[m
+[32m+[m
+[32m+[m[32m  tone: ExperimentToastTone;[m
+[32m+[m
+[32m+[m[32m  message: string;[m
+[32m+[m[32m};[m
+[32m+[m
+[32m+[m[32mexport default function ExperimentToast({[m
+[32m+[m[32m  className,[m
+[32m+[m[32m  tone,[m
+[32m+[m[32m  message,[m
+[32m+[m[32m}: ExperimentToastProps) {[m
+[32m+[m[32m  const isError =[m
+[32m+[m[32m    tone === "error";[m
+[32m+[m
+[32m+[m[32m  return ([m
+[32m+[m[32m    <div[m
+[32m+[m[32m      className={`${className} ${className}--${tone}`}[m
+[32m+[m[32m      role={[m
+[32m+[m[32m        isError[m
+[32m+[m[32m          ? "alert"[m
+[32m+[m[32m          : "status"[m
+[32m+[m[32m      }[m
+[32m+[m[32m      aria-live={[m
+[32m+[m[32m        isError[m
+[32m+[m[32m          ? "assertive"[m
+[32m+[m[32m          : "polite"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    >[m
+[32m+[m[32m      {message}[m
+[32m+[m[32m    </div>[m
+[32m+[m[32m  );[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/src/experiments/boyle/components/BoylePracticePhase.tsx b/src/experiments/boyle/components/BoylePracticePhase.tsx[m
+[1mindex 2f03537..a04a2fe 100644[m
+[1m--- a/src/experiments/boyle/components/BoylePracticePhase.tsx[m
+[1m+++ b/src/experiments/boyle/components/BoylePracticePhase.tsx[m
+[36m@@ -5,6 +5,7 @@[m [mimport {[m
+ } from "react";[m
+ [m
+ import ExperimentWorkspace from "../../../components/experiment/ExperimentWorkspace";[m
+[32m+[m[32mimport ExperimentToast from "../../../components/experiment/ExperimentToast";[m
+ import Button from "../../../components/ui/Button";[m
+ import BoyleGraph from "./BoyleGraph";[m
+ [m
+[36m@@ -562,17 +563,11 @@[m [mexport default function BoylePracticePhase({[m
+     >[m
+ [m
+       {feedback && ([m
+[31m-        <div[m
+[31m-          className={`boyle-practice__feedback ${[m
+[31m-            feedbackTone ===[m
+[31m-            "success"[m
+[31m-              ? "boyle-practice__feedback--success"[m
+[31m-              : ""[m
+[31m-          }`}[m
+[31m-          role="status"[m
+[31m-        >[m
+[31m-          {feedback}[m
+[31m-        </div>[m
+[32m+[m[32m        <ExperimentToast[m
+[32m+[m[32m          className="boyle-practice__feedback"[m
+[32m+[m[32m          tone={feedbackTone}[m
+[32m+[m[32m          message={feedback}[m
+[32m+[m[32m        />[m
+       )}[m
+ [m
+       {showInstructions && ([m
+[1mdiff --git a/src/experiments/joule/components/JoulePracticePhase.tsx b/src/experiments/joule/components/JoulePracticePhase.tsx[m
+[1mindex e971e05..0dbe485 100644[m
+[1m--- a/src/experiments/joule/components/JoulePracticePhase.tsx[m
+[1m+++ b/src/experiments/joule/components/JoulePracticePhase.tsx[m
+[36m@@ -6,6 +6,7 @@[m [mimport {[m
+ } from "react";[m
+ [m
+ import ExperimentWorkspace from "../../../components/experiment/ExperimentWorkspace";[m
+[32m+[m[32mimport ExperimentToast from "../../../components/experiment/ExperimentToast";[m
+ import Button from "../../../components/ui/Button";[m
+ [m
+ import JouleGraph from "./JouleGraph";[m
+[36m@@ -844,21 +845,11 @@[m [mexport default function JoulePracticePhase({[m
+     >[m
+ [m
+       {feedback && ([m
+[31m-        <div[m
+[31m-          className={`joule-practice__feedback joule-practice__feedback--${feedback.tone}`}[m
+[31m-          role={[m
+[31m-            feedback.tone === "error"[m
+[31m-              ? "alert"[m
+[31m-              : "status"[m
+[31m-          }[m
+[31m-          aria-live={[m
+[31m-            feedback.tone === "error"[m
+[31m-              ? "assertive"[m
+[31m-              : "polite"[m
+[31m-          }[m
+[31m-        >[m
+[31m-          {feedback.message}[m
+[31m-        </div>[m
+[32m+[m[32m        <ExperimentToast[m
+[32m+[m[32m          className="joule-practice__feedback"[m
+[32m+[m[32m          tone={feedback.tone}[m
+[32m+[m[32m          message={feedback.message}[m
+[32m+[m[32m        />[m
+       )}[m
+ [m
+       <div[m
+[1mdiff --git a/src/experiments/joule/components/JoulePreparationPhase.tsx b/src/experiments/joule/components/JoulePreparationPhase.tsx[m
+[1mindex d6d1167..0aab8e1 100644[m
+[1m--- a/src/experiments/joule/components/JoulePreparationPhase.tsx[m
+[1m+++ b/src/experiments/joule/components/JoulePreparationPhase.tsx[m
+[36m@@ -6,6 +6,7 @@[m [mimport type {[m
+   DragEvent,[m
+ } from "react";[m
+ [m
+[32m+[m[32mimport ExperimentToast from "../../../components/experiment/ExperimentToast";[m
+ import Button from "../../../components/ui/Button";[m
+ [m
+ import {[m
+[36m@@ -360,16 +361,11 @@[m [mexport default function JoulePreparationPhase({[m
+         </div>[m
+ [m
+         {feedback && ([m
+[31m-          <div[m
+[31m-            className={`joule-preparation-toast joule-preparation-toast--${feedback.type}`}[m
+[31m-            role={[m
+[31m-              feedback.type === "error"[m
+[31m-                ? "alert"[m
+[31m-                : "status"[m
+[31m-            }[m
+[31m-          >[m
+[31m-            {feedback.message}[m
+[31m-          </div>[m
+[32m+[m[32m          <ExperimentToast[m
+[32m+[m[32m            className="joule-preparation-toast"[m
+[32m+[m[32m            tone={feedback.type}[m
+[32m+[m[32m            message={feedback.message}[m
+[32m+[m[32m          />[m
+         )}[m
+ [m
+         {isDragOver && ([m

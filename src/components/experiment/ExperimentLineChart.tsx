@@ -337,12 +337,13 @@ export default function ExperimentLineChart({
 
       {points.length > 1 && (
         <polyline
-          points={
+            points={
             polylinePoints
-          }
-          className={`${className}__line`}
+            }
+            fill="none"
+            className={`${className}__line`}
         />
-      )}
+        )}
 
       {pointsToRender.map(
         (
