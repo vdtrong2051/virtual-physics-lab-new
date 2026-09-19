@@ -1,3 +1,4 @@
+import PrintableReportShell from "../../../components/experiment/PrintableReportShell";
 import Button from "../../../components/ui/Button";
 
 import {
@@ -283,55 +284,12 @@ export default function BoyleReportPhase({
 
 function PrintableBoyleReport() {
   return (
-    <article
+    <PrintableReportShell
       id="boyle-printable-report"
       className="boyle-report-sheet"
+      experimentTitle="KHẢO SÁT ĐỊNH LUẬT BOYLE-MARIOTTE"
+      description="Khảo sát quá trình biến đổi trạng thái của một lượng khí khi nhiệt độ không đổi"
     >
-      <header className="boyle-report-sheet__header">
-        <h1>
-          BÁO CÁO THỰC HÀNH VẬT LÍ
-        </h1>
-
-        <h2>
-          KHẢO SÁT ĐỊNH LUẬT BOYLE-MARIOTTE
-        </h2>
-
-        <p>
-          Khảo sát quá trình biến đổi trạng thái
-          của một lượng khí khi nhiệt độ không đổi
-        </p>
-      </header>
-
-      <section className="boyle-report-sheet__identity">
-        <div>
-          <strong>
-            Họ và tên học sinh:
-          </strong>
-
-          <span />
-        </div>
-
-        <div className="boyle-report-sheet__identity-row">
-          <div>
-            <strong>
-              Lớp:
-            </strong>
-
-            <span />
-          </div>
-
-          <div>
-            <strong>
-              Tổ/Nhóm:
-            </strong>
-
-            <span />
-          </div>
-        </div>
-      </section>
-
-      <hr />
-
       <section>
         <h3>
           1. Mục đích thí nghiệm
@@ -557,25 +515,7 @@ function PrintableBoyleReport() {
           ........................................................
         </div>
       </section>
-
-      <footer className="boyle-report-sheet__signature">
-        <div>
-          <p>
-            Ngày ...... tháng ...... năm ........
-          </p>
-
-          <strong>
-            Học sinh thực hiện
-          </strong>
-
-          <p>
-            (Ký và ghi rõ họ tên)
-          </p>
-
-          <div />
-        </div>
-      </footer>
-    </article>
+    </PrintableReportShell>
   );
 }
 

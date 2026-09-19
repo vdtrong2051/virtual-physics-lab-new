@@ -1,3 +1,4 @@
+import PrintableReportShell from "../../../components/experiment/PrintableReportShell";
 import Button from "../../../components/ui/Button";
 
 import {
@@ -371,56 +372,13 @@ export default function JouleReportPhase({
 
 function PrintableJouleReport() {
   return (
-    <article
+    <PrintableReportShell
       id="joule-printable-report"
       className="joule-report-sheet"
+      experimentTitle="THÍ NGHIỆM JOULE: XÁC ĐỊNH ĐƯƠNG LƯỢNG CƠ NHIỆT"
+      description="Chứng minh sự tương đương giữa Công cơ học và Nhiệt lượng"
+      datePlaceholder="Ngày ....... tháng ....... năm 2026"
     >
-      <header className="joule-report-sheet__header">
-        <h1>
-          BÁO CÁO THỰC HÀNH VẬT LÍ
-        </h1>
-
-        <h2>
-          THÍ NGHIỆM JOULE: XÁC ĐỊNH
-          ĐƯƠNG LƯỢNG CƠ NHIỆT
-        </h2>
-
-        <p>
-          Chứng minh sự tương đương giữa
-          Công cơ học và Nhiệt lượng
-        </p>
-      </header>
-
-      <section className="joule-report-sheet__identity">
-        <div>
-          <strong>
-            Họ và tên học sinh:
-          </strong>
-
-          <span />
-        </div>
-
-        <div className="joule-report-sheet__identity-row">
-          <div>
-            <strong>
-              Lớp:
-            </strong>
-
-            <span />
-          </div>
-
-          <div>
-            <strong>
-              Tổ/Nhóm:
-            </strong>
-
-            <span />
-          </div>
-        </div>
-      </section>
-
-      <hr />
-
       <section>
         <h3>
           I. Cơ sở lí thuyết
@@ -708,25 +666,7 @@ function PrintableJouleReport() {
           <BlankLines count={3} />
         </div>
       </section>
-
-      <footer className="joule-report-sheet__signature">
-        <div>
-          <p>
-            Ngày ....... tháng ....... năm 2026
-          </p>
-
-          <strong>
-            Học sinh thực hiện
-          </strong>
-
-          <p>
-            (Ký và ghi rõ họ tên)
-          </p>
-
-          <div />
-        </div>
-      </footer>
-    </article>
+    </PrintableReportShell>
   );
 }
 
