@@ -1,3 +1,4 @@
+import ExperimentQuiz from "../../../components/experiment/ExperimentQuiz";
 import Button from "../../../components/ui/Button";
 
 import {
@@ -62,125 +63,68 @@ export default function BoyleQuizPhase({
           </p>
         </div>
 
-        <div className="boyle-quiz__questions">
-          {boyleAssessmentQuestions.map(
-            (
-              question,
-              questionIndex,
-            ) => {
-              const selectedAnswer =
-                assessment.answers[
-                  question.id
-                ];
+        <ExperimentQuiz
+          className="boyle-quiz"
+          cardAs="section"
+          questions={
+            boyleAssessmentQuestions
+          }
+          assessment={assessment}
+          onAnswer={onAnswer}
+          keepSelectedAfterSubmit
+          renderQuestionHeader={({
+            question,
+            questionIndex,
+            submitted,
+            isQuestionCorrect,
+          }) => (
+            <>
+              <div className="boyle-quiz-card__header">
+                <span>
+                  Câu{" "}
+                  {questionIndex + 1}
+                </span>
 
-              return (
-                <section
-                  key={question.id}
-                  className="boyle-quiz-card"
-                >
-                  <div className="boyle-quiz-card__header">
-                    <span>
-                      Câu{" "}
-                      {questionIndex + 1}
-                    </span>
+                {submitted && (
+                  <strong
+                    className={
+                      isQuestionCorrect
+                        ? "boyle-quiz-card__result boyle-quiz-card__result--correct"
+                        : "boyle-quiz-card__result boyle-quiz-card__result--wrong"
+                    }
+                  >
+                    {isQuestionCorrect
+                      ? "Đúng"
+                      : "Sai"}
+                  </strong>
+                )}
+              </div>
 
-                    {assessment.submitted && (
-                      <strong
-                        className={
-                          selectedAnswer ===
-                          question.correctOption
-                            ? "boyle-quiz-card__result boyle-quiz-card__result--correct"
-                            : "boyle-quiz-card__result boyle-quiz-card__result--wrong"
-                        }
-                      >
-                        {selectedAnswer ===
-                        question.correctOption
-                          ? "Đúng"
-                          : "Sai"}
-                      </strong>
-                    )}
-                  </div>
-
-                  <h4>
-                    {question.prompt}
-                  </h4>
-
-                  <div className="boyle-quiz-options">
-                    {question.options.map(
-                      (
-                        option,
-                        optionIndex,
-                      ) => {
-                        const answerIndex =
-                          optionIndex as BoyleAnswerIndex;
-
-                        const isSelected =
-                          selectedAnswer ===
-                          answerIndex;
-
-                        const isCorrect =
-                          assessment.submitted &&
-                          answerIndex ===
-                            question.correctOption;
-
-                        const isWrongSelected =
-                          assessment.submitted &&
-                          isSelected &&
-                          !isCorrect;
-
-                        return (
-                          <Button
-                            key={option}
-                            type="button"
-                            className={`boyle-quiz-option ${
-                              isSelected
-                                ? "boyle-quiz-option--selected"
-                                : ""
-                            } ${
-                              isCorrect
-                                ? "boyle-quiz-option--correct"
-                                : ""
-                            } ${
-                              isWrongSelected
-                                ? "boyle-quiz-option--wrong"
-                                : ""
-                            }`}
-                            disabled={
-                              assessment.submitted
-                            }
-                            onClick={() =>
-                              onAnswer(
-                                question.id,
-                                answerIndex,
-                              )
-                            }
-                            aria-pressed={
-                              isSelected
-                            }
-                          >
-                            <span className="boyle-quiz-option__marker">
-                              {String.fromCharCode(
-                                65 +
-                                  optionIndex,
-                              )}
-                            </span>
-
-                            <span>
-                              {option.replace(
-                                /^[A-D]\.\s*/,
-                                "",
-                              )}
-                            </span>
-                          </Button>
-                        );
-                      },
-                    )}
-                  </div>
-                </section>
-              );
-            },
+              <h4>
+                {question.prompt}
+              </h4>
+            </>
           )}
-        </div>
+          renderOptionContent={({
+            option,
+            optionIndex,
+          }) => (
+            <>
+              <span className="boyle-quiz-option__marker">
+                {String.fromCharCode(
+                  65 + optionIndex,
+                )}
+              </span>
+
+              <span>
+                {option.replace(
+                  /^[A-D]\.\s*/,
+                  "",
+                )}
+              </span>
+            </>
+          )}
+        />
 
         {!assessment.submitted ? (
           <div className="boyle-quiz__submit">

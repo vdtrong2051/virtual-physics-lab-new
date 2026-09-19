@@ -1,3 +1,4 @@
+import ExperimentQuiz from "../../../components/experiment/ExperimentQuiz";
 import Button from "../../../components/ui/Button";
 
 import {
@@ -87,134 +88,60 @@ export default function JouleQuizPhase({
           </div>
         </div>
 
-        <div className="joule-quiz__questions">
-          {jouleAssessmentQuestions.map(
-            (
-              question,
-              questionIndex,
-            ) => {
-              const selectedAnswer =
-                assessment.answers[
-                  question.id
-                ];
+        <ExperimentQuiz
+          className="joule-quiz"
+          cardAs="article"
+          questions={
+            jouleAssessmentQuestions
+          }
+          assessment={assessment}
+          onAnswer={onAnswer}
+          muteUnselectedAfterSubmit
+          renderQuestionHeader={({
+            question,
+            questionIndex,
+          }) => (
+            <div className="joule-quiz-card__heading">
+              <span>
+                Câu{" "}
+                {questionIndex + 1}
+              </span>
 
-              return (
-                <article
-                  key={question.id}
-                  className="joule-quiz-card"
-                >
-                  <div className="joule-quiz-card__heading">
-                    <span>
-                      Câu{" "}
-                      {questionIndex + 1}
-                    </span>
-
-                    <h3>
-                      {question.prompt}
-                    </h3>
-                  </div>
-
-                  <div className="joule-quiz-options">
-                    {question.options.map(
-                      (
-                        option,
-                        optionIndex,
-                      ) => {
-                        const answerIndex =
-                          optionIndex as JouleAnswerIndex;
-
-                        const isSelected =
-                          selectedAnswer ===
-                          answerIndex;
-
-                        const isCorrect =
-                          assessment.submitted &&
-                          question.correctOption ===
-                            answerIndex;
-
-                        const isWrong =
-                          assessment.submitted &&
-                          isSelected &&
-                          !isCorrect;
-
-                        const optionClassName = [
-                          "joule-quiz-option",
-
-                          isSelected &&
-                          !assessment.submitted
-                            ? "joule-quiz-option--selected"
-                            : "",
-
-                          isCorrect
-                            ? "joule-quiz-option--correct"
-                            : "",
-
-                          isWrong
-                            ? "joule-quiz-option--wrong"
-                            : "",
-
-                          assessment.submitted &&
-                          !isCorrect &&
-                          !isWrong
-                            ? "joule-quiz-option--muted"
-                            : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ");
-
-                        return (
-                          <Button
-                            key={
-                              answerIndex
-                            }
-                            type="button"
-                            className={
-                              optionClassName
-                            }
-                            disabled={
-                              assessment.submitted
-                            }
-                            aria-pressed={
-                              isSelected
-                            }
-                            onClick={() =>
-                              onAnswer(
-                                question.id,
-                                answerIndex,
-                              )
-                            }
-                          >
-                            <span className="joule-quiz-option__text">
-                              {option}
-                            </span>
-
-                            {isCorrect && (
-                              <span
-                                className="joule-quiz-option__mark"
-                                aria-label="Đáp án đúng"
-                              >
-                                ✓
-                              </span>
-                            )}
-
-                            {isWrong && (
-                              <span
-                                className="joule-quiz-option__mark"
-                                aria-label="Đáp án đã chọn sai"
-                              >
-                                ✕
-                              </span>
-                            )}
-                          </Button>
-                        );
-                      },
-                    )}
-                  </div>
-                </article>
-              );
-            },
+              <h3>
+                {question.prompt}
+              </h3>
+            </div>
           )}
-        </div>
+          renderOptionContent={({
+            option,
+            isCorrect,
+            isWrongSelected,
+          }) => (
+            <>
+              <span className="joule-quiz-option__text">
+                {option}
+              </span>
+
+              {isCorrect && (
+                <span
+                  className="joule-quiz-option__mark"
+                  aria-label="Đáp án đúng"
+                >
+                  ✓
+                </span>
+              )}
+
+              {isWrongSelected && (
+                <span
+                  className="joule-quiz-option__mark"
+                  aria-label="Đáp án đã chọn sai"
+                >
+                  ✕
+                </span>
+              )}
+            </>
+          )}
+        />
 
         {assessment.submitted && (
           <section
