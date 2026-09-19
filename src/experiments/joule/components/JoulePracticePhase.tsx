@@ -7,6 +7,7 @@ import {
 
 import ExperimentWorkspace from "../../../components/experiment/ExperimentWorkspace";
 import ExperimentToast from "../../../components/experiment/ExperimentToast";
+import SimulationErrorBoundary from "../../../components/experiment/SimulationErrorBoundary";
 import Button from "../../../components/ui/Button";
 
 import JouleGraph from "./JouleGraph";
@@ -800,47 +801,49 @@ export default function JoulePracticePhase({
         toolRailExpanded
       }
       simulation={
-        <JouleSimulation
-          massPerSideKg={
-            massPerSideKg
-          }
+        <SimulationErrorBoundary>
+          <JouleSimulation
+            massPerSideKg={
+              massPerSideKg
+            }
 
-          dropHeightM={
-            dropHeightM
-          }
+            dropHeightM={
+              dropHeightM
+            }
 
-          motionPhase={
-            motionPhase
-          }
+            motionPhase={
+              motionPhase
+            }
 
-          slowMotion={
-            slowMotion
-          }
+            slowMotion={
+              slowMotion
+            }
 
-          orbitEnabled={
-            orbitEnabled
-          }
+            orbitEnabled={
+              orbitEnabled
+            }
 
-          interactionLocked={
-            measurementComplete
-          }
+            interactionLocked={
+              measurementComplete
+            }
 
-          onMotionPhaseChange={
-            handleMotionPhaseChange
-          }
+            onMotionPhaseChange={
+              handleMotionPhaseChange
+            }
 
-          onDropHeightChange={
-            onDropHeightChange
-          }
+            onDropHeightChange={
+              onDropHeightChange
+            }
 
-          onTelemetryChange={
-            handleTelemetryChange
-          }
+            onTelemetryChange={
+              handleTelemetryChange
+            }
 
-          onMaxDropHeightChange={
-            setMaxDropHeightM
-          }
-        />
+            onMaxDropHeightChange={
+              setMaxDropHeightM
+            }
+          />
+        </SimulationErrorBoundary>
       }
     >
 

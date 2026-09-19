@@ -6,6 +6,7 @@ import {
 
 import ExperimentWorkspace from "../../../components/experiment/ExperimentWorkspace";
 import ExperimentToast from "../../../components/experiment/ExperimentToast";
+import SimulationErrorBoundary from "../../../components/experiment/SimulationErrorBoundary";
 import Button from "../../../components/ui/Button";
 import BoyleGraph from "./BoyleGraph";
 
@@ -530,35 +531,36 @@ export default function BoylePracticePhase({
     targetMeasurementCount;
 
   return (
-    
     <ExperimentWorkspace
       className="boyle-practice"
       railExpanded={
         toolRailExpanded
       }
       simulation={
-        <BoyleSimulation
-          volume={volume}
-          thermalCondition={
-            thermalCondition
-          }
-          showParticles={
-            showParticles
-          }
-          orbitEnabled={
-            orbitEnabled
-          }
-          firePulse={firePulse}
-          onVolumeChange={
-            onVolumeChange
-          }
-          onThermalConditionChange={
-            onThermalConditionChange
-          }
-          onTemperatureChange={
-            setTemperature
-          }
-        />
+        <SimulationErrorBoundary>
+          <BoyleSimulation
+            volume={volume}
+            thermalCondition={
+              thermalCondition
+            }
+            showParticles={
+              showParticles
+            }
+            orbitEnabled={
+              orbitEnabled
+            }
+            firePulse={firePulse}
+            onVolumeChange={
+              onVolumeChange
+            }
+            onThermalConditionChange={
+              onThermalConditionChange
+            }
+            onTemperatureChange={
+              setTemperature
+            }
+          />
+        </SimulationErrorBoundary>
       }
     >
 

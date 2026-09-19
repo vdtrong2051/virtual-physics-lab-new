@@ -7,6 +7,7 @@ import type {
 } from "react";
 
 import ExperimentToast from "../../../components/experiment/ExperimentToast";
+import SimulationErrorBoundary from "../../../components/experiment/SimulationErrorBoundary";
 import Button from "../../../components/ui/Button";
 
 import {
@@ -349,10 +350,12 @@ export default function JoulePreparationPhase({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        <JoulePreparationScene
-          assembledToolIds={selectedToolIds}
-          dropActive={isDragOver}
-        />
+        <SimulationErrorBoundary>
+          <JoulePreparationScene
+            assembledToolIds={selectedToolIds}
+            dropActive={isDragOver}
+          />
+        </SimulationErrorBoundary>
 
         <div className="joule-preparation-stage__instruction">
           {selectedToolIds.length === 0
