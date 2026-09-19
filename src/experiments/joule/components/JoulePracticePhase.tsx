@@ -5,6 +5,7 @@ import {
   useState,
 } from "react";
 
+import ExperimentWorkspace from "../../../components/experiment/ExperimentWorkspace";
 import Button from "../../../components/ui/Button";
 
 import JouleGraph from "./JouleGraph";
@@ -792,14 +793,12 @@ export default function JoulePracticePhase({
         .massPerSideMaxKg;
 
   return (
-    <div
-      className={`joule-practice ${
+    <ExperimentWorkspace
+      className="joule-practice"
+      railExpanded={
         toolRailExpanded
-          ? "joule-practice--rail-expanded"
-          : ""
-      }`}
-    >
-      <div className="joule-practice__simulation">
+      }
+      simulation={
         <JouleSimulation
           massPerSideKg={
             massPerSideKg
@@ -841,7 +840,8 @@ export default function JoulePracticePhase({
             setMaxDropHeightM
           }
         />
-      </div>
+      }
+    >
 
       {feedback && (
         <div
@@ -1861,6 +1861,6 @@ export default function JoulePracticePhase({
           </span>
         </Button>
       </div>
-    </div>
+    </ExperimentWorkspace>
   );
 }

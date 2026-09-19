@@ -4,6 +4,7 @@ import {
   useState,
 } from "react";
 
+import ExperimentWorkspace from "../../../components/experiment/ExperimentWorkspace";
 import Button from "../../../components/ui/Button";
 import BoyleGraph from "./BoyleGraph";
 
@@ -528,14 +529,13 @@ export default function BoylePracticePhase({
     targetMeasurementCount;
 
   return (
-    <div
-      className={`boyle-practice ${
+    
+    <ExperimentWorkspace
+      className="boyle-practice"
+      railExpanded={
         toolRailExpanded
-          ? "boyle-practice--rail-expanded"
-          : ""
-      }`}
-    >
-      <div className="boyle-practice__simulation">
+      }
+      simulation={
         <BoyleSimulation
           volume={volume}
           thermalCondition={
@@ -558,7 +558,8 @@ export default function BoylePracticePhase({
             setTemperature
           }
         />
-      </div>
+      }
+    >
 
       {feedback && (
         <div
@@ -1174,6 +1175,6 @@ export default function BoylePracticePhase({
           </div>
         </div>
       )}
-    </div>
+    </ExperimentWorkspace>
   );
 }
