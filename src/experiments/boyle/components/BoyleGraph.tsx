@@ -1,4 +1,8 @@
-import { useMemo } from "react";
+import {
+  useMemo,
+} from "react";
+
+import ExperimentLineChart from "../../../components/experiment/ExperimentLineChart";
 
 import {
   boylePhysicsConfig,
@@ -23,13 +27,49 @@ type BoyleGraphProps = {
 const CHART_WIDTH = 360;
 const CHART_HEIGHT = 220;
 
-const PADDING_LEFT = 44;
-const PADDING_RIGHT = 18;
-const PADDING_TOP = 18;
-const PADDING_BOTTOM = 38;
+const CHART_PADDING = {
+  left: 44,
+  right: 18,
+  top: 18,
+  bottom: 38,
+} as const;
 
 const X_MAX = 0.8;
 const Y_MAX = 2.5;
+
+const X_TICKS = [
+  {
+    value: 0.25,
+    label: "0.25",
+  },
+  {
+    value: 0.5,
+    label: "0.5",
+  },
+  {
+    value: 0.75,
+    label: "0.75",
+  },
+] as const;
+
+const Y_TICKS = [
+  {
+    value: 0.5,
+    label: "0.5",
+  },
+  {
+    value: 1,
+    label: "1",
+  },
+  {
+    value: 1.5,
+    label: "1.5",
+  },
+  {
+    value: 2,
+    label: "2",
+  },
+] as const;
 
 export default function BoyleGraph({
   measurements,
@@ -38,64 +78,20 @@ export default function BoyleGraph({
     () =>
       measurements
         .map((measurement) => ({
-          inverseVolume:
+          x:
             calculateInverseVolume(
               measurement.volume,
             ),
 
-          pressure:
+          y:
             measurement.pressure,
         }))
         .sort(
           (a, b) =>
-            a.inverseVolume -
-            b.inverseVolume,
+            a.x - b.x,
         ),
     [measurements],
   );
-
-  const plotWidth =
-    CHART_WIDTH -
-    PADDING_LEFT -
-    PADDING_RIGHT;
-
-  const plotHeight =
-    CHART_HEIGHT -
-    PADDING_TOP -
-    PADDING_BOTTOM;
-
-  function mapX(
-    inverseVolume: number,
-  ) {
-    return (
-      PADDING_LEFT +
-      (inverseVolume / X_MAX) *
-        plotWidth
-    );
-  }
-
-  function mapY(
-    pressure: number,
-  ) {
-    return (
-      PADDING_TOP +
-      plotHeight -
-      (pressure / Y_MAX) *
-        plotHeight
-    );
-  }
-
-  const measuredPolyline =
-    graphData
-      .map(
-        (point) =>
-          `${mapX(
-            point.inverseVolume,
-          )},${mapY(
-            point.pressure,
-          )}`,
-      )
-      .join(" ");
 
   const idealStartInverseVolume =
     calculateInverseVolume(
@@ -151,190 +147,64 @@ export default function BoyleGraph({
         </div>
       ) : (
         <div className="boyle-graph__chart">
-          <svg
-            viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
-            role="img"
-            aria-label="Đồ thị áp suất p theo nghịch đảo thể tích 1 trên V"
-          >
-            <line
-              x1={PADDING_LEFT}
-              y1={
-                PADDING_TOP +
-                plotHeight
-              }
-              x2={
-                PADDING_LEFT +
-                plotWidth
-              }
-              y2={
-                PADDING_TOP +
-                plotHeight
-              }
-              className="boyle-graph__axis"
-            />
+          <ExperimentLineChart
+            className="boyle-graph"
+            width={
+              CHART_WIDTH
+            }
+            height={
+              CHART_HEIGHT
+            }
+            padding={
+              CHART_PADDING
+            }
+            xDomain={[
+              0,
+              X_MAX,
+            ]}
+            yDomain={[
+              0,
+              Y_MAX,
+            ]}
+            xTicks={
+              X_TICKS
+            }
+            yTicks={
+              Y_TICKS
+            }
+            points={
+              graphData
+            }
+            xAxisLabel={`1/V (${boyleUnits.inverseVolume})`}
+            yAxisLabel={`p (${boyleUnits.pressure})`}
+            ariaLabel="Đồ thị áp suất p theo nghịch đảo thể tích 1 trên V"
+            tickClassName="boyle-graph__label"
+            axisLabelClassName="boyle-graph__axis-title"
+            pointMode="all"
+            pointRadius={4}
+            xTickOffset={20}
+            yTickOffset={8}
+            xAxisLabelBottom={4}
+            yAxisLabelX={12}
+            referenceLines={[
+              {
+                x1:
+                  idealStartInverseVolume,
 
-            <line
-              x1={PADDING_LEFT}
-              y1={PADDING_TOP}
-              x2={PADDING_LEFT}
-              y2={
-                PADDING_TOP +
-                plotHeight
-              }
-              className="boyle-graph__axis"
-            />
+                y1:
+                  idealStartPressure,
 
-            {[0.5, 1, 1.5, 2].map(
-              (pressure) => (
-                <g key={pressure}>
-                  <line
-                    x1={PADDING_LEFT}
-                    y1={mapY(
-                      pressure,
-                    )}
-                    x2={
-                      PADDING_LEFT +
-                      plotWidth
-                    }
-                    y2={mapY(
-                      pressure,
-                    )}
-                    className="boyle-graph__grid"
-                  />
+                x2:
+                  idealEndInverseVolume,
 
-                  <text
-                    x={
-                      PADDING_LEFT -
-                      8
-                    }
-                    y={
-                      mapY(
-                        pressure,
-                      ) + 4
-                    }
-                    textAnchor="end"
-                    className="boyle-graph__label"
-                  >
-                    {pressure}
-                  </text>
-                </g>
-              ),
-            )}
+                y2:
+                  idealEndPressure,
 
-            {[0.25, 0.5, 0.75].map(
-              (inverseVolume) => (
-                <g
-                  key={
-                    inverseVolume
-                  }
-                >
-                  <line
-                    x1={mapX(
-                      inverseVolume,
-                    )}
-                    y1={PADDING_TOP}
-                    x2={mapX(
-                      inverseVolume,
-                    )}
-                    y2={
-                      PADDING_TOP +
-                      plotHeight
-                    }
-                    className="boyle-graph__grid"
-                  />
-
-                  <text
-                    x={mapX(
-                      inverseVolume,
-                    )}
-                    y={
-                      PADDING_TOP +
-                      plotHeight +
-                      20
-                    }
-                    textAnchor="middle"
-                    className="boyle-graph__label"
-                  >
-                    {inverseVolume}
-                  </text>
-                </g>
-              ),
-            )}
-
-            <line
-              x1={mapX(
-                idealStartInverseVolume,
-              )}
-              y1={mapY(
-                idealStartPressure,
-              )}
-              x2={mapX(
-                idealEndInverseVolume,
-              )}
-              y2={mapY(
-                idealEndPressure,
-              )}
-              className="boyle-graph__ideal"
-            />
-
-            {graphData.length > 1 && (
-              <polyline
-                points={
-                  measuredPolyline
-                }
-                className="boyle-graph__line"
-              />
-            )}
-
-            {graphData.map(
-              (
-                point,
-                index,
-              ) => (
-                <circle
-                  key={`${point.inverseVolume}-${index}`}
-                  cx={mapX(
-                    point.inverseVolume,
-                  )}
-                  cy={mapY(
-                    point.pressure,
-                  )}
-                  r="4"
-                  className="boyle-graph__point"
-                />
-              ),
-            )}
-
-            <text
-              x={
-                PADDING_LEFT +
-                plotWidth / 2
-              }
-              y={
-                CHART_HEIGHT - 4
-              }
-              textAnchor="middle"
-              className="boyle-graph__axis-title"
-            >
-              1/V ({boyleUnits.inverseVolume})
-            </text>
-
-            <text
-              x="12"
-              y={
-                PADDING_TOP +
-                plotHeight / 2
-              }
-              textAnchor="middle"
-              transform={`rotate(-90 12 ${
-                PADDING_TOP +
-                plotHeight / 2
-              })`}
-              className="boyle-graph__axis-title"
-            >
-              p ({boyleUnits.pressure})
-            </text>
-          </svg>
+                className:
+                  "boyle-graph__ideal",
+              },
+            ]}
+          />
         </div>
       )}
 

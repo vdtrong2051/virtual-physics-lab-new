@@ -1,344 +1,380 @@
+import {
+  useMemo,
+} from "react";
+
+import ExperimentLineChart from "../../../components/experiment/ExperimentLineChart";
+
+import {
+  joulePhysicsConfig,
+  jouleUnits,
+} from "../data";
+
 export type JouleTemperaturePoint = {
   timeS: number;
   temperatureC: number;
 };
 
 type JouleGraphProps = {
-  points: readonly JouleTemperaturePoint[];
+  points:
+    readonly JouleTemperaturePoint[];
 };
 
-const VIEWBOX_WIDTH = 520;
-const VIEWBOX_HEIGHT = 210;
+const CHART_WIDTH = 360;
+const CHART_HEIGHT = 220;
 
-const PADDING_LEFT = 54;
-const PADDING_RIGHT = 18;
-const PADDING_TOP = 18;
-const PADDING_BOTTOM = 40;
+const CHART_PADDING = {
+  left: 48,
+  right: 18,
+  top: 18,
+  bottom: 38,
+} as const;
 
-const X_TICK_COUNT = 5;
-const Y_TICK_COUNT = 4;
+const DEFAULT_TIME_MAX = 1;
 
-function formatTemperature(value: number) {
-  return value.toFixed(3);
+const DEFAULT_TEMPERATURE_PADDING_C =
+  0.01;
+
+const AXIS_TICK_COUNT = 4;
+
+function createLinearTicks(
+  min: number,
+  max: number,
+  count: number,
+  fractionDigits: number,
+) {
+  if (
+    !Number.isFinite(min) ||
+    !Number.isFinite(max) ||
+    count <= 0
+  ) {
+    return [];
+  }
+
+  if (max <= min) {
+    return [
+      {
+        value: min,
+        label:
+          min.toFixed(
+            fractionDigits,
+          ),
+      },
+    ];
+  }
+
+  const step =
+    (max - min) /
+    count;
+
+  return Array.from(
+    {
+      length:
+        count + 1,
+    },
+    (
+      _,
+      index,
+    ) => {
+      const value =
+        min +
+        step * index;
+
+      return {
+        value,
+        label:
+          value.toFixed(
+            fractionDigits,
+          ),
+      };
+    },
+  );
+}
+
+function getTemperatureFractionDigits(
+  range: number,
+) {
+  if (range < 0.01) {
+    return 4;
+  }
+
+  if (range < 0.1) {
+    return 3;
+  }
+
+  if (range < 1) {
+    return 2;
+  }
+
+  return 1;
 }
 
 export default function JouleGraph({
   points,
 }: JouleGraphProps) {
-  if (points.length < 2) {
-    return (
-      <div className="joule-graph__empty">
-        <span>Đồ thị T - t</span>
+  const graphData =
+    useMemo(
+      () =>
+        points
+          .map(
+            (point) => ({
+              x:
+                point.timeS,
 
-        <p>
-          Bắt đầu một lần thí nghiệm để theo dõi
-          nhiệt độ nước theo thời gian.
-        </p>
-      </div>
+              y:
+                point.temperatureC,
+            }),
+          )
+          .sort(
+            (a, b) =>
+              a.x - b.x,
+          ),
+      [points],
     );
-  }
-
-  const maxTime = Math.max(
-    1,
-    points[points.length - 1]?.timeS ?? 1,
-  );
-
-  const temperatures = points.map(
-    (point) => point.temperatureC,
-  );
-
-  const rawMinTemperature = Math.min(
-    ...temperatures,
-  );
-
-  const rawMaxTemperature = Math.max(
-    ...temperatures,
-  );
-
-  const rawTemperatureRange = Math.max(
-    0.001,
-    rawMaxTemperature - rawMinTemperature,
-  );
-
-  const temperaturePadding = Math.max(
-    0.002,
-    rawTemperatureRange * 0.2,
-  );
-
-  const minTemperature =
-    rawMinTemperature - temperaturePadding;
-
-  const maxTemperature =
-    rawMaxTemperature + temperaturePadding;
-
-  const temperatureRange =
-    maxTemperature - minTemperature;
-
-  const plotWidth =
-    VIEWBOX_WIDTH -
-    PADDING_LEFT -
-    PADDING_RIGHT;
-
-  const plotHeight =
-    VIEWBOX_HEIGHT -
-    PADDING_TOP -
-    PADDING_BOTTOM;
-
-  function mapX(timeS: number) {
-    return (
-      PADDING_LEFT +
-      (timeS / maxTime) * plotWidth
-    );
-  }
-
-  function mapY(
-    temperatureC: number,
-  ) {
-    return (
-      PADDING_TOP +
-      (
-        1 -
-        (
-          temperatureC -
-          minTemperature
-        ) /
-          temperatureRange
-      ) *
-        plotHeight
-    );
-  }
-
-  const path = points
-    .map((point, index) => {
-      const x = mapX(
-        point.timeS,
-      );
-
-      const y = mapY(
-        point.temperatureC,
-      );
-
-      return `${index === 0 ? "M" : "L"} ${x.toFixed(
-        2,
-      )} ${y.toFixed(2)}`;
-    })
-    .join(" ");
-
-  const xTicks = Array.from({
-    length: X_TICK_COUNT,
-  }).map((_, index) => {
-    const ratio =
-      index /
-      (X_TICK_COUNT - 1);
-
-    return {
-      value:
-        maxTime * ratio,
-
-      x:
-        PADDING_LEFT +
-        plotWidth * ratio,
-    };
-  });
-
-  const yTicks = Array.from({
-    length: Y_TICK_COUNT,
-  }).map((_, index) => {
-    const ratio =
-      index /
-      (Y_TICK_COUNT - 1);
-
-    const value =
-      maxTemperature -
-      temperatureRange *
-        ratio;
-
-    return {
-      value,
-
-      y:
-        PADDING_TOP +
-        plotHeight * ratio,
-    };
-  });
 
   const latestPoint =
-    points[
-      points.length - 1
-    ];
+    points.length > 0
+      ? points[
+          points.length - 1
+        ]
+      : null;
+
+  const graphDomain =
+    useMemo(
+      () => {
+        if (
+          points.length === 0
+        ) {
+          const initialTemperature =
+            joulePhysicsConfig
+              .initialTemperatureC;
+
+          return {
+            xMin: 0,
+            xMax:
+              DEFAULT_TIME_MAX,
+
+            yMin:
+              initialTemperature -
+              DEFAULT_TEMPERATURE_PADDING_C,
+
+            yMax:
+              initialTemperature +
+              DEFAULT_TEMPERATURE_PADDING_C,
+          };
+        }
+
+        const timeValues =
+          points.map(
+            (point) =>
+              point.timeS,
+          );
+
+        const temperatureValues =
+          points.map(
+            (point) =>
+              point.temperatureC,
+          );
+
+        const rawTimeMax =
+          Math.max(
+            ...timeValues,
+            DEFAULT_TIME_MAX,
+          );
+
+        const rawTemperatureMin =
+          Math.min(
+            ...temperatureValues,
+            joulePhysicsConfig
+              .initialTemperatureC,
+          );
+
+        const rawTemperatureMax =
+          Math.max(
+            ...temperatureValues,
+            joulePhysicsConfig
+              .initialTemperatureC,
+          );
+
+        const rawTemperatureRange =
+          rawTemperatureMax -
+          rawTemperatureMin;
+
+        const temperaturePadding =
+          Math.max(
+            rawTemperatureRange *
+              0.15,
+
+            DEFAULT_TEMPERATURE_PADDING_C,
+          );
+
+        return {
+          xMin: 0,
+
+          xMax:
+            Math.max(
+              DEFAULT_TIME_MAX,
+              rawTimeMax * 1.05,
+            ),
+
+          yMin:
+            rawTemperatureMin -
+            temperaturePadding,
+
+          yMax:
+            rawTemperatureMax +
+            temperaturePadding,
+        };
+      },
+      [points],
+    );
+
+  const temperatureRange =
+    graphDomain.yMax -
+    graphDomain.yMin;
+
+  const temperatureFractionDigits =
+    getTemperatureFractionDigits(
+      temperatureRange,
+    );
+
+  const xTicks =
+    useMemo(
+      () =>
+        createLinearTicks(
+          graphDomain.xMin,
+          graphDomain.xMax,
+          AXIS_TICK_COUNT,
+          graphDomain.xMax <
+            10
+            ? 1
+            : 0,
+        ),
+      [
+        graphDomain.xMin,
+        graphDomain.xMax,
+      ],
+    );
+
+  const yTicks =
+    useMemo(
+      () =>
+        createLinearTicks(
+          graphDomain.yMin,
+          graphDomain.yMax,
+          AXIS_TICK_COUNT,
+          temperatureFractionDigits,
+        ),
+      [
+        graphDomain.yMin,
+        graphDomain.yMax,
+        temperatureFractionDigits,
+      ],
+    );
 
   return (
     <div className="joule-graph">
-      <svg
-        className="joule-graph__svg"
-        viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
-        role="img"
-        aria-label="Đồ thị nhiệt độ nước theo thời gian"
-      >
-        <line
-          className="joule-graph__axis"
-          x1={PADDING_LEFT}
-          y1={
-            PADDING_TOP +
-            plotHeight
-          }
-          x2={
-            PADDING_LEFT +
-            plotWidth
-          }
-          y2={
-            PADDING_TOP +
-            plotHeight
-          }
-        />
+      {points.length === 0 ? (
+        <div className="joule-graph__empty">
+          <span>
+            Chưa có dữ liệu
+          </span>
 
-        <line
-          className="joule-graph__axis"
-          x1={PADDING_LEFT}
-          y1={PADDING_TOP}
-          x2={PADDING_LEFT}
-          y2={
-            PADDING_TOP +
-            plotHeight
-          }
-        />
-
-        {xTicks.map(
-          (tick) => (
-            <g
-              key={`x-${tick.value}`}
-            >
-              <line
-                className="joule-graph__grid"
-                x1={tick.x}
-                y1={PADDING_TOP}
-                x2={tick.x}
-                y2={
-                  PADDING_TOP +
-                  plotHeight
-                }
-              />
-
-              <text
-                className="joule-graph__tick"
-                x={tick.x}
-                y={
-                  PADDING_TOP +
-                  plotHeight +
-                  18
-                }
-                textAnchor="middle"
-              >
-                {tick.value.toFixed(
-                  1,
-                )}
-              </text>
-            </g>
-          ),
-        )}
-
-        {yTicks.map(
-          (tick) => (
-            <g
-              key={`y-${tick.value}`}
-            >
-              <line
-                className="joule-graph__grid"
-                x1={PADDING_LEFT}
-                y1={tick.y}
-                x2={
-                  PADDING_LEFT +
-                  plotWidth
-                }
-                y2={tick.y}
-              />
-
-              <text
-                className="joule-graph__tick"
-                x={
-                  PADDING_LEFT -
-                  8
-                }
-                y={tick.y + 4}
-                textAnchor="end"
-              >
-                {formatTemperature(
-                  tick.value,
-                )}
-              </text>
-            </g>
-          ),
-        )}
-
-        <path
-          className="joule-graph__line"
-          d={path}
-          fill="none"
-        />
-
-        {latestPoint && (
-          <circle
-            className="joule-graph__point"
-            cx={mapX(
-              latestPoint.timeS,
-            )}
-            cy={mapY(
-              latestPoint
-                .temperatureC,
-            )}
-            r={4}
+          <p>
+            Bắt đầu thí nghiệm
+            để theo dõi sự thay
+            đổi nhiệt độ theo
+            thời gian.
+          </p>
+        </div>
+      ) : (
+        <>
+          <ExperimentLineChart
+            className="joule-graph"
+            svgClassName="joule-graph__svg"
+            width={
+              CHART_WIDTH
+            }
+            height={
+              CHART_HEIGHT
+            }
+            padding={
+              CHART_PADDING
+            }
+            xDomain={[
+              graphDomain.xMin,
+              graphDomain.xMax,
+            ]}
+            yDomain={[
+              graphDomain.yMin,
+              graphDomain.yMax,
+            ]}
+            xTicks={
+              xTicks
+            }
+            yTicks={
+              yTicks
+            }
+            points={
+              graphData
+            }
+            xAxisLabel={`t (${jouleUnits.time})`}
+            yAxisLabel={`T (${jouleUnits.temperature})`}
+            ariaLabel="Đồ thị nhiệt độ T theo thời gian t trong thí nghiệm Joule"
+            tickClassName="joule-graph__tick"
+            axisLabelClassName="joule-graph__axis-label"
+            pointMode="last"
+            pointRadius={4}
+            xTickOffset={20}
+            yTickOffset={8}
+            xAxisLabelBottom={4}
+            yAxisLabelX={12}
           />
-        )}
 
-        <text
-          className="joule-graph__axis-label"
-          x={
-            PADDING_LEFT +
-            plotWidth / 2
-          }
-          y={
-            VIEWBOX_HEIGHT -
-            7
-          }
-          textAnchor="middle"
-        >
-          t (s)
-        </text>
+          <div className="joule-graph__summary">
+            <span>
+              Thời gian
+              {" "}
+              <strong>
+                {latestPoint
+                  ? latestPoint
+                      .timeS
+                      .toFixed(
+                        2,
+                      )
+                  : "0.00"}
+                {" "}
+                {
+                  jouleUnits
+                    .time
+                }
+              </strong>
+            </span>
 
-        <text
-          className="joule-graph__axis-label"
-          x={15}
-          y={
-            PADDING_TOP +
-            plotHeight / 2
-          }
-          textAnchor="middle"
-          transform={`rotate(-90 15 ${
-            PADDING_TOP +
-            plotHeight / 2
-          })`}
-        >
-          T (°C)
-        </text>
-      </svg>
-
-      <div className="joule-graph__summary">
-        <span>
-          t ={" "}
-          {latestPoint?.timeS.toFixed(
-            1,
-          )}{" "}
-          s
-        </span>
-
-        <strong>
-          T ={" "}
-          {latestPoint?.temperatureC.toFixed(
-            4,
-          )}{" "}
-          °C
-        </strong>
-      </div>
+            <span>
+              Nhiệt độ
+              {" "}
+              <strong>
+                {latestPoint
+                  ? latestPoint
+                      .temperatureC
+                      .toFixed(
+                        4,
+                      )
+                  : joulePhysicsConfig
+                      .initialTemperatureC
+                      .toFixed(
+                        4,
+                      )}
+                {" "}
+                {
+                  jouleUnits
+                    .temperature
+                }
+              </strong>
+            </span>
+          </div>
+        </>
+      )}
     </div>
   );
 }
