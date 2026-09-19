@@ -6,6 +6,7 @@ import {
 } from "react";
 
 import ExperimentWorkspace from "../../../components/experiment/ExperimentWorkspace";
+import ExperimentToast from "../../../components/experiment/ExperimentToast";
 import Button from "../../../components/ui/Button";
 
 import JouleGraph from "./JouleGraph";
@@ -844,21 +845,11 @@ export default function JoulePracticePhase({
     >
 
       {feedback && (
-        <div
-          className={`joule-practice__feedback joule-practice__feedback--${feedback.tone}`}
-          role={
-            feedback.tone === "error"
-              ? "alert"
-              : "status"
-          }
-          aria-live={
-            feedback.tone === "error"
-              ? "assertive"
-              : "polite"
-          }
-        >
-          {feedback.message}
-        </div>
+        <ExperimentToast
+          className="joule-practice__feedback"
+          tone={feedback.tone}
+          message={feedback.message}
+        />
       )}
 
       <div

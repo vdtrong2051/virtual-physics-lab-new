@@ -5,6 +5,7 @@ import {
 } from "react";
 
 import ExperimentWorkspace from "../../../components/experiment/ExperimentWorkspace";
+import ExperimentToast from "../../../components/experiment/ExperimentToast";
 import Button from "../../../components/ui/Button";
 import BoyleGraph from "./BoyleGraph";
 
@@ -562,17 +563,11 @@ export default function BoylePracticePhase({
     >
 
       {feedback && (
-        <div
-          className={`boyle-practice__feedback ${
-            feedbackTone ===
-            "success"
-              ? "boyle-practice__feedback--success"
-              : ""
-          }`}
-          role="status"
-        >
-          {feedback}
-        </div>
+        <ExperimentToast
+          className="boyle-practice__feedback"
+          tone={feedbackTone}
+          message={feedback}
+        />
       )}
 
       {showInstructions && (

@@ -6,6 +6,7 @@ import type {
   DragEvent,
 } from "react";
 
+import ExperimentToast from "../../../components/experiment/ExperimentToast";
 import Button from "../../../components/ui/Button";
 
 import {
@@ -360,16 +361,11 @@ export default function JoulePreparationPhase({
         </div>
 
         {feedback && (
-          <div
-            className={`joule-preparation-toast joule-preparation-toast--${feedback.type}`}
-            role={
-              feedback.type === "error"
-                ? "alert"
-                : "status"
-            }
-          >
-            {feedback.message}
-          </div>
+          <ExperimentToast
+            className="joule-preparation-toast"
+            tone={feedback.type}
+            message={feedback.message}
+          />
         )}
 
         {isDragOver && (
