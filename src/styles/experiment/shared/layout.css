@@ -1,0 +1,606 @@
+/* =========================================================
+   EXPERIMENT LAYOUT
+   LAB MODE
+
+   Visual reference:
+   - full screen
+   - dark navy
+   - compact centered header
+   - teal / cyan accent
+   - workspace chiếm toàn bộ phần còn lại
+
+   Không áp Portal glass vào Lab.
+   ========================================================= */
+
+.experiment-page {
+  --lab-topic-accent: var(--lab-primary);
+
+  --lab-topic-accent-soft:
+    color-mix(
+      in srgb,
+      var(--lab-topic-accent) 14%,
+      transparent
+    );
+
+  --lab-topic-accent-border:
+    color-mix(
+      in srgb,
+      var(--lab-topic-accent) 28%,
+      transparent
+    );
+
+  --lab-topic-accent-glow:
+    color-mix(
+      in srgb,
+      var(--lab-topic-accent) 38%,
+      transparent
+    );
+
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  color: var(--lab-text);
+
+  background:
+    radial-gradient(
+      circle at 50% -20%,
+      rgba(34, 211, 238, 0.07),
+      transparent 36%
+    ),
+    var(--lab-bg);
+}
+
+/* =========================================================
+   TOPIC ACCENT
+
+   Chỉ đổi màu nhấn.
+   Không đổi layout / surface / typography của Lab.
+   ========================================================= */
+
+.experiment-page--default {
+  --lab-topic-accent: var(--lab-primary);
+}
+
+.experiment-page--thermal {
+  --lab-topic-accent: var(--topic-thermal-accent);
+}
+
+.experiment-page--gas {
+  --lab-topic-accent: var(--topic-gas-accent);
+}
+
+.experiment-page--magnetic {
+  --lab-topic-accent: var(--topic-magnetic-accent);
+}
+
+.experiment-page--nuclear {
+  --lab-topic-accent: var(--topic-nuclear-accent);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.experiment-header {
+  position: relative;
+  z-index: 20;
+
+  flex-shrink: 0;
+
+  padding:
+    var(--space-4)
+    calc(var(--page-padding) + 120px)
+    var(--space-3);
+
+  display: flex;
+  justify-content: center;
+
+  background: rgba(5, 11, 20, 0.94);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+
+/* =========================================================
+   BACK
+   ========================================================= */
+
+.experiment-header__back {
+  position: absolute;
+
+  top: var(--space-4);
+  left: var(--page-padding);
+
+  min-height: 40px;
+
+  padding:
+    var(--space-2)
+    var(--space-4);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-2);
+
+  color: var(--lab-text-muted);
+
+  background: rgba(255, 255, 255, 0.05);
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+
+  text-decoration: none;
+
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.experiment-header__back:hover {
+  color: var(--lab-text);
+
+  background: rgba(255, 255, 255, 0.09);
+
+  border-color: var(--lab-border-strong);
+
+  transform: translateX(-2px);
+}
+
+.experiment-header__back:focus-visible {
+  outline: 2px solid var(--lab-primary);
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   EXPERIMENT IDENTITY
+   ========================================================= */
+
+.experiment-header__identity {
+  min-width: 0;
+  max-width: 900px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+.experiment-header__meta {
+  min-height: 32px;
+
+  padding:
+    var(--space-1)
+    var(--space-3);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-wrap: wrap;
+
+  gap: var(--space-2);
+
+  color: var(--lab-text-soft);
+
+  background: var(--lab-topic-accent-soft);
+
+  border: 1px solid var(--lab-topic-accent-border);
+  border-radius: var(--radius-round);
+
+  box-shadow:
+    0 0 18px var(--lab-topic-accent-glow);
+}
+
+.experiment-header__subject,
+.experiment-header__lab-label,
+.experiment-header__access {
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+.experiment-header__subject {
+  color: var(--lab-text-soft);
+}
+
+.experiment-header__indicator {
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  background: var(--lab-topic-accent);
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 10px var(--lab-topic-accent-glow);
+}
+
+.experiment-header__lab-label {
+  color: var(--lab-topic-accent);
+}
+
+
+/* =========================================================
+   ACCESS
+   ========================================================= */
+
+.experiment-header__access {
+  padding:
+    3px
+    var(--space-2);
+
+  border-radius: var(--radius-round);
+}
+
+.experiment-header__access--free {
+  color: var(--lab-access-free);
+  background: var(--lab-access-free-soft);
+}
+
+.experiment-header__access--full {
+  color: var(--lab-access-full);
+  background: var(--lab-access-full-soft);
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.experiment-header__identity h1 {
+  max-width: 900px;
+
+  margin:
+    var(--space-3)
+    0
+    0;
+
+  color: var(--lab-text);
+
+  font-size: clamp(
+    var(--text-2xl),
+    3vw,
+    40px
+  );
+
+  font-weight: var(--font-bold);
+
+  line-height: 1.08;
+  letter-spacing: 0.035em;
+
+  text-transform: uppercase;
+
+  text-shadow:
+    0 0 18px rgba(255, 255, 255, 0.08);
+}
+
+.experiment-header__description {
+  max-width: 720px;
+
+  margin:
+    var(--space-2)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   MAIN
+
+   Không áp grid generic ở đây.
+   Từng experiment tự sở hữu workspace bên trong.
+   ========================================================= */
+
+.experiment-main {
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1;
+
+  display: flex;
+
+  overflow: hidden;
+}
+
+.experiment-workspace {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1;
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   NOT FOUND
+   ========================================================= */
+
+.experiment-page--not-found {
+  align-items: center;
+  justify-content: center;
+
+  padding: var(--space-5);
+}
+
+.experiment-not-found.ui-card {
+  width: 100%;
+  max-width: 520px;
+
+  padding: var(--space-8);
+
+  color: var(--lab-text);
+
+  background:
+    rgba(15, 23, 42, 0.9);
+
+  border: 1px solid var(--lab-border-strong);
+  border-radius: var(--radius-xl);
+
+  box-shadow: var(--shadow-lab);
+
+  text-align: center;
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.experiment-not-found__code {
+  display: block;
+
+  color: var(--lab-primary);
+
+  font-size: 64px;
+  font-weight: var(--font-bold);
+
+  line-height: 1;
+
+  text-shadow:
+    0 0 24px rgba(20, 184, 166, 0.24);
+}
+
+.experiment-not-found h1 {
+  margin:
+    var(--space-5)
+    0
+    0;
+
+  color: var(--lab-text);
+
+  font-size: var(--text-2xl);
+}
+
+.experiment-not-found p {
+  margin:
+    var(--space-3)
+    0
+    0;
+
+  color: var(--lab-text-muted);
+
+  font-size: var(--text-sm);
+
+  line-height: 1.6;
+}
+
+.experiment-not-found__back {
+  margin-top: var(--space-6);
+
+  min-height: 42px;
+
+  padding:
+    var(--space-2)
+    var(--space-4);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--lab-primary);
+
+  background: var(--lab-primary-soft);
+
+  border: 1px solid rgba(20, 184, 166, 0.22);
+  border-radius: var(--radius-md);
+
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+
+  text-decoration: none;
+
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.experiment-not-found__back:hover {
+  color: var(--lab-text);
+
+  background: rgba(20, 184, 166, 0.22);
+
+  border-color: var(--lab-primary);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+  .experiment-header {
+    padding:
+      var(--space-4)
+      140px
+      var(--space-3);
+  }
+
+  .experiment-header__back {
+    left: var(--space-4);
+  }
+
+  .experiment-header__description {
+    max-width: 600px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+  .experiment-page {
+    min-height: 100dvh;
+    height: 100dvh;
+  }
+
+  .experiment-header {
+    padding:
+      var(--space-3)
+      var(--space-4);
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: var(--space-3);
+  }
+
+  .experiment-header__back {
+    position: static;
+
+    width: fit-content;
+
+    min-height: 36px;
+
+    padding:
+      var(--space-2)
+      var(--space-3);
+  }
+
+  .experiment-header__identity {
+    width: 100%;
+
+    align-items: flex-start;
+
+    text-align: left;
+  }
+
+  .experiment-header__meta {
+    justify-content: flex-start;
+
+    padding:
+      var(--space-1)
+      var(--space-2);
+  }
+
+  .experiment-header__identity h1 {
+    margin-top: var(--space-2);
+
+    font-size: clamp(
+      24px,
+      7vw,
+      32px
+    );
+
+    letter-spacing: 0.015em;
+  }
+
+  .experiment-header__description {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .experiment-header__subject {
+    display: none;
+  }
+
+  .experiment-header__identity h1 {
+    font-size: 23px;
+  }
+
+  .experiment-header__meta {
+    gap: var(--space-1);
+  }
+
+  .experiment-not-found.ui-card {
+    padding:
+      var(--space-6)
+      var(--space-4);
+  }
+}
+
+/* =========================================================
+   SHORT VIEWPORT
+
+   Giữ Lab dùng được ở mobile landscape / browser zoom cao.
+   ========================================================= */
+
+@media (max-height: 520px) {
+
+  .experiment-header {
+    padding:
+      var(--space-3)
+      140px
+      var(--space-2);
+  }
+
+  .experiment-header__back {
+    top: var(--space-3);
+  }
+
+  .experiment-header__identity h1 {
+    margin-top: var(--space-2);
+
+    font-size: clamp(
+      22px,
+      2.6vw,
+      30px
+    );
+  }
+
+  .experiment-header__description {
+    display: none;
+  }
+}

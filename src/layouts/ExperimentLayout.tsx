@@ -14,6 +14,7 @@ import type {
   ExperimentDomain,
 } from "../experiments/registry";
 
+import "../styles/experiment/shared/index.css";
 import "../styles/experiment.css";
 
 const domainAccentClasses:
