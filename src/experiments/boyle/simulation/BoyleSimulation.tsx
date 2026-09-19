@@ -2,15 +2,11 @@ import {
   useState,
 } from "react";
 
-import {
-  Canvas,
-} from "@react-three/fiber";
+import ExperimentCanvas from "../../../components/experiment/ExperimentCanvas";
 
 import {
   OrbitControls,
 } from "@react-three/drei";
-
-import * as THREE from "three";
 
 import {
   boylePhysicsConfig,
@@ -64,9 +60,8 @@ export default function BoyleSimulation({
 
   return (
     <div className="boyle-simulation">
-      <Canvas
+      <ExperimentCanvas
         shadows
-        dpr={[1, 1.5]}
         camera={{
           position: [
             0,
@@ -74,11 +69,6 @@ export default function BoyleSimulation({
             9.5,
           ],
           fov: 45,
-        }}
-        gl={{
-          antialias: true,
-          toneMapping:
-            THREE.ACESFilmicToneMapping,
         }}
       >
         <color
@@ -181,7 +171,7 @@ export default function BoyleSimulation({
           }
           target={[0, 1.2, 0]}
         />
-      </Canvas>
+      </ExperimentCanvas>
     </div>
   );
 }

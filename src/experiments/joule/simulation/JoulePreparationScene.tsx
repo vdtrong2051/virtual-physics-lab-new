@@ -1,6 +1,4 @@
-import {
-  Canvas,
-} from "@react-three/fiber";
+import ExperimentCanvas from "../../../components/experiment/ExperimentCanvas";
 
 import {
   OrbitControls,
@@ -1332,7 +1330,7 @@ export default function JoulePreparationScene(
 ) {
   return (
     <div className="joule-preparation-scene">
-      <Canvas
+      <ExperimentCanvas
         camera={{
           position: [
             4.8,
@@ -1344,30 +1342,13 @@ export default function JoulePreparationScene(
           far: 100,
         }}
         shadows="percentage"
-        dpr={[
-          1,
-          1.5,
-        ]}
-        gl={{
-          antialias: true,
-
-          toneMapping:
-            THREE.ACESFilmicToneMapping,
-
-          powerPreference:
-            "high-performance",
-        }}
-        onCreated={({
-          gl,
-        }) => {
-          gl.toneMappingExposure =
-            1.08;
-        }}
+        powerPreference="high-performance"
+        toneMappingExposure={1.08}
       >
         <AssemblyScene
           {...props}
         />
-      </Canvas>
+      </ExperimentCanvas>
     </div>
   );
 }

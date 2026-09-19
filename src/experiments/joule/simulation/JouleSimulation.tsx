@@ -2,15 +2,11 @@ import {
   useState,
 } from "react";
 
-import {
-  Canvas,
-} from "@react-three/fiber";
+import ExperimentCanvas from "../../../components/experiment/ExperimentCanvas";
 
 import {
   OrbitControls,
 } from "@react-three/drei";
-
-import * as THREE from "three";
 
 import type {
   JouleMotionPhase,
@@ -71,9 +67,8 @@ export default function JouleSimulation({
 
   return (
     <div className="joule-simulation">
-      <Canvas
+      <ExperimentCanvas
         shadows="percentage"
-        dpr={[1, 1.5]}
         camera={{
           position: [
             4.8,
@@ -84,19 +79,8 @@ export default function JouleSimulation({
           near: 0.1,
           far: 100,
         }}
-        gl={{
-          antialias: true,
-
-          toneMapping:
-            THREE.ACESFilmicToneMapping,
-
-          powerPreference:
-            "high-performance",
-        }}
-        onCreated={({ gl }) => {
-          gl.toneMappingExposure =
-            1.08;
-        }}
+        powerPreference="high-performance"
+        toneMappingExposure={1.08}
       >
         {/* Background riêng cho workspace */}
         <color
@@ -271,7 +255,7 @@ export default function JouleSimulation({
             0,
           ]}
         />
-      </Canvas>
+      </ExperimentCanvas>
     </div>
   );
 }
