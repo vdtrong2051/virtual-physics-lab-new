@@ -107,6 +107,18 @@
      Layout / Card / Typography không thay đổi.
      ========================================================= */
 
+  /* CƠ HỌC */
+
+  --topic-mechanics:
+    #d97706;
+
+  --topic-mechanics-soft:
+    #fef3c7;
+
+  --topic-mechanics-accent:
+    #fbbf24;
+
+
   /* NHIỆT HỌC */
 
   --topic-thermal:

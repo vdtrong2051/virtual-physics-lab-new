@@ -22,6 +22,8 @@ export type ExperimentCanvasProps = {
 
   toneMappingExposure?: number;
 
+  preserveDrawingBuffer?: boolean;
+
   children: ReactNode;
 };
 
@@ -30,6 +32,7 @@ export default function ExperimentCanvas({
   shadows,
   powerPreference,
   toneMappingExposure,
+  preserveDrawingBuffer = false,
   children,
 }: ExperimentCanvasProps) {
   return (
@@ -42,6 +45,8 @@ export default function ExperimentCanvas({
       shadows={shadows}
       gl={{
         antialias: true,
+
+        preserveDrawingBuffer,
 
         toneMapping:
           THREE.ACESFilmicToneMapping,

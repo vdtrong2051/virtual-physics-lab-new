@@ -67,6 +67,10 @@
   --lab-topic-accent: var(--lab-primary);
 }
 
+.experiment-page--mechanics {
+  --lab-topic-accent: var(--topic-mechanics-accent);
+}
+
 .experiment-page--thermal {
   --lab-topic-accent: var(--topic-thermal-accent);
 }
