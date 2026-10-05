@@ -38,14 +38,14 @@ export default function PublicFooter() {
           </div>
 
           <div className="public-footer__group">
-            <h3>Tài khoản</h3>
+            <h3>Thực hành</h3>
 
-            <Link to="/login">
-              Đăng nhập
+            <Link to="/app">
+              Không gian thực hành
             </Link>
 
-            <Link to="/register">
-              Đăng ký miễn phí
+            <Link to="/app/experiments">
+              Danh sách thí nghiệm
             </Link>
           </div>
 

@@ -44,10 +44,10 @@ export default function HeroSection() {
             </a>
 
             <Link
-              to="/register"
+              to="/app/experiments"
               className="landing-hero__secondary-action"
             >
-              Đăng ký miễn phí
+              Bắt đầu thực hành
             </Link>
           </div>
 

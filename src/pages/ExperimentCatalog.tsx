@@ -158,17 +158,6 @@ export default function ExperimentCatalog() {
                       </span>
                     </div>
 
-                    <span
-                      className={`catalog-card__access ${
-                        experiment.isFree
-                          ? "catalog-card__access--free"
-                          : "catalog-card__access--full"
-                      }`}
-                    >
-                      {experiment.isFree
-                        ? "FREE"
-                        : "FULL"}
-                    </span>
                   </div>
 
                   <div className="catalog-card__body">

@@ -150,17 +150,6 @@ export default function ExperimentLayout() {
               Phòng thí nghiệm ảo
             </span>
 
-            <span
-              className={`experiment-header__access ${
-                experiment.isFree
-                  ? "experiment-header__access--free"
-                  : "experiment-header__access--full"
-              }`}
-            >
-              {experiment.isFree
-                ? "FREE"
-                : "FULL"}
-            </span>
           </div>
 
           <h1>

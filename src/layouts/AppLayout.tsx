@@ -66,16 +66,6 @@ export default function AppLayout() {
             <strong>Không gian thực hành</strong>
           </div>
 
-          <div className="app-header__account">
-            <div className="app-header__avatar">
-              U
-            </div>
-
-            <div className="app-header__account-text">
-              <strong>Tài khoản</strong>
-              <span>Thông tin sẽ nối Auth sau</span>
-            </div>
-          </div>
         </header>
 
         <main className="app-main">

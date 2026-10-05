@@ -6,8 +6,6 @@ import ExperimentLayout from "./layouts/ExperimentLayout";
 import AdminLayout from "./layouts/AdminLayout";
 
 import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import Home from "./pages/Home";
 import ExperimentCatalog from "./pages/ExperimentCatalog";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -23,14 +21,6 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Landing />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/register",
-        element: <Register />,
       },
     ],
   },

@@ -14,13 +14,13 @@ export default function StartSection() {
           </p>
 
           <h2 className="landing-start__title">
-            Bắt đầu thực hành theo cách phù hợp với bạn
+            Bắt đầu khám phá phòng thí nghiệm Vật lý
           </h2>
 
           <p className="landing-start__description">
-            Bạn có thể đăng ký tài khoản miễn phí để sử dụng các
-            thí nghiệm đang được mở, hoặc đăng nhập bằng tài khoản
-            đã được cấp quyền để truy cập đầy đủ nội dung.
+            Khám phá các bài thí nghiệm Vật lý THPT, lựa chọn
+            nội dung phù hợp và bắt đầu thực hành trực tiếp
+            trên nền tảng.
           </p>
         </div>
 
@@ -28,64 +28,64 @@ export default function StartSection() {
 
           <div className="landing-start__option">
             <span className="landing-start__option-label">
-              TÀI KHOẢN MIỄN PHÍ
+              PHÒNG THÍ NGHIỆM
             </span>
 
             <h3>
-              Tự đăng ký và bắt đầu ngay
+              Chọn bài và bắt đầu thực hành
             </h3>
 
             <ul>
               <li>
-                Sử dụng các bài thí nghiệm đang được mở miễn phí
+                Khám phá các bài thí nghiệm hiện có
               </li>
 
               <li>
-                Làm quen với quy trình thực hành trên nền tảng
+                Tương tác trực tiếp với mô hình vật lý
               </li>
 
               <li>
-                Có thể nâng quyền truy cập sau
+                Quan sát, đo đạc và phân tích kết quả
               </li>
             </ul>
 
             <Link
-              to="/register"
+              to="/app/experiments"
               className="landing-start__primary-action"
             >
-              Đăng ký miễn phí
+              Xem thí nghiệm
             </Link>
           </div>
 
           <div className="landing-start__option">
             <span className="landing-start__option-label">
-              TÀI KHOẢN ĐƯỢC CẤP QUYỀN
+              CHƯƠNG TRÌNH THPT
             </span>
 
             <h3>
-              Truy cập đầy đủ chương trình
+              Khám phá theo khối lớp
             </h3>
 
             <ul>
               <li>
-                Sử dụng toàn bộ các bài được cấp quyền
+                Nội dung Vật lý lớp 10, 11 và 12
               </li>
 
               <li>
-                Truy cập đầy đủ nội dung thực hành
+                Các thí nghiệm được tổ chức theo chủ đề
               </li>
 
               <li>
-                Phù hợp với tài khoản do quản trị viên cấp
+                Dễ dàng lựa chọn nội dung cần thực hành
               </li>
             </ul>
 
-            <Link
-              to="/login"
+            <a
+              href="/#curriculum"
               className="landing-start__secondary-action"
             >
-              Đăng nhập
-            </Link>
+              Xem chương trình
+            </a>
           </div>
 
         </div>

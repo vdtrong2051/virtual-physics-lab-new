@@ -97,23 +97,14 @@ export default function PublicHeader() {
           </nav>
 
           <div className="public-header__actions">
-
             <Link
-              to="/login"
-              className="public-header__login"
+              to="/app/experiments"
+              className="public-header__lab-action"
               onClick={closeMenu}
             >
-              Đăng nhập
+              Vào phòng thí nghiệm
             </Link>
-
-            <Link
-              to="/register"
-              className="public-header__register"
-              onClick={closeMenu}
-            >
-              Đăng ký miễn phí
-            </Link>
-
+      
           </div>
         </div>
 

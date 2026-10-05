@@ -12,11 +12,13 @@ const grades = [10, 11, 12] as const;
 export default function Home() {
   const totalExperiments = experiments.length;
 
-  const freeExperiments = experiments.filter(
-    (experiment) => experiment.isFree
+  const readyExperiments = experiments.filter(
+    (experiment) => experiment.status === "ready"
   ).length;
 
-  const featuredExperiments = experiments.slice(0, 3);
+  const featuredExperiments = experiments
+    .filter((experiment) => experiment.status === "ready")
+    .slice(0, 3);
 
   return (
     <div className="home-page">
@@ -40,13 +42,13 @@ export default function Home() {
 
         <Card className="home-overview__card">
           <span className="home-overview__label">
-            Đang mở miễn phí
+            Sẵn sàng thực hành
           </span>
 
-          <strong>{freeExperiments}</strong>
+          <strong>{readyExperiments}</strong>
 
           <span className="home-overview__meta">
-            Có thể bắt đầu thực hành
+            Có thể bắt đầu ngay
           </span>
         </Card>
 
@@ -66,7 +68,9 @@ export default function Home() {
       <section className="home-section">
         <div className="home-section__header">
           <div>
-            <h2>Chương trình theo khối lớp</h2>
+            <h2>
+              Chương trình theo khối lớp
+            </h2>
 
             <p>
               Chọn khối lớp để xem các bài thực hành tương ứng.
@@ -84,12 +88,9 @@ export default function Home() {
         <div className="home-grade-grid">
           {grades.map((grade) => {
             const gradeExperiments = experiments.filter(
-              (experiment) => experiment.grade === grade
+              (experiment) =>
+                experiment.grade === grade
             );
-
-            const freeCount = gradeExperiments.filter(
-              (experiment) => experiment.isFree
-            ).length;
 
             return (
               <Card
@@ -97,20 +98,23 @@ export default function Home() {
                 className="home-grade-card"
               >
                 <div className="home-grade-card__top">
-                  <span>VẬT LÝ {grade}</span>
+                  <span>
+                    VẬT LÝ {grade}
+                  </span>
 
                   <strong>
                     {gradeExperiments.length}
                   </strong>
                 </div>
 
-                <h3>Chương trình lớp {grade}</h3>
+                <h3>
+                  Chương trình lớp {grade}
+                </h3>
 
                 {gradeExperiments.length > 0 ? (
                   <p>
-                    {gradeExperiments.length} bài thực hành,
-                    {" "}
-                    {freeCount} bài đang mở miễn phí.
+                    {gradeExperiments.length} bài thực hành
+                    trong chương trình.
                   </p>
                 ) : (
                   <p>
@@ -133,56 +137,56 @@ export default function Home() {
       <section className="home-section">
         <div className="home-section__header">
           <div>
-            <h2>Thí nghiệm hiện có</h2>
+            <h2>
+              Thí nghiệm hiện có
+            </h2>
 
             <p>
-              Một số bài thực hành đã được đăng ký trong hệ thống.
+              Các bài thực hành đã sẵn sàng trên hệ thống.
             </p>
           </div>
         </div>
 
         {featuredExperiments.length > 0 ? (
           <div className="home-experiment-grid">
-            {featuredExperiments.map((experiment) => (
-              <Card
-                key={experiment.slug}
-                className="home-experiment-card"
-              >
-                <div className="home-experiment-card__meta">
-                  <span>
-                    Vật lý {experiment.grade}
-                  </span>
-
-                  <span
-                    className={
-                      experiment.isFree
-                        ? "home-experiment-card__access home-experiment-card__access--free"
-                        : "home-experiment-card__access home-experiment-card__access--full"
-                    }
-                  >
-                    {experiment.isFree ? "FREE" : "FULL"}
-                  </span>
-                </div>
-
-                <h3>{experiment.title}</h3>
-
-                <p>
-                  {experiment.description ??
-                    "Bài thực hành Vật lý trực tuyến."}
-                </p>
-
-                <Link
-                  to={`/app/experiments/${experiment.slug}`}
-                  className="home-experiment-card__link"
+            {featuredExperiments.map(
+              (experiment) => (
+                <Card
+                  key={experiment.slug}
+                  className="home-experiment-card"
                 >
-                  Mở thí nghiệm →
-                </Link>
-              </Card>
-            ))}
+                  <div className="home-experiment-card__meta">
+                    <span>
+                      Vật lý {experiment.grade}
+                    </span>
+
+                    <span>
+                      {experiment.topic}
+                    </span>
+                  </div>
+
+                  <h3>
+                    {experiment.title}
+                  </h3>
+
+                  <p>
+                    {experiment.description ??
+                      "Bài thực hành Vật lý trực tuyến."}
+                  </p>
+
+                  <Link
+                    to={`/app/experiments/${experiment.slug}`}
+                    className="home-experiment-card__link"
+                  >
+                    Mở thí nghiệm →
+                  </Link>
+                </Card>
+              )
+            )}
           </div>
         ) : (
           <Card className="home-empty">
-            Chưa có thí nghiệm nào trong hệ thống.
+            Chưa có thí nghiệm nào sẵn sàng.
           </Card>
         )}
       </section>
