@@ -22,6 +22,9 @@ const domainAccentClasses:
     ExperimentDomain,
     string
   > = {
+  mechanics:
+    "experiment-page--default",
+
   thermal:
     "experiment-page--thermal",
 
@@ -44,11 +47,15 @@ function getDomainAccentClass(
 }
 
 export default function ExperimentLayout() {
-  const { slug } = useParams();
+  const { slug } =
+    useParams();
 
-  const experiment = slug
-    ? getExperimentBySlug(slug)
-    : undefined;
+  const experiment =
+    slug
+      ? getExperimentBySlug(
+          slug,
+        )
+      : undefined;
 
   if (!experiment) {
     return (
@@ -59,19 +66,23 @@ export default function ExperimentLayout() {
           </span>
 
           <h1>
-            Không tìm thấy thí nghiệm
+            Không tìm thấy thí
+            nghiệm
           </h1>
 
           <p>
-            Bài thí nghiệm bạn đang truy cập
-            không tồn tại trong danh mục hiện tại.
+            Bài thí nghiệm bạn
+            đang truy cập không
+            tồn tại trong danh
+            mục hiện tại.
           </p>
 
           <Link
             to="/app/experiments"
             className="experiment-not-found__back"
           >
-            ← Quay lại danh sách thí nghiệm
+            ← Quay lại danh sách
+            thí nghiệm
           </Link>
         </Card>
       </div>
@@ -79,7 +90,8 @@ export default function ExperimentLayout() {
   }
 
   if (
-    experiment.status === "planned"
+    experiment.status ===
+    "planned"
   ) {
     return (
       <div className="experiment-page experiment-page--not-found">
@@ -89,21 +101,25 @@ export default function ExperimentLayout() {
           </span>
 
           <h1>
-            Thí nghiệm đang được phát triển
+            Thí nghiệm đang được
+            phát triển
           </h1>
 
           <p>
-            {experiment.title} hiện chưa sẵn
-            sàng để thực hành. Bài thí nghiệm
-            sẽ được mở khi quá trình xây dựng
-            và kiểm thử hoàn tất.
+            {experiment.title}{" "}
+            hiện chưa sẵn sàng để
+            thực hành. Bài thí
+            nghiệm sẽ được mở khi
+            quá trình xây dựng và
+            kiểm thử hoàn tất.
           </p>
 
           <Link
             to="/app/experiments"
             className="experiment-not-found__back"
           >
-            ← Quay lại danh sách thí nghiệm
+            ← Quay lại danh sách
+            thí nghiệm
           </Link>
         </Card>
       </div>
@@ -136,7 +152,8 @@ export default function ExperimentLayout() {
         <div className="experiment-header__identity">
           <div className="experiment-header__meta">
             <span className="experiment-header__subject">
-              Vật lý {experiment.grade}
+              Vật lý{" "}
+              {experiment.grade}
               {" · "}
               {experiment.topic}
             </span>
@@ -149,7 +166,6 @@ export default function ExperimentLayout() {
             <span className="experiment-header__lab-label">
               Phòng thí nghiệm ảo
             </span>
-
           </div>
 
           <h1>
