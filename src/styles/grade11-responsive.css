@@ -1,0 +1,530 @@
+/* =========================================================
+   GRADE 11 LEGACY EXPERIMENTS
+
+   Chỉ tác động đến 3 thí nghiệm lớp 11.
+   Không ảnh hưởng Boyle / Joule.
+   ========================================================= */
+
+.grade11-module {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background: #f8fafc;
+}
+
+
+/* =========================================================
+   PHASE NAV
+   ========================================================= */
+
+.grade11-module__phasebar {
+  position: relative;
+  z-index: 30;
+
+  min-height: 58px;
+
+  flex-shrink: 0;
+
+  padding:
+    8px
+    16px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+
+  color: #cbd5e1;
+
+  background:
+    rgba(
+      5,
+      11,
+      20,
+      0.97
+    );
+
+  border-bottom:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+
+  box-shadow:
+    0 6px 24px
+    rgba(
+      2,
+      6,
+      23,
+      0.2
+    );
+}
+
+
+.grade11-module__phase-title {
+  margin: 0;
+
+  max-width: 280px;
+
+  flex-shrink: 0;
+
+  font-size: 14px;
+  font-weight: 900;
+
+  line-height: 1.2;
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+
+.grade11-module__phase-nav {
+  min-width: 0;
+
+  margin-left: auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scrollbar-width: none;
+
+  -webkit-overflow-scrolling:
+    touch;
+}
+
+
+.grade11-module__phase-nav::-webkit-scrollbar {
+  display: none;
+}
+
+
+.grade11-module__phase-button {
+  min-height: 38px;
+
+  flex-shrink: 0;
+
+  padding:
+    8px
+    12px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  color: #94a3b8;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.04
+    );
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.06
+    );
+
+  border-radius: 9px;
+
+  font: inherit;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    color 150ms ease,
+    background 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+
+.grade11-module__phase-button:hover {
+  color: #f8fafc;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.09
+    );
+
+  border-color:
+    rgba(
+      255,
+      255,
+      255,
+      0.12
+    );
+}
+
+
+.grade11-module__phase-button:active {
+  transform:
+    translateY(1px);
+}
+
+
+.grade11-module__phase-button:focus-visible {
+  outline:
+    2px solid
+    #22d3ee;
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   BODY
+   ========================================================= */
+
+.grade11-module__body {
+  width: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1;
+
+  position: relative;
+
+  display: flex;
+
+  overflow: hidden;
+}
+
+
+.grade11-module__stage {
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1;
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+
+/*
+ * Intro cũ dùng min-h-screen.
+ * Bên ngoài đã có ExperimentLayout,
+ * nên 100vh ở đây sẽ làm thừa chiều cao.
+ */
+.grade11-module .min-h-screen {
+  min-height: 100%;
+}
+
+
+/*
+ * Canvas không được kích hoạt scroll /
+ * zoom trình duyệt khi thao tác cảm ứng.
+ */
+.grade11-module canvas {
+  display: block;
+
+  width: 100%;
+
+  touch-action: none;
+}
+
+
+/* =========================================================
+   REPORT PREVIEW
+   ========================================================= */
+
+.grade11-module .print-wrapper {
+  min-width: 0;
+  min-height: 0;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (
+  max-width: 1024px
+) {
+
+  .grade11-module__phasebar {
+    padding:
+      7px
+      12px;
+  }
+
+
+  .grade11-module__phase-title {
+    display: none;
+  }
+
+
+  .grade11-module__phase-nav {
+    width: 100%;
+
+    margin-left: 0;
+  }
+
+
+  .grade11-module__phase-button {
+    flex: 1 0 auto;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (
+  max-width: 767px
+) {
+
+  .grade11-module__phasebar {
+    min-height: 52px;
+
+    padding:
+      6px
+      8px;
+  }
+
+
+  .grade11-module__phase-nav {
+    gap: 5px;
+  }
+
+
+  .grade11-module__phase-button {
+    min-height: 38px;
+
+    padding:
+      7px
+      10px;
+
+    font-size: 11px;
+  }
+
+
+  .grade11-module__phase-button span {
+    display: none;
+  }
+
+
+  /*
+   * Intro phải scroll được trên điện thoại
+   * thay vì bị cắt vì chiều cao nội dung.
+   */
+  .grade11-module .min-h-screen {
+    height: 100%;
+    min-height: 100%;
+
+    justify-content:
+      flex-start;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+
+  /*
+   * Các simulation dùng layout:
+   * canvas trên + control dưới.
+   */
+  .grade11-module
+  [class~="md:w-[400px]"],
+  .grade11-module
+  [class~="md:w-[420px]"],
+  .grade11-module
+  [class~="md:w-[380px]"] {
+    width: 100%;
+
+    max-height: 48%;
+
+    flex-shrink: 0;
+
+    overflow-y: auto;
+
+    border-left: 0;
+
+    border-top:
+      1px solid
+      #e2e8f0;
+  }
+
+
+  /*
+   * Report A4 trên màn nhỏ:
+   * preview theo width thiết bị.
+   * @media print bên trong Report vẫn
+   * giữ đúng A4 khi in.
+   */
+  .grade11-module
+  .a4-page {
+    width:
+      calc(
+        100vw - 24px
+      ) !important;
+
+    height: auto !important;
+
+    min-height:
+      calc(
+        (
+          100vw - 24px
+        ) * 1.414
+      );
+
+    padding:
+      24px !important;
+
+    flex-shrink: 0;
+  }
+
+
+  .grade11-module
+  .print-scroll-area {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (
+  max-width: 480px
+) {
+
+  .grade11-module__phase-button {
+    padding:
+      7px
+      9px;
+
+    font-size: 10px;
+  }
+
+
+  .grade11-module
+  .min-h-screen {
+    padding: 16px;
+  }
+
+
+  .grade11-module
+  [class~="md:w-[400px]"],
+  .grade11-module
+  [class~="md:w-[420px]"],
+  .grade11-module
+  [class~="md:w-[380px]"] {
+    max-height: 52%;
+  }
+
+}
+
+
+/* =========================================================
+   LOW HEIGHT LAPTOP
+   ========================================================= */
+
+@media (
+  min-width: 768px
+) and (
+  max-height: 720px
+) {
+
+  .grade11-module__phasebar {
+    min-height: 50px;
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+
+  .grade11-module__phase-button {
+    min-height: 34px;
+
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+
+  .grade11-module
+  .min-h-screen {
+    overflow-y: auto;
+
+    align-items: center;
+  }
+
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+
+  .grade11-module {
+    height: auto;
+
+    min-height: 0;
+
+    overflow: visible;
+
+    display: block;
+  }
+
+
+  .grade11-module__phasebar {
+    display: none;
+  }
+
+
+  .grade11-module__body,
+  .grade11-module__stage {
+    height: auto;
+
+    min-height: 0;
+
+    overflow: visible;
+
+    display: block;
+  }
+
+}

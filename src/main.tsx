@@ -16,16 +16,18 @@ import "./styles/tokens.css";
 import "./index.css";
 
 /*
- * Tailwind utilities chỉ phục vụ các thí nghiệm
- * lớp 11 nguyên bản.
- *
- * File legacy-tailwind.css không import Preflight
- * để tránh reset CSS của frame chính.
+ * Utility CSS cho 3 thí nghiệm lớp 11.
+ * Không có Tailwind Preflight.
  */
 import "./styles/legacy-tailwind.css";
 
 /*
- * CSS cho công thức react-katex.
+ * Responsive riêng cho 3 bài lớp 11.
+ */
+import "./styles/grade11-responsive.css";
+
+/*
+ * Công thức toán.
  */
 import "katex/dist/katex.min.css";
 

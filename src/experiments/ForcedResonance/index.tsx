@@ -103,13 +103,16 @@ export default function ForcedResonanceModule() {
   }
 
   return (
-    <div className="w-full h-screen print:h-auto bg-slate-50 flex flex-col print:block overflow-hidden print:overflow-visible font-sans">
-      <header className="print:hidden min-h-16 bg-white border-b border-slate-200 flex items-center px-3 md:px-6 gap-4 shrink-0 z-20">
-        <h1 className="text-lg md:text-xl font-black text-amber-600 hidden lg:block uppercase tracking-wide shrink-0">
-          CỘNG HƯỞNG & DAO ĐỘNG CƯỠNG BỨC
-        </h1>
+    <div className="grade11-module grade11-module--forced w-full h-full min-h-0 bg-slate-50 flex flex-col print:block overflow-hidden print:overflow-visible font-sans">
+      <header className="grade11-module__phasebar print:hidden">
+        <h2 className="grade11-module__phase-title text-amber-400">
+          DAO ĐỘNG CƯỠNG BỨC & CỘNG HƯỞNG
+        </h2>
 
-        <div className="flex gap-1 md:gap-2 overflow-x-auto ml-auto py-2">
+        <nav
+          className="grade11-module__phase-nav"
+          aria-label="Các bước thí nghiệm dao động cưỡng bức và cộng hưởng"
+        >
           {STEPS.map(
             (
               step,
@@ -123,33 +126,31 @@ export default function ForcedResonanceModule() {
                     index,
                   )
                 }
-                className={`shrink-0 px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-bold transition-all ${
+                className={`grade11-module__phase-button ${
                   currentStep ===
                   index
-                    ? "bg-amber-600 text-white shadow-md"
-                    : "bg-transparent text-slate-500 hover:bg-slate-100"
+                    ? "bg-amber-600 text-white"
+                    : ""
                 }`}
               >
-                <span className="hidden md:inline">
-                  {index +
-                    1}
-                  .{" "}
+                <span>
+                  {index + 1}.
                 </span>
 
                 {step}
               </button>
             ),
           )}
-        </div>
+        </nav>
       </header>
 
-      <main className="flex-1 relative overflow-hidden print:overflow-visible print:block">
+      <main className="grade11-module__body">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
             initial={{
               opacity: 0,
-              y: 20,
+              y: 12,
             }}
             animate={{
               opacity: 1,
@@ -157,12 +158,12 @@ export default function ForcedResonanceModule() {
             }}
             exit={{
               opacity: 0,
-              y: -20,
+              y: -12,
             }}
             transition={{
-              duration: 0.3,
+              duration: 0.2,
             }}
-            className="w-full h-full print:h-auto print:block"
+            className="grade11-module__stage"
           >
             {renderStep()}
           </motion.div>
