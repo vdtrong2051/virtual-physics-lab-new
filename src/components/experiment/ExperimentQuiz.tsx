@@ -98,13 +98,6 @@ export type ExperimentQuizProps<
         TQuestionId
       >,
   ) => ReactNode;
-
-  renderQuestionFooter?: (
-    context:
-      ExperimentQuizQuestionContext<
-        TQuestionId
-      >,
-  ) => ReactNode;
 };
 
 export default function ExperimentQuiz<
@@ -119,7 +112,6 @@ export default function ExperimentQuiz<
   muteUnselectedAfterSubmit = false,
   renderQuestionHeader,
   renderOptionContent,
-  renderQuestionFooter,
 }: ExperimentQuizProps<TQuestionId>) {
   const Card = cardAs;
 
@@ -253,15 +245,6 @@ export default function ExperimentQuiz<
                   },
                 )}
               </div>
-
-              {renderQuestionFooter?.({
-                question,
-                questionIndex,
-                selectedAnswer,
-                submitted:
-                  assessment.submitted,
-                isQuestionCorrect,
-              })}
             </Card>
           );
         },

@@ -22,9 +22,6 @@ const domainAccentClasses:
     ExperimentDomain,
     string
   > = {
-  mechanics:
-    "experiment-page--mechanics",
-
   thermal:
     "experiment-page--thermal",
 
